@@ -5,6 +5,8 @@ import {
   Route,
   Link
 } from "react-router-dom";
+
+import "bootswatch/dist/sandstone/bootstrap.min.css";
 import Home from "./components/home/index.js";
 
 function App() {

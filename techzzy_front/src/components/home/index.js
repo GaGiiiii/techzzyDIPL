@@ -5,18 +5,18 @@ import {
   Nav,
   NavDropdown,
 } from "react-bootstrap";
-// import './index.css';
+import './index.css';
 import Search from "./search.js";
 
 export default function index() {
 
-  let loggedIn = true;
+  let loggedIn = false;
 
   return (
     <div>
       <Navbar className="navbar text-white" bg="primary" expand="lg">
         <Container>
-          <Navbar.Brand className="text-white fw-bold" href="/">Techzzy</Navbar.Brand>
+          <Navbar.Brand className="text-white fw-bold" href="/">Techzzy <i class="fas fa-desktop"></i></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">

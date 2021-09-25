@@ -1,7 +1,8 @@
 .navbar-light .navbar-nav .nav-link {
   color: rgba(255, 255, 255, .55);
   margin-top: 3px;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .navbar-light .navbar-nav .nav-link:hover {
@@ -12,10 +13,14 @@
   color: white;
 }
 
+.navbar-light .navbar-brand{
+  font-size: 22px;
+}
+
 /* SEARCH ======================================================================================================================== */
 
 #search {
-  width: 550px;
+  width: 600px;
   position: relative;
 }
 

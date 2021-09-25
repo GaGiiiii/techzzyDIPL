@@ -2,9 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import "bootswatch/dist/sandstone/bootstrap.min.css";
 import './index.css';
-import './components/home/index.css';
 
 ReactDOM.render(
   <React.StrictMode>
