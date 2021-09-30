@@ -107,11 +107,12 @@ class ProductController extends Controller {
    */
   public function update(Request $request, $id) {
     $product = Product::find($id);
+    $category = Category::find($request->category_id);
 
-    if (!$product) {
+    if (!$product || !$category) {
       return response([
         'product' => null,
-        'message' => 'Product not found.',
+        'message' => 'Product / Category not found.',
       ], 404);
     }
 
