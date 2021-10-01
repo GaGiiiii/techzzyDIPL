@@ -3,61 +3,137 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Validator;
 
-class UserController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+class UserController extends Controller {
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index() {
+    //
+  }
+
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request) {
+    //
+  }
+
+  /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function show($id) {
+    //
+  }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, $id) {
+    //
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy($id) {
+    //
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function login(Request $request) {
+    // VALIDATE DATA
+    $validator = Validator::make($request->all(), [
+      'email' => 'required|email',
+      'password' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+      return response([
+        'user' => null,
+        'message' => 'Validation failed.',
+        'errors' => $validator->messages(),
+      ], 400);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+      $request->session()->regenerate();
+
+      return response([
+        "user" => auth()->user(),
+        "message" => "Login successful",
+      ], 200);
+    } else {
+      return response([
+        "user" => null,
+        "message" => "Login failed.",
+      ], 401);
+    }
+  }
+
+  public function logout(Request $request) {
+    $user = auth()->user();
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return response([
+      "user" => $user,
+      "message" => "Logout successful.",
+    ], 200);
+  }
+
+  public function register(Request $request) {
+    // VALIDATE DATA
+    $validator = Validator::make($request->all(), [
+      'first_name' => 'required|string|min:2',
+      'last_name' => 'required|string|min:2',
+      'username' => 'required|string|min:2|unique:users,username',
+      'email' => 'required|string|email|unique:users,email',
+      'password' => 'required|string|min:6|confirmed',
+    ]);
+
+    if ($validator->fails()) {
+      return response([
+        'user' => null,
+        'message' => 'Validation failed.',
+        'errors' => $validator->messages(),
+      ], 400);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+    $user = new User;
+    $user->first_name = $request->first_name;
+    $user->last_name = $request->last_name;
+    $user->username = $request->username;
+    $user->email = $request->email;
+    $user->password = Hash::make($request->password);
+    $user->save();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    return response([
+      "user" => $user,
+      "message" => "User created.",
+    ], 201);
+  }
 }

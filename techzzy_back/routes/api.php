@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::apiResource('users', UserController::class);
 Route::apiResource('comments', CommentController::class);
 Route::apiResource('ratings', RatingController::class);
@@ -27,6 +28,11 @@ Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('carts', CartController::class);
 
+Route::group(['middleware' => 'auth:sanctum'], function () {
+  Route::get('/products', [ProductController::class, 'index']);
+});
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
