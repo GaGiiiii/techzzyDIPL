@@ -4,23 +4,8 @@ import {
   Row, Card,
 } from "react-bootstrap";
 import TinySlider from "tiny-slider-react";
-import { useContext } from 'react';
-import { ApiContext } from '../../App';
-const axios = require('axios');
 
-export default function SliderRow(props) {
-  const api = useContext(ApiContext);
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    axios({
-      method: 'GET',
-      url: `${api}/api/products`,
-    }).then(res => {
-      setProducts(sortProducts(res.data.products));
-    }).catch(err => console.log(err));
-  }, []);
-
+export default function SliderRow({ products, type }) {
   const tinySettings = {
     controls: false,
     mouseDrag: true,
@@ -54,31 +39,17 @@ export default function SliderRow(props) {
     return (Math.round(rating / product.ratings.length * 100) / 100) || 0;
   }
 
-  function sortProducts(productsP) {
-    switch (props.type) {
+  function sortProducts(products) {
+    let productsP = [...products];
+
+    switch (type) {
       case 1: // Latest
         break;
       case 2: // Most Liked
-        for (let i = 0; i < productsP.length - 1; i++) {
-          for (let j = i + 1; j < productsP.length; j++) {
-            if (calculateProductRating(productsP[i]) < calculateProductRating(productsP[j])) {
-              let help = productsP[i];
-              productsP[i] = productsP[j];
-              productsP[j] = help;
-            }
-          }
-        }
+        productsP.sort((a, b) => calculateProductRating(b) - calculateProductRating(a));
         break;
       case 3: // Most Commented
-        for (let i = 0; i < productsP.length - 1; i++) {
-          for (let j = i + 1; j < productsP.length; j++) {
-            if (productsP[i].comments.length < productsP[j].comments.length) {
-              let help = productsP[i];
-              productsP[i] = productsP[j];
-              productsP[j] = help;
-            }
-          }
-        }
+        productsP.sort((a, b) => b.comments.length - a.comments.length);
         break;
     }
 
@@ -87,9 +58,9 @@ export default function SliderRow(props) {
 
   return (
     <Row className="gx-0 mt-5">
-      <h1 className="section-title">{props.type == 1 ? 'Latest' : props.type == 2 ? 'Most Liked' : 'Most Commented'} Products<hr className="hr-title" /></h1>
+      <h1 className="section-title">{type == 1 ? 'Latest' : type == 2 ? 'Most Liked' : 'Most Commented'} Products<hr className="hr-title" /></h1>
       <TinySlider settings={tinySettings}>
-        {products && products.map(product => (
+        {products && sortProducts(products).map(product => (
           <a key={product.id} className="card-link-outer" href={`/products/${product.id}`} draggable={false}>
             <div className="item">
               <Card className="p-0 shadow-sm">

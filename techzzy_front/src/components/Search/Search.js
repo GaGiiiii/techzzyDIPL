@@ -1,10 +1,14 @@
 import React from 'react'
+import './search.css';
+import { useState } from 'react';
 
-export default function Search() {
+export default function Search({ products }) {
+  const [input, setInput] = useState("");
+
   return (
     <div>
       <div id="search">
-        <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
+        <input className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} />
         <div id="search-results">
           <div className="search-result-item">
             <div className="search-result-item-img">

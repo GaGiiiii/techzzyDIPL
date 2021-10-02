@@ -17,59 +17,6 @@
   font-size: 22px;
 }
 
-/* SEARCH ======================================================================================================================== */
-
-#search {
-  width: 600px;
-  position: relative;
-}
-
-#search input {
-  border-radius: 0;
-}
-
-#search input::-webkit-search-cancel-button {
-  display: none;
-}
-
-#search-results {
-  position: absolute;
-  width: 100%;
-  z-index: 99;
-  border: 1px solid black;
-  background-color: black;
-  color: white;
-  display: none;
-  max-height: 400px;
-  overflow-y: scroll;
-}
-
-.search-result-item {
-  display: flex;
-  margin: 10px;
-  border-bottom: 1px solid white;
-  /* margin-bottom: 10px; */
-  padding-bottom: 15px;
-}
-
-.search-result-item-info {
-  flex-grow: 1;
-}
-
-.search-result-item-img {
-  border: 1px solid white;
-  margin-right: 10px;
-}
-
-.search-result-item-img img {
-  width: 120px;
-  transition: transform .2s ease-in-out;
-}
-
-.search-result-item-img img:hover {
-  transform: scale(1.035);
-}
-
 .section-title {
   font-weight: 600;
   font-size: 30px;

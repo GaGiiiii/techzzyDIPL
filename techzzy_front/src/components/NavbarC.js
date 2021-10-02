@@ -1,10 +1,10 @@
 import React from 'react'
-import Search from './Search';
+import Search from './Search/Search';
 import {
   Navbar, Container, Nav, NavDropdown
 } from "react-bootstrap";
 
-export default function NavbarC() {
+export default function NavbarC({products}) {
   let loggedIn = false;
 
   return (
@@ -17,7 +17,7 @@ export default function NavbarC() {
             <Nav.Link href="/" className="active">Home</Nav.Link>
             <Nav.Link href="/products">Products</Nav.Link>
           </Nav>
-          <Search />
+          <Search products={products} />
           <Nav className="ms-auto">
             {!loggedIn ?
               <>
