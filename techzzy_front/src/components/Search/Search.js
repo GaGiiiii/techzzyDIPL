@@ -18,7 +18,9 @@ export default function Search({ products }) {
 
   useEffect(() => {
     document.body.addEventListener('click', (e) => {
-      setFilteredProducts([]);
+      if (document.getElementById('search-input') != e.target) {
+        setFilteredProducts([]);
+      }
       console.log(e.target)
     });
   }, []);
@@ -43,7 +45,7 @@ export default function Search({ products }) {
   return (
     <div>
       <div id="search">
-        <input className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} onFocus={() => setFilteredProducts(filterProducts(products, input))} />
+        <input id="search-input" className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} onFocus={() => setFilteredProducts(filterProducts(products, input))} />
         <div id="search-results">
           {input.length > 0 && filteredProducts.map((product) => (
             <a href={`products/${product.id}`} key={product.id}>
