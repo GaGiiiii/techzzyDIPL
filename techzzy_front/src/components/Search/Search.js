@@ -9,7 +9,19 @@ export default function Search({ products }) {
   useEffect(() => {
     setFilteredProducts(filterProducts(products, input));
     console.log(input);
-  }, [input])
+  }, [input]);
+
+  useEffect(() => {
+    setFilteredProducts(filterProducts(products, input));
+    console.log(input);
+  }, [input]);
+
+  useEffect(() => {
+    document.body.addEventListener('click', (e) => {
+      setFilteredProducts([]);
+      console.log(e.target)
+    });
+  }, []);
 
   function filterProducts(products, input) {
     let filteredProducts = [...products];
@@ -31,7 +43,7 @@ export default function Search({ products }) {
   return (
     <div>
       <div id="search">
-        <input className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} />
+        <input className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} onFocus={() => setFilteredProducts(filterProducts(products, input))} />
         <div id="search-results">
           {input.length > 0 && filteredProducts.map((product) => (
             <a href={`products/${product.id}`} key={product.id}>
