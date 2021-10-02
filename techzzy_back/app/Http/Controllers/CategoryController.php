@@ -12,7 +12,7 @@ class CategoryController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
-    $categories = Category::all();
+    $categories = Category::with('products')->get();
 
     return response([
       "categories" => $categories,

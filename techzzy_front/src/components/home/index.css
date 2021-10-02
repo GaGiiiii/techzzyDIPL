@@ -13,7 +13,7 @@
   color: white;
 }
 
-.navbar-light .navbar-brand{
+.navbar-light .navbar-brand {
   font-size: 22px;
 }
 
@@ -68,4 +68,58 @@
 
 .search-result-item-img img:hover {
   transform: scale(1.035);
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 30px;
+  padding-right: 0;
+}
+
+.hr-title {
+  margin-top: 5px;
+}
+
+.tns-nav {
+  text-align: center;
+}
+
+.tns-nav button {
+  width: .7rem;
+  height: .7rem;
+  padding: 0;
+  border: none;
+  border-radius: 100%;
+  background-color: rgb(204, 204, 204);
+  text-indent: -9999px;
+  margin: 10px;
+  margin-top: 10px;
+}
+
+.tns-nav button:hover {
+  background-color: rgb(20, 20, 20);
+}
+
+.tns-nav button.tns-nav-active {
+  background-color: rgb(20, 20, 20);
+}
+
+.card-title {
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.card-link-outer {
+  color: black;
+  text-decoration: none;
+  transition: transform .3s ease;
+}
+
+.card-link-outer:hover {
+  color: #769e3c;
+  transform: scale(1.03);
+}
+
+.item {
+  height: 100%;
 }
