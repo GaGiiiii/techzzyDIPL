@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import "bootswatch/dist/sandstone/bootstrap.min.css";
-import Home from "./components/home/index.js";
+import Home from "./components/home/Index.js";
 import React from 'react';
 
 export const ApiContext = React.createContext('http://localhost:8000');
