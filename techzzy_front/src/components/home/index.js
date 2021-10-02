@@ -5,6 +5,7 @@ import {
 import './index.css';
 import Search from './Search';
 import SliderRow from './SliderRow';
+import Footer from '../Footer';
 
 export default function Index() {
   let loggedIn = false;
@@ -40,11 +41,13 @@ export default function Index() {
         </Container>
       </Navbar>
 
-      <Container className="mt-5">
+      <Container className="mt-5 mb-5">
         <SliderRow type={1} /> {/* Type 1 - Latest */}
         <SliderRow type={2} /> {/* Type 2 - MostLiked */}
         <SliderRow type={3} /> {/* Type 3 - MostCommented */}
       </Container>
+
+      <Footer />
     </div>
   )
 }

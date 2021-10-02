@@ -59,7 +59,15 @@ export default function SliderRow(props) {
       case 1: // Latest
         break;
       case 2: // Most Liked
-
+        for (let i = 0; i < productsP.length - 1; i++) {
+          for (let j = i + 1; j < productsP.length; j++) {
+            if (calculateProductRating(productsP[i]) < calculateProductRating(productsP[j])) {
+              let help = productsP[i];
+              productsP[i] = productsP[j];
+              productsP[j] = help;
+            }
+          }
+        }
         break;
       case 3: // Most Commented
         for (let i = 0; i < productsP.length - 1; i++) {

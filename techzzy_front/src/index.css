@@ -35,3 +35,12 @@ body {
 .active {
   color: white;
 }
+
+footer {
+  background-color: #3e3f3a;
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
