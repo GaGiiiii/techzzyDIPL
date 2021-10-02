@@ -86,7 +86,7 @@ export default function SliderRow(props) {
   }
 
   return (
-    <Row className="gx-0">
+    <Row className="gx-0 mt-5">
       <h1 className="section-title">{props.type == 1 ? 'Latest' : props.type == 2 ? 'Most Liked' : 'Most Commented'} Products<hr className="hr-title" /></h1>
       <TinySlider settings={tinySettings}>
         {products && products.map(product => (

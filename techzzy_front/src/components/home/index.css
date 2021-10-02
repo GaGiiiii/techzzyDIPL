@@ -112,14 +112,19 @@
 .card-link-outer {
   color: black;
   text-decoration: none;
-  transition: transform .3s ease;
+  transition: transform .3s ease, padding-top .3s ease;
 }
 
 .card-link-outer:hover {
   color: #769e3c;
   transform: scale(1.03);
+  padding-top: 7px;
 }
 
 .item {
   height: 100%;
+}
+
+.tns-item{
+  /* padding-top: 10px; */
 }
