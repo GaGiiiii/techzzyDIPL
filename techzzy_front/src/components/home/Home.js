@@ -2,27 +2,12 @@ import React from 'react'
 import {
   Container
 } from "react-bootstrap";
-import './index.css';
+import './home.css';
 import SliderRow from './SliderRow';
 import Footer from '../Footer';
 import NavbarC from '../NavbarC';
-import { useState, useEffect, useContext } from 'react';
-import { ApiContext } from '../../App';
-const axios = require('axios');
 
-export default function Index() {
-  const api = useContext(ApiContext);
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    axios({
-      method: 'GET',
-      url: `${api}/api/products`,
-    }).then(res => {
-      setProducts(res.data.products);
-    }).catch(err => console.log(err));
-  }, []);
-
+export default function Home({ products }) {
   return (
     <div>
       <NavbarC products={products} />

@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import { useEffect } from 'react';
-import {
-  Row, Card,
-} from "react-bootstrap";
+import { Row, Card } from "react-bootstrap";
 import TinySlider from "tiny-slider-react";
+import { Link } from "react-router-dom";
 
 export default function SliderRow({ products, type }) {
   const tinySettings = {
@@ -61,7 +59,7 @@ export default function SliderRow({ products, type }) {
       <h1 className="section-title">{type == 1 ? 'Latest' : type == 2 ? 'Most Liked' : 'Most Commented'} Products<hr className="hr-title" /></h1>
       <TinySlider settings={tinySettings}>
         {products && sortProducts(products).map(product => (
-          <a key={product.id} className="card-link-outer" href={`/products/${product.id}`} draggable={false}>
+          <Link to={`/products/${product.id}`} key={product.id} className="card-link-outer" draggable={false}>
             <div className="item">
               <Card className="p-0 shadow-sm">
                 <Card.Img variant="top" src={product.img} />
@@ -77,7 +75,7 @@ export default function SliderRow({ products, type }) {
                 </Card.Body>
               </Card>
             </div>
-          </a>
+          </Link>
         ))}
       </TinySlider>
     </Row>

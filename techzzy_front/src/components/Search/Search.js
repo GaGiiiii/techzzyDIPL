@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import './search.css';
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 
 export default function Search({ products }) {
   const [input, setInput] = useState("");
@@ -48,7 +49,7 @@ export default function Search({ products }) {
         <input id="search-input" className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} onFocus={() => setFilteredProducts(filterProducts(products, input))} />
         <div id="search-results">
           {input.length > 0 && filteredProducts.map((product) => (
-            <a href={`products/${product.id}`} key={product.id}>
+            <Link className="reactistrash" to={`products/${product.id}`} key={product.id}>
               <div className="search-result-item">
                 <div className="search-result-item-img">
                   <img src={product.img} alt="" />
@@ -59,7 +60,7 @@ export default function Search({ products }) {
                   <p className="m-0">{(Math.round(product.price * 100) / 100).toLocaleString()}</p>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

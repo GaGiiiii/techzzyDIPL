@@ -32,7 +32,7 @@ body {
   }
 }
 
-.active {
+.active, .active:hover {
   color: white;
 }
 
