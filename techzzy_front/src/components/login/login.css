@@ -1,0 +1,13 @@
+.errors {
+  color: #d9534f;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.errors p:first-of-type {
+  margin-top: -10px !important;
+}
+
+.errors p:last-of-type {
+  margin-bottom: 10px !important;
+}

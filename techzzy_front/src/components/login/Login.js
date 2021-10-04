@@ -3,17 +3,46 @@ import './login.css';
 import NavbarC from '../NavbarC';
 import Footer from '../Footer';
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { ApiContext } from '../../App';
+import { login, isLoggedIn } from '../../Helpers';
+import { CurrentUserContext } from '../../App';
 
 
 export default function Login({ products }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
+
+  const api = useContext(ApiContext)
+  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(email);
-    console.log(password);
+    axios.get(`${api}/sanctum/csrf-cookie`).then(response => {
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else {
+        axios.post(`${api}/login`, { email, password }, { withCredentials: true, }).then(response => {
+          login(response.data);
+          setCurrentUser(response.data.user);
+        }).catch((error) => {
+          let errorsG = [];
+          console.log(error);
+          switch (error.response.data.message) {
+            case "Validation failed.":
+              errorsG = [error.response.data.errors.email || "", error.response.data.errors.password || ""];
+              setErrors(errorsG);
+              break;
+            case "Login failed.":
+              errorsG = ["Wrong combination."];
+              setErrors(errorsG);
+              break;
+          }
+        });
+      }
+    });
   }
 
   return (
@@ -23,6 +52,11 @@ export default function Login({ products }) {
         <Row className="my-5">
           <Col md={{ span: 6, offset: 3 }}>
             <h1 className="fw-bold mb-4">Login</h1>
+            <div className="errors">
+              {errors && errors.map((error, index) => error && (
+                <p key={index} className="m-0">&bull; {error}</p>
+              ))}
+            </div>
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
@@ -36,9 +70,9 @@ export default function Login({ products }) {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Password" onChange={(event) => setPassword(event.target.value)} />
               </Form.Group>
-              {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                <Form.Check type="checkbox" label="Check me out" />
-              </Form.Group> */}
+              <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check type="checkbox" label="Remember me" />
+              </Form.Group>
               <Button variant="primary" type="submit" className="w-100">
                 Submit
               </Button>

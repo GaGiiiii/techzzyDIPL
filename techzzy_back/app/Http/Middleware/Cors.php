@@ -13,6 +13,9 @@ class Cors {
    * @param  \Closure  $next
    * @return mixed
    */
+
+// NE KORISTIMO OVO ZBOG AUTHA BUGA
+
   public function handle(Request $request, Closure $next) {
     return $next($request)
       ->header('Access-Control-Allow-Origin', '*')

@@ -18,13 +18,18 @@ export default function Search({ products }) {
   }, [input]);
 
   useEffect(() => {
-    document.body.addEventListener('click', (e) => {
-      if (document.getElementById('search-input') != e.target) {
-        setFilteredProducts([]);
-      }
-      console.log(e.target)
-    });
-  }, []);
+    document.body.addEventListener('click', closeSearch);
+    return () => {
+      document.body.removeEventListener('click', closeSearch);
+    }
+  }, [])
+
+  function closeSearch(e) {
+    if (document.getElementById('search-input') != e.target) {
+      setFilteredProducts([]);
+    }
+    console.log(e.target)
+  }
 
   function filterProducts(products, input) {
     let filteredProducts = [...products];

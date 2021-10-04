@@ -2,9 +2,17 @@ import React from 'react'
 import Search from './Search/Search';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { CurrentUserContext } from '../App';
+import { useContext } from 'react';
+import { logout } from '../Helpers';
 
 export default function NavbarC({ products, active }) {
-  let loggedIn = false;
+  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
+
+  function handleLogout(){
+    logout();
+    setCurrentUser(null);
+  }
 
   return (
     <Navbar className="navbar text-white" bg="primary" expand="lg">
@@ -18,17 +26,17 @@ export default function NavbarC({ products, active }) {
           </Nav>
           <Search products={products} />
           <Nav className="ms-auto">
-            {!loggedIn ?
+            {currentUser == null ?
               <>
                 <Nav.Link as={Link} to="/login" className={active == "login" ? 'active' : ''}>Login</Nav.Link>
                 <Nav.Link as={Link} to="/register" className={active == "register" ? 'active' : ''}>Register</Nav.Link>
               </>
-              : <NavDropdown title="GaGiiiii" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Dashboard</NavDropdown.Item>
+              : <NavDropdown title={currentUser.username} id="basic-nav-dropdown">
+                <NavDropdown.Item>Dashboard</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.2">Admin</NavDropdown.Item>
+                <NavDropdown.Item>Admin</NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.3">Logout</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => handleLogout()}>Logout</NavDropdown.Item>
               </NavDropdown>
             }
           </Nav>
