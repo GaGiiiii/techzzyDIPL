@@ -25,7 +25,7 @@ export default function Product({ products }) {
 
   return (
     <>
-      <NavbarC products={products} />
+      <NavbarC products={products} active="products" />
       {product && product.name}
       <Footer />
     </>

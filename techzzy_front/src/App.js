@@ -1,13 +1,9 @@
 import './App.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "bootswatch/dist/sandstone/bootstrap.min.css";
 import Home from "./components/home/Home";
 import Product from './components/product/Product';
+import Login from './components/login/Login';
 import React from 'react';
 import { useState, useEffect } from 'react';
 
@@ -33,6 +29,9 @@ function App() {
         <Switch>
           <Route path="/products/:productID">
             <Product products={products} />
+          </Route>
+          <Route path="/login">
+            <Login products={products} />
           </Route>
           <Route path="/">
             <Home products={products} />

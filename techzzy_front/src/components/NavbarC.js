@@ -3,7 +3,7 @@ import Search from './Search/Search';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-export default function NavbarC({ products }) {
+export default function NavbarC({ products, active }) {
   let loggedIn = false;
 
   return (
@@ -13,15 +13,15 @@ export default function NavbarC({ products }) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/" className="active">Home</Nav.Link>
-            <Nav.Link as={Link} to="/products">Products</Nav.Link>
+            <Nav.Link as={Link} to="/" className={active == "home" ? 'active' : ''}>Home</Nav.Link>
+            <Nav.Link as={Link} to="/products" className={active == "products" ? 'active' : ''}>Products</Nav.Link>
           </Nav>
           <Search products={products} />
           <Nav className="ms-auto">
             {!loggedIn ?
               <>
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
-                <Nav.Link as={Link} to="/register">Register</Nav.Link>
+                <Nav.Link as={Link} to="/login" className={active == "login" ? 'active' : ''}>Login</Nav.Link>
+                <Nav.Link as={Link} to="/register" className={active == "register" ? 'active' : ''}>Register</Nav.Link>
               </>
               : <NavDropdown title="GaGiiiii" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Dashboard</NavDropdown.Item>
