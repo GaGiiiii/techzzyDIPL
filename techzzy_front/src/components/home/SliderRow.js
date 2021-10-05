@@ -1,30 +1,46 @@
-import React, { useState } from 'react'
 import { Row, Card } from "react-bootstrap";
 import TinySlider from "tiny-slider-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { tns } from "../../../node_modules/tiny-slider/src/tiny-slider";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from 'react-slick';
 
 export default function SliderRow({ products, type }) {
   const tinySettings = {
-    controls: false,
-    mouseDrag: true,
-    loop: true,
-    navPosition: "bottom",
-    gutter: 50,
+    dots: true,
+    infinite: true,
     speed: 1200,
-    responsive: {
-      0: {
-        items: 1,
+    slidesToShow: 5,
+    slidesToScroll: 5,
+    swipeToSlide: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
       },
-      565: {
-        items: 2,
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
       },
-      991: {
-        items: 4,
-      },
-      1367: {
-        items: 5,
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
       }
-    }
+    ]
   };
 
   function calculateProductRating(product) {
@@ -37,7 +53,7 @@ export default function SliderRow({ products, type }) {
     return (Math.round(rating / product.ratings.length * 100) / 100) || 0;
   }
 
-  function sortProducts(products) {
+  function sortProducts() {
     let productsP = [...products];
 
     switch (type) {
@@ -49,16 +65,18 @@ export default function SliderRow({ products, type }) {
       case 3: // Most Commented
         productsP.sort((a, b) => b.comments.length - a.comments.length);
         break;
+      default:
+        break;
     }
 
-    return productsP.splice(0, 20);
+    return productsP.splice(0, 20);;
   }
 
   return (
     <Row className="gx-0 mt-5">
-      <h1 className="section-title">{type == 1 ? 'Latest' : type == 2 ? 'Most Liked' : 'Most Commented'} Products<hr className="hr-title" /></h1>
-      <TinySlider settings={tinySettings}>
-        {products && sortProducts(products).map(product => (
+      <h1 className="section-title">{type === 1 ? 'Latest' : type === 2 ? 'Most Liked' : 'Most Commented'} Products<hr className="hr-title" /></h1>
+      <Slider {...tinySettings}>
+        {products && sortProducts().map(product => (
           <Link to={`/products/${product.id}`} key={product.id} className="card-link-outer" draggable={false}>
             <div className="item">
               <Card className="p-0 shadow-sm">
@@ -77,7 +95,7 @@ export default function SliderRow({ products, type }) {
             </div>
           </Link>
         ))}
-      </TinySlider>
+      </Slider>
     </Row>
   )
 }

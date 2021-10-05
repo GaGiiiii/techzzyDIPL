@@ -6,7 +6,6 @@ export function login(data) {
 
 export function logout() {
   axios.post(`http://localhost:8000/logout`, {}, { withCredentials: true }).then(res => {
-    console.log(res.data);
     localStorage.removeItem("user");
   }).catch(error => {
     console.log(error.response.data);
@@ -16,5 +15,17 @@ export function logout() {
 }
 
 export function isLoggedIn() {
-  localStorage.getItem("user");
+  let user = localStorage.getItem('user');
+  if (user === null) {
+    axios.get(`http://localhost:8000/loggedIn`, { withCredentials: true }).then(res => {
+      user = res.data.user;
+      localStorage.setItem("user", JSON.stringify(user));
+    }).catch(error => {
+      user = null;
+    });
+
+    return user;
+  }
+
+  return JSON.parse(user);
 }

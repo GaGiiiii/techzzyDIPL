@@ -9,13 +9,11 @@ export default function Search({ products }) {
 
   useEffect(() => {
     setFilteredProducts(filterProducts(products, input));
-    console.log(input);
-  }, [input]);
+  }, [input, products]);
 
   useEffect(() => {
     setFilteredProducts(filterProducts(products, input));
-    console.log(input);
-  }, [input]);
+  }, [input, products]);
 
   useEffect(() => {
     document.body.addEventListener('click', closeSearch);
@@ -25,7 +23,7 @@ export default function Search({ products }) {
   }, [])
 
   function closeSearch(e) {
-    if (document.getElementById('search-input') != e.target) {
+    if (document.getElementById('search-input') !== e.target) {
       setFilteredProducts([]);
     }
     console.log(e.target)

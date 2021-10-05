@@ -106,6 +106,7 @@ class UserController extends Controller {
   }
 
   public function register(Request $request) {
+    return 22;
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
       'first_name' => 'required|string|min:2',
@@ -135,5 +136,19 @@ class UserController extends Controller {
       "user" => $user,
       "message" => "User created.",
     ], 201);
+  }
+
+  public function loggedIn() {
+    if (auth()->user()) {
+      return response([
+        "user" => auth()->user(),
+        "message" => "User logged in.",
+      ], 200);
+    }
+
+    return response([
+      "user" => null,
+      "message" => "Not logged in.",
+    ], 401);
   }
 }

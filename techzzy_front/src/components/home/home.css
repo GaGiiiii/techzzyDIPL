@@ -72,6 +72,11 @@
   height: 100%;
 }
 
-.tns-item{
+.tns-item {
   /* padding-top: 10px; */
 }
+
+.slick-slide {
+	padding: 0 8px;
+	box-sizing: border-box;
+ }

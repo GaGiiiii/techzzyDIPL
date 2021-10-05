@@ -4,8 +4,6 @@ import './home.css';
 import SliderRow from './SliderRow';
 import Footer from '../Footer';
 import NavbarC from '../NavbarC';
-import { useContext } from 'react';
-import { CurrentUserContext } from '../../App';
 
 export default function Home({ products }) {
 

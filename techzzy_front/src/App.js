@@ -7,6 +7,7 @@ import Login from './components/login/Login';
 import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { isLoggedIn } from './Helpers';
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -17,17 +18,15 @@ function App() {
   const api = "http://localhost:8000";
 
   useEffect(() => {
-    axios({
-      method: 'GET',
-      url: `${api}/api/products`,
-    }).then(res => {
+    setCurrentUser(isLoggedIn());
+    axios.get(`${api}/api/products`, { withCredentials: true }).then(res => {
       setProducts(res.data.products);
     }).catch(err => console.log(err));
   }, []);
 
   return (
     <ApiContext.Provider value="http://localhost:8000">
-      <CurrentUserContext.Provider value={{currentUser, setCurrentUser}}>
+      <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
         <Router>
           <Switch>
             <Route path="/products/:productID">

@@ -3,10 +3,10 @@ import './login.css';
 import NavbarC from '../NavbarC';
 import Footer from '../Footer';
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import { ApiContext } from '../../App';
-import { login, isLoggedIn } from '../../Helpers';
+import { login } from '../../Helpers';
 import { CurrentUserContext } from '../../App';
 
 
@@ -16,7 +16,7 @@ export default function Login({ products }) {
   const [errors, setErrors] = useState([]);
 
   const api = useContext(ApiContext)
-  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
+  const { setCurrentUser } = useContext(CurrentUserContext);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -38,6 +38,8 @@ export default function Login({ products }) {
             case "Login failed.":
               errorsG = ["Wrong combination."];
               setErrors(errorsG);
+              break;
+            default:
               break;
           }
         });
