@@ -8,6 +8,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { isLoggedIn } from './Helpers';
+import Dashboard from './components/dashboard/Dashboard';
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -31,6 +32,9 @@ function App() {
           <Switch>
             <Route path="/products/:productID">
               <Product products={products} />
+            </Route>
+            <Route path="/dashboard">
+              <Dashboard products={products} />
             </Route>
             <Route path="/login">
               <Login products={products} />

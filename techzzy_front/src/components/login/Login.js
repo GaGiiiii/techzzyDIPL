@@ -8,9 +8,12 @@ import axios from 'axios';
 import { ApiContext } from '../../App';
 import { login } from '../../Helpers';
 import { CurrentUserContext } from '../../App';
+import { useHistory } from 'react-router';
+
 
 
 export default function Login({ products }) {
+  let history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
@@ -27,6 +30,7 @@ export default function Login({ products }) {
         axios.post(`${api}/login`, { email, password }, { withCredentials: true, }).then(response => {
           login(response.data);
           setCurrentUser(response.data.user);
+          history.push('/dashboard');
         }).catch((error) => {
           let errorsG = [];
           console.log(error);

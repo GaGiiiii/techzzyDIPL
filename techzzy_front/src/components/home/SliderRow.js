@@ -1,8 +1,5 @@
 import { Row, Card } from "react-bootstrap";
-import TinySlider from "tiny-slider-react";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { tns } from "../../../node_modules/tiny-slider/src/tiny-slider";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';

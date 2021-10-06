@@ -6,13 +6,16 @@ import { CurrentUserContext } from '../App';
 import { useContext } from 'react';
 import { logout } from '../Helpers';
 import axios from 'axios';
+import { useHistory } from 'react-router';
 
 export default function NavbarC({ products, active }) {
+  let history = useHistory();
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
   function handleLogout() {
     logout();
     setCurrentUser(null);
+    history.push('/');
   }
 
   function handleRegister() {
@@ -40,8 +43,8 @@ export default function NavbarC({ products, active }) {
                 <Nav.Link as={Link} to="/login" className={active === "login" ? 'active' : ''}>Login</Nav.Link>
                 <Nav.Link as={Link} to="/register" className={active === "register" ? 'active' : ''} onClick={() => handleRegister()}>Register</Nav.Link>
               </>
-              : <NavDropdown title={currentUser.username} id="basic-nav-dropdown">
-                <NavDropdown.Item>Dashboard</NavDropdown.Item>
+              : <NavDropdown className={active === "dashboard" ? 'active' : ''} title={currentUser.username} id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to="/dashboard">Dashboard</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={(e) => handleRegister()}>Admin</NavDropdown.Item>
                 <NavDropdown.Divider />

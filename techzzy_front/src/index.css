@@ -32,8 +32,8 @@ body {
   }
 }
 
-.active, .active:hover {
-  color: white;
+.active, .active:hover, .active .dropdown-toggle {
+  color: white !important;
 }
 
 footer {

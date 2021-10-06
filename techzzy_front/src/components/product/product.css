@@ -2,7 +2,7 @@
   border-bottom: 4px solid black;
   display: inline-block;
   padding-bottom: 5px;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .card-img-top {
@@ -32,7 +32,7 @@
 .comments .comment {
   margin-bottom: 20px;
   border-bottom: 1px solid black;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .comments img {
@@ -66,4 +66,13 @@
 .comment-body p {
   word-break: break-word;
   text-align: justify;
+  font-size: 14px;
+}
+
+.form-floating>textarea.form-control {
+  height: 100px;
+}
+
+.name-rating{
+  font-size: 18px;
 }

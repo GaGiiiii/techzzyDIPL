@@ -83,7 +83,7 @@ class ProductController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function show($id) {
-    $product = Product::find($id);
+    $product = Product::with('comments', 'comments.user')->find($id);
 
     if (!$product) {
       return response([
