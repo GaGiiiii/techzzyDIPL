@@ -22,12 +22,16 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::apiResource('users', UserController::class);
-Route::apiResource('comments', CommentController::class);
 Route::apiResource('ratings', RatingController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('carts', CartController::class);
 
+// Comments
+Route::get('/comments', [CommentController::class, 'index']);
+Route::get('/comments/{comment}', [CommentController::class, 'show']);
+
+// Auth
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/register', [UserController::class, 'register']);
 Route::get('/loggedIn', [UserController::class, 'loggedIn']);
@@ -35,6 +39,11 @@ Route::get('/loggedIn', [UserController::class, 'loggedIn']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
   // Route::get('/products', [ProductController::class, 'index']);
   Route::post('/logout', [UserController::class, 'logout']);
+
+  // Comments
+  Route::post('/comments', [CommentController::class, 'store']);
+  Route::put('/comments/{comment}', [CommentController::class, 'update']);
+  Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
 
 
