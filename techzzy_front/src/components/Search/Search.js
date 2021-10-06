@@ -1,15 +1,10 @@
-import React, { useEffect } from 'react'
 import './search.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
 export default function Search({ products }) {
   const [input, setInput] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
-
-  useEffect(() => {
-    setFilteredProducts(filterProducts(products, input));
-  }, [input, products]);
 
   useEffect(() => {
     setFilteredProducts(filterProducts(products, input));

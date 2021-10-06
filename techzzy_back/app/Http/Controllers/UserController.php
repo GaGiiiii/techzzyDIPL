@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -78,26 +79,27 @@ class UserController extends Controller {
       ], 400);
     }
 
-    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-      $request->session()->regenerate();
+    $user = User::where('email', $request->email)->first();
 
-      return response([
-        "user" => auth()->user(),
-        "message" => "Login successful",
-      ], 200);
-    } else {
+    if (!$user || !Hash::check($request->password, $user->password)) {
       return response([
         "user" => null,
         "message" => "Login failed.",
       ], 401);
     }
+
+    $token = $user->createToken('usertoken');
+
+    return response([
+      "user" => $user,
+      "message" => "Login successful",
+      'token' => $token->plainTextToken,
+    ], 200);
   }
 
   public function logout(Request $request) {
     $user = auth()->user();
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+    $user->tokens()->delete();
 
     return response([
       "user" => $user,

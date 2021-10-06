@@ -27,30 +27,6 @@
   margin-top: 5px;
 }
 
-.tns-nav {
-  text-align: center;
-}
-
-.tns-nav button {
-  width: .7rem;
-  height: .7rem;
-  padding: 0;
-  border: none;
-  border-radius: 100%;
-  background-color: rgb(204, 204, 204);
-  text-indent: -9999px;
-  margin: 10px;
-  margin-top: 10px;
-}
-
-.tns-nav button:hover {
-  background-color: rgb(20, 20, 20);
-}
-
-.tns-nav button.tns-nav-active {
-  background-color: rgb(20, 20, 20);
-}
-
 .card-title {
   text-transform: uppercase;
   font-weight: 500;
@@ -72,11 +48,7 @@
   height: 100%;
 }
 
-.tns-item {
-  /* padding-top: 10px; */
-}
-
 .slick-slide {
-	padding: 0 8px;
-	box-sizing: border-box;
- }
+  padding: 0 8px;
+  box-sizing: border-box;
+}

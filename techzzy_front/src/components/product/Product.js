@@ -13,7 +13,7 @@ export default function Product({ products }) {
   const api = useContext(ApiContext);
   const [product, setProduct] = useState(undefined);
   const [ratings, setRatings] = useState([]);
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
 
   // MODAL
   const [show, setShow] = useState(false);
@@ -60,7 +60,7 @@ export default function Product({ products }) {
           <Row className="mt-5 mb-5">
             <Col sm={6}>
               <Card>
-                <img src={product.img} className="card-img-top thumbnail" />
+                <img src={product.img} className="card-img-top thumbnail" alt="Couldn't load." />
               </Card>
             </Col>
             <Col sm={6} className="mt-5 mt-sm-0">
@@ -109,7 +109,7 @@ export default function Product({ products }) {
                     {product.comments.length === 0 ? <h5 className="mb-4">No comments.</h5> : ""}
                     {currentUser && <div className="new-comment d-flex">
                       <div className="comment-img">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Image Error" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Couldn't load" />
                       </div>
                       <div className="comment-textarea flex-fill">
                         <form action="{{ url('/comments') }}" method="POST">
@@ -133,7 +133,7 @@ export default function Product({ products }) {
                     {product && product.comments && product.comments.map((comment, index) => (
                       <div key={comment.id} className="comment d-flex">
                         <div className="comment-img">
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Image Error" />
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Couldn't load" />
                         </div>
                         <div data-comment-id="{{ $comment->id }}" className="comment-body flex-fill">
                           <h5 className="name-rating">
@@ -143,7 +143,7 @@ export default function Product({ products }) {
                             {currentUser && currentUser.id === comment.user.id &&
                               <>
                                 <Button variant="warning" size="sm" className="edit-comment-btn mx-1">Edit</Button>
-                                <Button variant="danger" size="sm" onClick={(e) => {setModalIndex(index); handleShow();}}>
+                                <Button variant="danger" size="sm" onClick={(e) => { setModalIndex(index); handleShow(); }}>
                                   Delete
                                 </Button>
                               </>

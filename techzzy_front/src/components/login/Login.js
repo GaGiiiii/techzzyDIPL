@@ -1,13 +1,11 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import './login.css';
 import NavbarC from '../NavbarC';
 import Footer from '../Footer';
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useState, useContext } from 'react';
 import axios from 'axios';
-import { ApiContext } from '../../App';
 import { login } from '../../Helpers';
-import { CurrentUserContext } from '../../App';
+import { CurrentUserContext, FlashMessageContext, ApiContext } from '../../App';
 import { Redirect, useHistory } from 'react-router';
 
 export default function Login({ products }) {
@@ -15,6 +13,7 @@ export default function Login({ products }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const { setFlashMessage } = useContext(FlashMessageContext);
 
   const api = useContext(ApiContext)
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
@@ -25,36 +24,27 @@ export default function Login({ products }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    axios.get(`${api}/sanctum/csrf-cookie`).then(response => {
-      if (response.data.error) {
-        console.log(response.data.error);
-      } else {
-        axios.post(`${api}/login`, { email, password }, { withCredentials: true, }).then(response => {
-          login(response.data);
-          setCurrentUser(response.data.user);
-          sessionStorage.setItem('loginS', 'Like');
-          history.push({
-            pathname: '/dashboard',
-            state: {
-              mes: "mes"
-            }
-          });
-        }).catch((error) => {
-          let errorsG = [];
-          console.log(error);
-          switch (error.response.data.message) {
-            case "Validation failed.":
-              errorsG = [error.response.data.errors.email || "", error.response.data.errors.password || ""];
-              setErrors(errorsG);
-              break;
-            case "Login failed.":
-              errorsG = ["Wrong combination."];
-              setErrors(errorsG);
-              break;
-            default:
-              break;
-          }
-        });
+    axios.post(`${api}/api/login`, { email, password }).then(response => {
+      let user = response.data.user; // Get user
+      user.token = response.data.token; // Get token and set it to user
+      login(response.data); // Add User to Local Storage
+      setCurrentUser(response.data.user); // Set Global State
+      history.push('/dashboard'); // Redirect
+      setFlashMessage({ type: 'success', message: `Login successful. Welcome back ${user.username}!` }) // Add Flash Message
+    }).catch((error) => {
+      let errorsG = [];
+      console.log(error);
+      switch (error.response.data.message) {
+        case "Validation failed.":
+          errorsG = [error.response.data.errors.email || "", error.response.data.errors.password || ""];
+          setErrors(errorsG);
+          break;
+        case "Login failed.":
+          errorsG = ["Wrong combination."];
+          setErrors(errorsG);
+          break;
+        default:
+          break;
       }
     });
   }

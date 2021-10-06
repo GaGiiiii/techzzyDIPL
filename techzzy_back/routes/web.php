@@ -14,16 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/logout', [UserController::class, 'logout']);
-Route::get('/register', [UserController::class, 'register']);
-Route::get('/loggedIn', [UserController::class, 'loggedIn']);
-
-Route::group(['middleware' => 'auth:sanctum'], function () {
-  Route::get('/register', [UserController::class, 'register']);
-});
-
-
 Route::get('/', function () {
   return view('welcome');
 });
