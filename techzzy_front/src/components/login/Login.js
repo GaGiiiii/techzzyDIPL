@@ -27,7 +27,7 @@ export default function Login({ products }) {
     axios.post(`${api}/api/login`, { email, password }).then(response => {
       let user = response.data.user; // Get user
       user.token = response.data.token; // Get token and set it to user
-      login(response.data); // Add User to Local Storage
+      login(user); // Add User to Local Storage
       setCurrentUser(response.data.user); // Set Global State
       history.push('/dashboard'); // Redirect
       setFlashMessage({ type: 'success', message: `Login successful. Welcome back ${user.username}!` }) // Add Flash Message

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export function login(user) {
+  console.log(user);
   localStorage.setItem("user", JSON.stringify(user));
 }
 
