@@ -26,7 +26,7 @@ export default function Search({ products }) {
     if (document.getElementById('search-input') !== e.target) {
       setFilteredProducts([]);
     }
-    console.log(e.target)
+    // console.log(e.target)
   }
 
   function filterProducts(products, input) {

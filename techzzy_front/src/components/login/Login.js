@@ -8,9 +8,7 @@ import axios from 'axios';
 import { ApiContext } from '../../App';
 import { login } from '../../Helpers';
 import { CurrentUserContext } from '../../App';
-import { useHistory } from 'react-router';
-
-
+import { Redirect, useHistory } from 'react-router';
 
 export default function Login({ products }) {
   let history = useHistory();
@@ -19,7 +17,11 @@ export default function Login({ products }) {
   const [errors, setErrors] = useState([]);
 
   const api = useContext(ApiContext)
-  const { setCurrentUser } = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+
+  if (currentUser) {
+    return <Redirect to="/" />
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -30,7 +32,13 @@ export default function Login({ products }) {
         axios.post(`${api}/login`, { email, password }, { withCredentials: true, }).then(response => {
           login(response.data);
           setCurrentUser(response.data.user);
-          history.push('/dashboard');
+          sessionStorage.setItem('loginS', 'Like');
+          history.push({
+            pathname: '/dashboard',
+            state: {
+              mes: "mes"
+            }
+          });
         }).catch((error) => {
           let errorsG = [];
           console.log(error);

@@ -45,7 +45,7 @@ function App() {
           </Switch>
         </Router>
       </CurrentUserContext.Provider>
-    </ApiContext.Provider>
+    </ApiContext.Provider >
   );
 }
 

@@ -13,10 +13,23 @@ export default function Dashboard({ products }) {
     return <Redirect to="/login" />
   }
 
+  function checkForFlash() {
+    if (sessionStorage.getItem('loginS')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function removeFlash() {
+    sessionStorage.removeItem('loginS');
+  }
+
   return (
     <>
-      <NavbarC products={products} active="dashboard" />
-      Dash
+      <NavbarC products={products} />
+      {checkForFlash() && sessionStorage.getItem('loginS')}
+      {removeFlash()}
       <Footer />
     </>
   )
