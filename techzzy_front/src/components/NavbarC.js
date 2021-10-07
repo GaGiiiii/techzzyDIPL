@@ -62,7 +62,7 @@ export default function NavbarC({ products, active }) {
 
       {flashMessage &&
         <Container className="mt-5">
-          <AlertC />
+          <AlertC flashMessage={flashMessage} setFlashMessage={setFlashMessage} />
         </Container>
       }
     </>

@@ -1,16 +1,17 @@
 import { Button, Form, Modal } from 'react-bootstrap';
 import React, { useContext, useEffect, useState } from 'react'
-import { CurrentUserContext, ApiContext, FlashMessageContext } from '../../App';
+import { CurrentUserContext, ApiContext } from '../../App';
 import axios from 'axios';
+import AlertC from '../AlertC';
 
 
-export default function Comment({ comment, index, product }) {
+export default function Comment({ comment, index, product, commentsFlashMessage, setCommentsFlashMessage }) {
   const { currentUser } = useContext(CurrentUserContext);
-  const { setFlashMessage } = useContext(FlashMessageContext);
   const [ratings, setRatings] = useState([]);
   const [editFormVisibility, setEditFormVisibility] = useState("hidden");
   const [editCommentValue, setEditCommentValue] = useState(comment.body);
   const [errors, setErrors] = useState("");
+  const [commentFlashMessage, setCommentFlashMessage] = useState(null)
   const api = useContext(ApiContext);
 
   // MODAL
@@ -64,9 +65,10 @@ export default function Comment({ comment, index, product }) {
     }).then(response => {
       let index = product.comments.findIndex((comment) => comment.id === commentID);
       product.comments.splice(index, 1);
-      setFlashMessage({ type: 'success', message: `Comment deleted.` }) // Add Flash Message
+      setCommentsFlashMessage({ type: 'success', message: `Comment deleted.` }) // Add Flash Message
     }).catch((error) => {
       console.log("Add Comment Error");
+      console.log(error);
     });
   }
 
@@ -91,7 +93,7 @@ export default function Comment({ comment, index, product }) {
           }
         }).then(response => {
           comment.body = editCommentValue;
-          setFlashMessage({ type: 'success', message: `Comment edited.` }) // Add Flash Message
+          setCommentFlashMessage({ type: 'success', message: `Comment edited.` }) // Add Flash Message
           setEditFormVisibility('hidden');
         }).catch((error) => {
           console.log("Add Comment Error");
@@ -103,6 +105,7 @@ export default function Comment({ comment, index, product }) {
 
   return (
     <>
+      {commentFlashMessage && <AlertC flashMessage={commentFlashMessage} setFlashMessage={setCommentFlashMessage} />}
       <div className="comment d-flex">
         <div className="comment-img">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Couldn't load" />
@@ -132,7 +135,7 @@ export default function Comment({ comment, index, product }) {
             <div className="form-floating">
               <textarea className="form-control textareaE" placeholder="Leave a comment here" value={editCommentValue} onChange={(e) => setEditCommentValue(e.target.value)}></textarea>
             </div>
-            <Button type="submit" variant="warning" className="mt-3 d-block ms-auto">Edit</Button>
+            <Button type="submit" variant="warning" className="mt-3 d-block ms-auto">Save</Button>
           </Form>
         </div>
       </div>

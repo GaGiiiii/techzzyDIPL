@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, Button } from 'react-bootstrap'
 
 export default function ProductInfo({ product }) {
+  const [quantity, setQuantity] = useState(1);
+
+  function qtyUp() {
+    if ((quantity + 1) <= product.stock) {
+      setQuantity(quantity + 1);
+    }
+  }
+
+  function qtyDown() {
+    if ((quantity - 1) > 0) {
+      setQuantity(quantity - 1);
+    }
+  }
+
   return (
     <Card className="product-card">
       <Card.Body>
@@ -24,9 +38,9 @@ export default function ProductInfo({ product }) {
           <div className="fw-bold mt-4 mb-1 d-flex justify-content-between">
             <p className="mt-2">Quantity</p>
             <ul className="quantity-ul">
-              <li className="btn btn-outline-primary fw-bold li-minus"><i className="fas fa-minus"></i></li>
-              <li className="btn btn-outline-primary fw-bold li-current">1</li>
-              <li className="btn btn-outline-primary fw-bold li-plus"><i className="fas fa-plus"></i></li>
+              <li className="btn btn-outline-primary fw-bold li-minus" onClick={() => qtyDown()}><i className="fas fa-minus"></i></li>
+              <li className="btn btn-outline-primary fw-bold li-current">{quantity}</li>
+              <li className="btn btn-outline-primary fw-bold li-plus" onClick={() => qtyUp()}><i className="fas fa-plus"></i></li>
             </ul>
           </div>
         </div>

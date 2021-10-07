@@ -1,12 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Alert } from 'react-bootstrap';
-import { FlashMessageContext } from '../App';
 
-export default function AlertC() {
+export default function AlertC({ flashMessage, setFlashMessage }) {
   const [show, setShow] = useState(true);
-  const { flashMessage, setFlashMessage } = useContext(FlashMessageContext);
 
-  if (show) {
+  if (show && flashMessage) {
     return (
       <Alert className="fw-bold text-uppercase" variant={flashMessage.type} onClose={() => { setShow(false); setFlashMessage(null); }} dismissible>
         {flashMessage.message}

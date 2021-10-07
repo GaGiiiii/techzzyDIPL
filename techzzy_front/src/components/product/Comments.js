@@ -1,14 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Row, Card, Col } from 'react-bootstrap';
-import { CurrentUserContext, ApiContext, FlashMessageContext } from '../../App';
+import { CurrentUserContext, ApiContext } from '../../App';
 import Comment from './Comment';
 import axios from 'axios';
+import AlertC from '../AlertC';
 
 export default function Comments({ product, setProduct }) {
   const { currentUser } = useContext(CurrentUserContext);
   const [body, setBody] = useState("");
   const [errors, setErrors] = useState("");
-  const { setFlashMessage } = useContext(FlashMessageContext);
+  const [commentsFlashMessage, setCommentsFlashMessage] = useState(null);
   const api = useContext(ApiContext);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function Comments({ product, setProduct }) {
         }).then(response => {
           product.comments.unshift(response.data.comment);
           setBody("");
-          setFlashMessage({ type: 'success', message: `Comment added.` }) // Add Flash Message
+          setCommentsFlashMessage({ type: 'success', message: `Comment added.` }) // Add Flash Message
         }).catch((error) => {
           console.log("Add Comment Error");
         });
@@ -52,6 +53,7 @@ export default function Comments({ product, setProduct }) {
         <Card>
           <Card.Body>
             <Card.Title className="fw-bold product-title">Comments and Ratings</Card.Title>
+            {commentsFlashMessage && <AlertC flashMessage={commentsFlashMessage} setFlashMessage={setCommentsFlashMessage} />}
             <div className="comments mt-4">
               {product.comments.length === 0 ? <h5 className="mb-4">No comments.</h5> : ""}
               {currentUser && <div className="new-comment d-flex">
@@ -71,7 +73,7 @@ export default function Comments({ product, setProduct }) {
                 </div>
               </div>}
               {product && product.comments && product.comments.map((comment, index) => (
-                <Comment key={comment.id} comment={comment} index={index} product={product} />              
+                <Comment key={comment.id} comment={comment} index={index} product={product} commentsFlashMessage={commentsFlashMessage} setCommentsFlashMessage={setCommentsFlashMessage} />
               ))}
 
             </div>
