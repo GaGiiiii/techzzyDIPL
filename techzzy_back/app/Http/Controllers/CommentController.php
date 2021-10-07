@@ -62,6 +62,7 @@ class CommentController extends Controller {
     $comment->product_id = $request->product_id;
 
     $comment->save();
+    $comment = $comment->fresh('user');
 
     return response([
       "comment" => $comment,

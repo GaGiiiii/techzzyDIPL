@@ -1,10 +1,50 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Row, Card, Col } from 'react-bootstrap';
-import { CurrentUserContext } from '../../App';
+import { CurrentUserContext, ApiContext, FlashMessageContext } from '../../App';
 import Comment from './Comment';
+import axios from 'axios';
 
-export default function Comments({ product }) {
+export default function Comments({ product, setProduct }) {
   const { currentUser } = useContext(CurrentUserContext);
+  const [body, setBody] = useState("");
+  const [errors, setErrors] = useState("");
+  const { setFlashMessage } = useContext(FlashMessageContext);
+  const api = useContext(ApiContext);
+
+  useEffect(() => {
+    if (body.length < 20 && body.length !== 0) {
+      setErrors("Comment must be at least 20 characters.");
+    } else {
+      setErrors("");
+    }
+  }, [body])
+
+  useEffect(() => {
+    setErrors("");
+  }, [])
+
+  function addComment(e) {
+    e.preventDefault();
+    if (body.length < 20 && body.length !== 0) {
+      setErrors("Comment must be at least 20 characters.");
+    } else {
+      setErrors("");
+      if (body.length !== 0) {
+        axios.post(`${api}/api/comments`, { product_id: product.id, user_id: currentUser.id, body }, {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`
+          }
+        }).then(response => {
+          product.comments.unshift(response.data.comment);
+          setBody("");
+          setFlashMessage({ type: 'success', message: `Comment added.` }) // Add Flash Message
+        }).catch((error) => {
+          console.log("Add Comment Error");
+        });
+      }
+    }
+
+  }
 
   return (
     <Row className="my-5">
@@ -19,24 +59,17 @@ export default function Comments({ product }) {
                   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Couldn't load" />
                 </div>
                 <div className="comment-textarea flex-fill">
-                  <form action="{{ url('/comments') }}" method="POST">
-                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}" />
-                    <input type="hidden" name="product_id" value="{{ $product->id }}" />
+                  {errors && <p className="error">{errors}</p>}
+                  <form onSubmit={addComment}>
                     <div className="form-floating">
-                      <textarea name="body" className="form-control textarea" placeholder="Leave a comment here"
-                        id="floatingTextarea2"></textarea>
+                      <textarea onChange={(e) => setBody(e.target.value)} className="form-control textarea" placeholder="Leave a comment here"
+                        id="floatingTextarea2" value={body}></textarea>
                       <label>Leave your comment</label>
                     </div>
                     <button type="submit" className="btn btn-primary mt-3 d-block ms-auto">Submit</button>
                   </form>
                 </div>
               </div>}
-              {/* <div className="alert alert-danger mb-4">
-                      <ul>
-                        <li>errors</li>
-                      </ul>
-                    </div> */}
-
               {product && product.comments && product.comments.map((comment, index) => (
                 <Comment key={comment.id} comment={comment} index={index} product={product} />
               ))}

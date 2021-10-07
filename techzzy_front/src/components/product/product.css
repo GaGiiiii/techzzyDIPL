@@ -76,3 +76,11 @@
 .name-rating{
   font-size: 18px;
 }
+
+.error{
+  margin-bottom: 10px;
+  margin-top: -20px;
+  color: red;
+  text-transform: uppercase;
+  font-weight: 600;
+}
