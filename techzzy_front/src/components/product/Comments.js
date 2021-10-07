@@ -17,11 +17,11 @@ export default function Comments({ product, setProduct }) {
     } else {
       setErrors("");
     }
-  }, [body])
+  }, [body]);
 
   useEffect(() => {
     setErrors("");
-  }, [])
+  }, []);
 
   function addComment(e) {
     e.preventDefault();
@@ -71,7 +71,7 @@ export default function Comments({ product, setProduct }) {
                 </div>
               </div>}
               {product && product.comments && product.comments.map((comment, index) => (
-                <Comment key={comment.id} comment={comment} index={index} product={product} />
+                <Comment key={comment.id} comment={comment} index={index} product={product} />              
               ))}
 
             </div>

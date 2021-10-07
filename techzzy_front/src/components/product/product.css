@@ -77,10 +77,27 @@
   font-size: 18px;
 }
 
-.error{
+.error, .errorE{
   margin-bottom: 10px;
   margin-top: -20px;
   color: red;
   text-transform: uppercase;
   font-weight: 600;
+}
+
+.errorE{
+  margin-top: -5px;
+  margin-left: 3px;
+}
+
+.hidden{
+  display: none;
+}
+
+.visible{
+  display: block;
+}
+
+.textareaE{
+  padding-top: 10px !important;
 }
