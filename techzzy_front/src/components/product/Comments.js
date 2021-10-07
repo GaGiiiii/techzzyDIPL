@@ -30,7 +30,7 @@ export default function Comments({ product, setProduct }) {
     } else {
       setErrors("");
       if (body.length !== 0) {
-        axios.post(`${api}/api/comments`, { product_id: product.id, user_id: currentUser.id, body }, {
+        axios.post(`${api}/comments`, { product_id: product.id, user_id: currentUser.id, body }, {
           headers: {
             Authorization: `Bearer ${currentUser.token}`
           }

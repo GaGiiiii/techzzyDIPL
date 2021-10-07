@@ -1,11 +1,12 @@
 import { Button, Modal } from 'react-bootstrap';
 import React, { useContext, useEffect, useState } from 'react'
-import { CurrentUserContext, ApiContext } from '../../App';
+import { CurrentUserContext, ApiContext, FlashMessageContext } from '../../App';
 import axios from 'axios';
 
 
 export default function Comment({ comment, index, product }) {
   const { currentUser } = useContext(CurrentUserContext);
+  const { setFlashMessage } = useContext(FlashMessageContext);
   const [ratings, setRatings] = useState([]);
   const api = useContext(ApiContext);
 
@@ -16,7 +17,7 @@ export default function Comment({ comment, index, product }) {
   const [modalIndex, setModalIndex] = useState(null);
 
   useEffect(() => {
-    axios.get(`${api}/api/ratings`)
+    axios.get(`${api}/ratings`)
       .then((response) => {
         setRatings(response.data.ratings);
       })
@@ -34,11 +35,24 @@ export default function Comment({ comment, index, product }) {
   }
 
   function formatDate(date) {
-    let formatedDate = new Date(date);
+    let formattedDate = new Date(date);
+    formattedDate = `${("0" + formattedDate.getDay()).slice(-2)}.${("0" + (formattedDate.getMonth() + 1)).slice(-2)}.${formattedDate.getFullYear()}. ${("0" + formattedDate.getHours()).slice(-2)}:${("0" + formattedDate.getMinutes()).slice(-2)}`;
 
-    formatedDate = `${("0" + formatedDate.getDay()).slice(-2)}.${("0" + (formatedDate.getMonth() + 1)).slice(-2)}.${formatedDate.getFullYear()}. ${("0" + formatedDate.getHours()).slice(-2)}:${("0" + formatedDate.getMinutes()).slice(-2)}`;
+    return formattedDate;
+  }
 
-    return formatedDate;
+  function deleteComment(commentID) {
+    axios.delete(`${api}/comments/${commentID}`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`
+      }
+    }).then(response => {
+      let index = product.comments.findIndex((comment) => comment.id === commentID);
+      product.comments.splice(index, 1);
+      setFlashMessage({ type: 'success', message: `Comment deleted.` }) // Add Flash Message
+    }).catch((error) => {
+      console.log("Add Comment Error");
+    });
   }
 
   return (
@@ -73,10 +87,10 @@ export default function Comment({ comment, index, product }) {
 
       {modalIndex != null && <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Are you sure that you want to delete this comment? {comment.id}</Modal.Title>
+          <Modal.Title>Are you sure that you want to delete this comment?</Modal.Title>
         </Modal.Header>
         <Modal.Footer>
-          <Button variant="danger" onClick={handleClose}>
+          <Button variant="danger" onClick={() => { handleClose(); deleteComment(comment.id) }}>
             Yes
           </Button>
           <Button variant="primary" onClick={handleClose}>

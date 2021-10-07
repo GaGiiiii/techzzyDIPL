@@ -16,7 +16,7 @@ export default function Product({ products }) {
   const [product, setProduct] = useState(undefined);
 
   useEffect(() => {
-    axios.get(`${api}/api/products/${productID}`)
+    axios.get(`${api}/products/${productID}`)
       .then((res) => {
         setProduct(res.data.product);
       })

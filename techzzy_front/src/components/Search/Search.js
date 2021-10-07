@@ -47,7 +47,7 @@ export default function Search({ products }) {
         <input id="search-input" className="form-control" type="search" placeholder="Search" aria-label="Search" value={input} onChange={(e) => setInput(e.target.value)} onFocus={() => setFilteredProducts(filterProducts(products, input))} />
         <div id="search-results">
           {input.length > 0 && filteredProducts.map((product) => (
-            <Link className="reactistrash" to={`products/${product.id}`} key={product.id}>
+            <Link className="reactistrash" to={`/products/${product.id}`} key={product.id}>
               <div className="search-result-item">
                 <div className="search-result-item-img">
                   <img src={product.img} alt="" />

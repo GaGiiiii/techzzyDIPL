@@ -17,17 +17,17 @@ function App() {
   const [products, setProducts] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
-  const api = "http://localhost:8000";
+  const api = "http://localhost:8000/api";
 
   useEffect(() => {
     setCurrentUser(isLoggedIn());
-    axios.get(`${api}/api/products`, { withCredentials: true }).then(res => {
+    axios.get(`${api}/products`, { withCredentials: true }).then(res => {
       setProducts(res.data.products);
     }).catch(err => console.log(err));
   }, []);
 
   return (
-    <ApiContext.Provider value="http://localhost:8000">
+    <ApiContext.Provider value="http://localhost:8000/api">
       <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
         <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
           <Router>

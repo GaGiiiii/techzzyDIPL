@@ -24,7 +24,7 @@ export default function Login({ products }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    axios.post(`${api}/api/login`, { email, password }).then(response => {
+    axios.post(`${api}/login`, { email, password }).then(response => {
       let user = response.data.user; // Get user
       user.token = response.data.token; // Get token and set it to user
       login(user); // Add User to Local Storage
