@@ -53,7 +53,7 @@ export default function NavbarC({ products, active }) {
                     <Link to="/cart" className="cart position-relative d-inline-flex">
                       <i className="fas fa fa-shopping-cart fa-lg"></i>
                       <span className="cart-basket d-flex align-items-center justify-content-center">
-                        {22}
+                        {currentUser && currentUser.cart.product_carts.length}
                       </span>
                     </Link>
                   </li>

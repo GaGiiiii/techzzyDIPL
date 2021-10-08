@@ -91,6 +91,8 @@ class UserController extends Controller {
 
     $token = $user->createToken('usertoken');
 
+    $user = $user->fresh(['comments', 'ratings', 'cart', 'cart.productCarts']);
+
     return response([
       "user" => $user,
       "message" => "Login successful",
