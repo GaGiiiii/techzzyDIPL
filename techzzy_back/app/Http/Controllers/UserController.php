@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductCart;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -152,5 +153,22 @@ class UserController extends Controller {
       "user" => null,
       "message" => "Not logged in.",
     ], 401);
+  }
+
+  public function getAllProductsInCart($user_id) {
+    $user = User::find($user_id);
+    $pcs = ProductCart::with('product', 'product.ratings', 'product.category')->where('cart_id', $user->cart->id)->get();
+    $products = [];
+
+    foreach ($pcs as $pc) {
+      $product = $pc['product'];
+      $product->count = $pc->count;
+      array_push($products, $product);
+    }
+
+    return response([
+      "products" => $products,
+      "message" => "Products found",
+    ], 200);
   }
 }

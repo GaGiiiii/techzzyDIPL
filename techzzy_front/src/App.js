@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { isLoggedIn } from './Helpers';
 import Dashboard from './components/dashboard/Dashboard';
+import Cart from './components/cart/Cart';
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -21,7 +22,7 @@ function App() {
 
   useEffect(() => {
     setCurrentUser(isLoggedIn());
-    axios.get(`${api}/products`, { withCredentials: true }).then(res => {
+    axios.get(`${api}/products`).then(res => {
       setProducts(res.data.products);
     }).catch(err => console.log(err));
   }, []);
@@ -40,6 +41,9 @@ function App() {
               </Route>
               <Route path="/login">
                 <Login products={products} />
+              </Route>
+              <Route path="/cart">
+                <Cart products={products} />
               </Route>
               <Route path="/">
                 <Home products={products} />

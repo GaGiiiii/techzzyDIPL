@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ProductCartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserController;
@@ -44,6 +45,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   Route::post('/comments', [CommentController::class, 'store']);
   Route::put('/comments/{comment}', [CommentController::class, 'update']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
+  // Users
+  Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
+  Route::post('/product_carts', [ProductCartController::class, 'store']);
 });
 
 

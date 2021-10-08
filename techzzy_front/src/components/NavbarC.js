@@ -47,13 +47,24 @@ export default function NavbarC({ products, active }) {
                   <Nav.Link onClick={() => setFlashMessage(null)} as={Link} to="/login" className={active === "login" ? 'active' : ''}>Login</Nav.Link>
                   <Nav.Link onClick={() => { setFlashMessage(null); handleRegister(); }} as={Link} to="/register" className={active === "register" ? 'active' : ''}>Register</Nav.Link>
                 </>
-                : <NavDropdown className={active === "dashboard" ? 'active' : ''} title={currentUser.username} id="basic-nav-dropdown">
-                  <NavDropdown.Item onClick={() => setFlashMessage(null)} as={Link} to="/dashboard">Dashboard</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={(e) => { handleRegister(); setFlashMessage(null); }}>Admin</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={() => handleLogout()}>Logout</NavDropdown.Item>
-                </NavDropdown>
+                :
+                <>
+                  <li className="nav-item">
+                    <Link to="/cart" className="cart position-relative d-inline-flex">
+                      <i className="fas fa fa-shopping-cart fa-lg"></i>
+                      <span className="cart-basket d-flex align-items-center justify-content-center">
+                        {22}
+                      </span>
+                    </Link>
+                  </li>
+                  <NavDropdown className={active === "dashboard" ? 'active' : ''} title={currentUser.username} id="basic-nav-dropdown">
+                    <NavDropdown.Item onClick={() => setFlashMessage(null)} as={Link} to="/dashboard">Dashboard</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={(e) => { handleRegister(); setFlashMessage(null); }}>Admin</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={() => handleLogout()}>Logout</NavDropdown.Item>
+                  </NavDropdown>
+                </>
               }
             </Nav>
           </Navbar.Collapse>
