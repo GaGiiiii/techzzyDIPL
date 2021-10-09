@@ -7,12 +7,14 @@ import { CurrentUserContext, ApiContext } from '../../App';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import CartItem from './CartItem';
+import AlertC from '../AlertC';
 
 export default function Cart({ products }) {
   const { currentUser } = useContext(CurrentUserContext);
   const [productsInCart, setProductsInCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const api = useContext(ApiContext);
+  const [cartFlashMessage, setCartFlashMessage] = useState(null);
 
   useEffect(() => {
     if (!currentUser) {
@@ -55,10 +57,12 @@ export default function Cart({ products }) {
           </div>
         </div>
 
+        {cartFlashMessage && <AlertC flashMessage={cartFlashMessage} setFlashMessage={setCartFlashMessage} />}
+
         <Row>
           <Col xs={8}>
             {productsInCart && productsInCart.map(product => (
-             <CartItem product={product} key={product.id} totalPrice={totalPrice} setTotalPrice={setTotalPrice} />
+             <CartItem product={product} key={product.id} totalPrice={totalPrice} setTotalPrice={setTotalPrice} setCartFlashMessage={setCartFlashMessage} />
             ))}
           </Col>
           <Col xs={4}>

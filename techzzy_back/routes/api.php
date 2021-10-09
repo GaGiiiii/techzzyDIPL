@@ -48,8 +48,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
   // Users
   Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
+
+  // ProductCart
   Route::post('/product_carts', [ProductCartController::class, 'store']);
   Route::put('/product_carts/{product_cart}', [ProductCartController::class, 'update']);
+  Route::delete('/product_carts/{product_cart}', [ProductCartController::class, 'destroy']);
 });
 
 

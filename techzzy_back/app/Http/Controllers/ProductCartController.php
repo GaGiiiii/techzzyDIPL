@@ -125,6 +125,17 @@ class ProductCartController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function destroy($id) {
-    //
+    $product_cart = ProductCart::find($id);
+
+    // if (auth()->user()->cannot('delete', $comment)) {
+    //   return back()->with('unauthorized', 'Unauthorized access!');
+    // }
+
+    $product_cart->delete();
+
+    return response([
+      "product_cart" => $product_cart,
+      "message" => "Product removed from cart.",
+    ], 200);
   }
 }
