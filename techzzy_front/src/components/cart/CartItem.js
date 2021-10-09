@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Card, Col, Modal, Row, Button } from 'react-bootstrap'
 import axios from 'axios';
 import { ApiContext, CurrentUserContext, ProductsInCartContext } from '../../App';
+import { Link } from 'react-router-dom';
 
 export default function CartItem({ product, totalPrice, setTotalPrice, setCartFlashMessage }) {
   const [quantity, setQuantity] = useState(0);
@@ -73,13 +74,12 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
         <Col>
           <div className="shadow d-flex cart-item">
             <div className="product-img-div">
-              <a href="{{ url('/products') . '/' . $cart->product->id }}"><img className="product-img"
-                src={product.img}
-                alt="Image Error" />
-              </a>
+              <Link to={`/products/${product.id}`}>
+                <img className="product-img" src={product.img} alt="Couldn't load." />
+              </Link>
             </div>
             <Card.Body className="cart-body flex-fill">
-              <Card.Title className="card-title mb-0"> <a href="{{ url('/products') . '/' . $cart->product->id }}">{product.name}</a></Card.Title>
+              <Card.Title className="card-title mb-0"><Link to={`/products/${product.id}`}>{product.name}</Link></Card.Title>
               <Card.Title className="card-title mb-0">{product.category.name}</Card.Title>
               <Card.Title className="card-title">Stock: {product.stock}</Card.Title>
               <div className="mt-2 price">

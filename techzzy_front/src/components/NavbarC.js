@@ -51,7 +51,7 @@ export default function NavbarC({ products, active }) {
                 :
                 <>
                   <li className="nav-item">
-                    <Link to="/cart" className="cart position-relative d-inline-flex">
+                    <Link onClick={() => setFlashMessage(null)} to="/cart" className="cart position-relative d-inline-flex">
                       <i className="fas fa fa-shopping-cart fa-lg"></i>
                       <span className="cart-basket d-flex align-items-center justify-content-center">
                         {productsInCart.length}
