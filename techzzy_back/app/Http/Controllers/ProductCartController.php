@@ -83,7 +83,39 @@ class ProductCartController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function update(Request $request, $id) {
-    //
+    $product_cart = ProductCart::find($id);
+
+    if (!$product_cart) {
+      return response([
+        'product_cart' => null,
+        'message' => 'ProductCart not found.',
+      ], 404);
+    }
+
+    // if (auth()->user()->cannot('update', $comment)) {
+    //   return response(['message' => 'Unauthorized access!'], 401);
+    // }
+
+    // VALIDATE DATA
+    $validator = Validator::make($request->all(), [
+      'count' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      return response([
+        'product_cart' => $product_cart,
+        'message' => 'Validation failed.',
+        'errors' => $validator->messages(),
+      ], 400);
+    }
+
+    $product_cart->count = $request->count;
+    $product_cart->save();
+
+    return response([
+      "product_cart" => $product_cart,
+      "message" => "Product count update updated.",
+    ], 200);
   }
 
   /**

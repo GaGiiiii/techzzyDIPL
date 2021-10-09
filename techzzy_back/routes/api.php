@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   // Users
   Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
   Route::post('/product_carts', [ProductCartController::class, 'store']);
+  Route::put('/product_carts/{product_cart}', [ProductCartController::class, 'update']);
 });
 
 

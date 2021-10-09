@@ -165,6 +165,7 @@ class UserController extends Controller {
     foreach ($pcs as $pc) {
       $product = $pc['product'];
       $product->count = $pc->count;
+      $product->pcID = $pc->id;
       array_push($products, $product);
     }
 

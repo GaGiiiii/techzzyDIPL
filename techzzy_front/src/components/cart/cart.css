@@ -31,7 +31,7 @@
 }
 
 .cart-body {
-  margin-top: 20px;
+  /* margin-top: 20px; */
   padding-right: 20px;
   position: relative;
 }
@@ -67,7 +67,7 @@
 
 .total-div span {
   font-size: 20px;
-  font-weight: normal;
+  /* font-weight: normal; */
 }
 
 .payment-col {
@@ -77,4 +77,61 @@
 
 .total-div .totalG2 {
   margin-top: 20px;
+}
+
+.my-cart {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cart-item .card-title {
+  font-size: 16px;
+}
+
+.cart-item .card-title a, .cart-item .card-title {
+  color: black;
+  text-decoration: none;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.cart-item .card-title a:hover {
+  color: #93c54b;
+}
+
+.cart-item .price {
+  font-family: sans-serif;
+  font-weight: normal;
+}
+
+.cart-item .quantity {
+  position: absolute;
+  bottom: 10px;
+}
+
+.cart-item .quantity ul {
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.cart-item .quantity ul li {
+  border: 1px solid #325d88;
+  border-radius: .25rem;
+  padding: .375rem .75rem;
+  line-height: 22px;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 2px;
+}
+
+.cart-item .total{
+  font-family: sans-serif;
+  font-weight: 600 !important;
+}
+
+.total-div h5{
+  font-size: 16px;
+  margin: 0;
+  font-family: sans-serif;
+  font-weight: 400 !important;
 }
