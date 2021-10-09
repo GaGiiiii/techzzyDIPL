@@ -1,19 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import Footer from '../Footer'
 import NavbarC from '../NavbarC'
 import './cart.css';
-import { CurrentUserContext, ApiContext } from '../../App';
-import axios from 'axios';
+import { CurrentUserContext, ProductsInCartContext } from '../../App';
 import { Redirect } from 'react-router-dom';
 import CartItem from './CartItem';
 import AlertC from '../AlertC';
 
 export default function Cart({ products }) {
   const { currentUser } = useContext(CurrentUserContext);
-  const [productsInCart, setProductsInCart] = useState([]);
+  const { productsInCart } = useContext(ProductsInCartContext);
   const [totalPrice, setTotalPrice] = useState(0);
-  const api = useContext(ApiContext);
   const [cartFlashMessage, setCartFlashMessage] = useState(null);
 
   useEffect(() => {
@@ -23,21 +21,12 @@ export default function Cart({ products }) {
   }, [currentUser])
 
   useEffect(() => {
-    if (currentUser) {
-      axios.get(`${api}/users/${currentUser.id}/cart`, {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`
-        }
-      }).then(res => {
-        setProductsInCart(res.data.products);
-        let totalP = 0;
-        res.data.products.forEach(product => {
-          totalP += parseFloat(product.price) * parseFloat(product.count);
-        });
-        setTotalPrice(totalP);
-      }).catch(err => console.log(err));
-    }
-  }, [currentUser, api]);
+    let totalP = 0;
+    productsInCart.forEach(product => {
+      totalP += parseFloat(product.price) * parseFloat(product.count);
+    });
+    setTotalPrice(totalP);
+  }, [productsInCart]);
 
 
 
@@ -57,12 +46,12 @@ export default function Cart({ products }) {
           </div>
         </div>
 
-        {cartFlashMessage && <AlertC flashMessage={cartFlashMessage} setFlashMessage={setCartFlashMessage} />}
+        {cartFlashMessage && <AlertC cartAlert={true} flashMessage={cartFlashMessage} setFlashMessage={setCartFlashMessage} />}
 
         <Row>
           <Col xs={8}>
             {productsInCart && productsInCart.map(product => (
-             <CartItem product={product} key={product.id} totalPrice={totalPrice} setTotalPrice={setTotalPrice} setCartFlashMessage={setCartFlashMessage} />
+              <CartItem product={product} key={product.id} totalPrice={totalPrice} setTotalPrice={setTotalPrice} setCartFlashMessage={setCartFlashMessage} />
             ))}
           </Col>
           <Col xs={4}>

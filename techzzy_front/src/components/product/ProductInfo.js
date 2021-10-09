@@ -1,12 +1,14 @@
 import React, { useState, useContext } from 'react'
 import { Card, Button } from 'react-bootstrap'
 import axios from 'axios';
-import { ApiContext, CurrentUserContext } from '../../App';
+import { ApiContext, CurrentUserContext, FlashMessageContext, ProductsInCartContext } from '../../App';
 
 export default function ProductInfo({ product }) {
   const [quantity, setQuantity] = useState(1);
   const api = useContext(ApiContext);
-  const {currentUser} = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
+  const { productsInCart, setProductsInCart } = useContext(ProductsInCartContext);
+  const { setFlashMessage } = useContext(FlashMessageContext);
 
   function qtyUp() {
     if ((quantity + 1) <= product.stock) {
@@ -22,16 +24,15 @@ export default function ProductInfo({ product }) {
 
   function addToCart(e) {
     e.preventDefault();
-    axios.post(`${api}/product_carts`, { product_id: product.id, count: quantity }, {headers: {
-      Authorization: `Bearer ${currentUser.token}`
-    }}).then(response => {
-      // let user = response.data.user; // Get user
-      // user.token = response.data.token; // Get token and set it to user
-      // login(user); // Add User to Local Storage
-      // setCurrentUser(response.data.user); // Set Global State
-      // history.push('/dashboard'); // Redirect
-      // setFlashMessage({ type: 'success', message: `Login successful. Welcome back ${user.username}!` }) // Add Flash Message
-      console.log(response.data);
+    axios.post(`${api}/product_carts`, { product_id: product.id, count: quantity }, {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`
+      }
+    }).then(response => {
+      setFlashMessage({ type: 'success', message: `Product added to cart.` }) // Add Flash Message
+      let copyArr = [...productsInCart];
+      copyArr.push(product);
+      setProductsInCart(copyArr);
     }).catch((error) => {
       console.log(error);
     });

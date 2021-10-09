@@ -13,7 +13,7 @@ class ProductController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
-    $products = Product::with(['ratings', 'comments', 'category'])->get();
+    $products = Product::with(['ratings', 'comments', 'category', 'comments.user'])->get();
 
     return response([
       "products" => $products,

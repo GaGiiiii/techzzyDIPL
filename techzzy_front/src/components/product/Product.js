@@ -1,27 +1,21 @@
 import React from 'react'
 import './product.css';
 import { useParams } from "react-router-dom";
-import { ApiContext } from '../../App';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import NavbarC from '../NavbarC';
 import Footer from '../Footer';
-import axios from 'axios';
 import { Container, Row, Card, Col } from 'react-bootstrap';
 import Comments from './Comments';
 import ProductInfo from './ProductInfo';
 
 export default function Product({ products }) {
   let { productID } = useParams();
-  const api = useContext(ApiContext);
   const [product, setProduct] = useState(undefined);
 
+
   useEffect(() => {
-    axios.get(`${api}/products/${productID}`)
-      .then((res) => {
-        setProduct(res.data.product);
-      })
-      .catch(err => console.log(err));
-  }, [api, productID]);
+    setProduct(products.find(productG => { return productG.id === parseInt(productID) }));
+  }, [products, productID]);
 
   return (
     <>

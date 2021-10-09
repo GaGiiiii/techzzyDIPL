@@ -21,16 +21,8 @@ export default function Comment({ comment, index, product, commentsFlashMessage,
   const [modalIndex, setModalIndex] = useState(null);
 
   useEffect(() => {
-    axios.get(`${api}/ratings`)
-      .then((response) => {
-        setRatings(response.data.ratings);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      });
-  }, [api]);
+    setRatings(product.ratings);
+  }, [product.ratings]);
 
   useEffect(() => {
     if (editCommentValue.length < 20 && editCommentValue.length !== 0) {

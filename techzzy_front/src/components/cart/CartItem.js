@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Card, Col, Modal, Row, Button } from 'react-bootstrap'
 import axios from 'axios';
-import { ApiContext, CurrentUserContext } from '../../App';
+import { ApiContext, CurrentUserContext, ProductsInCartContext } from '../../App';
 
 export default function CartItem({ product, totalPrice, setTotalPrice, setCartFlashMessage }) {
   const [quantity, setQuantity] = useState(0);
   const api = useContext(ApiContext);
   const { currentUser } = useContext(CurrentUserContext);
+  const { productsInCart, setProductsInCart } = useContext(ProductsInCartContext);
 
   // MODAL
   const [show, setShow] = useState(false);
@@ -16,7 +17,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
 
   useEffect(() => {
     setQuantity(product.count);
-  }, []);
+  }, [product.count]);
 
   function qtyUp() {
     if ((quantity + 1) <= product.stock) {
@@ -58,6 +59,9 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
     }).then(response => {
       console.log(response.data);
       setCartFlashMessage({ type: 'success', message: `Product removed from cart.` }) // Add Flash Message
+      let newProductsInCart = [...productsInCart];
+      newProductsInCart.splice(newProductsInCart.indexOf(product), 1);
+      setProductsInCart(newProductsInCart);
     }).catch((error) => {
       console.log(error);
     });

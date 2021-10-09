@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Search from './Search/Search';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { CurrentUserContext, FlashMessageContext } from '../App';
+import { CurrentUserContext, FlashMessageContext, ProductsInCartContext } from '../App';
 import { logout } from '../Helpers';
 import axios from 'axios';
 import { useHistory } from 'react-router';
@@ -12,6 +12,7 @@ export default function NavbarC({ products, active }) {
   let history = useHistory();
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const { flashMessage, setFlashMessage } = useContext(FlashMessageContext);
+  const { productsInCart } = useContext(ProductsInCartContext);
 
   function handleLogout() {
     let username = currentUser.username; // Save Username Before Delete
@@ -53,7 +54,7 @@ export default function NavbarC({ products, active }) {
                     <Link to="/cart" className="cart position-relative d-inline-flex">
                       <i className="fas fa fa-shopping-cart fa-lg"></i>
                       <span className="cart-basket d-flex align-items-center justify-content-center">
-                        {currentUser && currentUser.cart.product_carts.length}
+                        {productsInCart.length}
                       </span>
                     </Link>
                   </li>

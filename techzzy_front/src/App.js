@@ -13,11 +13,14 @@ import Cart from './components/cart/Cart';
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
 export const FlashMessageContext = React.createContext(null);
+export const ProductsInCartContext = React.createContext(null);
 
 function App() {
   const [products, setProducts] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
+  const [productsInCart, setProductsInCart] = useState([]);
+
   const api = "http://localhost:8000/api";
 
   useEffect(() => {
@@ -27,30 +30,44 @@ function App() {
     }).catch(err => console.log(err));
   }, []);
 
+  useEffect(() => {
+    if (currentUser) {
+      axios.get(`${api}/users/${currentUser.id}/cart`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`
+        }
+      }).then(res => {
+        setProductsInCart(res.data.products);
+      }).catch(err => console.log(err));
+    }
+  }, [currentUser])
+
   return (
     <ApiContext.Provider value="http://localhost:8000/api">
       <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
-        <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
-          <Router>
-            <Switch>
-              <Route path="/products/:productID">
-                <Product products={products} />
-              </Route>
-              <Route path="/dashboard">
-                <Dashboard products={products} />
-              </Route>
-              <Route path="/login">
-                <Login products={products} />
-              </Route>
-              <Route path="/cart">
-                <Cart products={products} />
-              </Route>
-              <Route path="/">
-                <Home products={products} />
-              </Route>
-            </Switch>
-          </Router>
-        </FlashMessageContext.Provider>
+        <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>
+          <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
+            <Router>
+              <Switch>
+                <Route path="/products/:productID">
+                  <Product products={products} />
+                </Route>
+                <Route path="/dashboard">
+                  <Dashboard products={products} />
+                </Route>
+                <Route path="/login">
+                  <Login products={products} />
+                </Route>
+                <Route path="/cart">
+                  <Cart products={products} />
+                </Route>
+                <Route path="/">
+                  <Home products={products} />
+                </Route>
+              </Switch>
+            </Router>
+          </FlashMessageContext.Provider>
+        </ProductsInCartContext.Provider>
       </CurrentUserContext.Provider>
     </ApiContext.Provider>
   );
