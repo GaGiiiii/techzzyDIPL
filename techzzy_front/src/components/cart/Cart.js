@@ -4,7 +4,7 @@ import Footer from '../Footer'
 import NavbarC from '../NavbarC'
 import './cart.css';
 import { CurrentUserContext, ProductsInCartContext } from '../../App';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import CartItem from './CartItem';
 import AlertC from '../AlertC';
 
@@ -38,9 +38,7 @@ export default function Cart() {
             <h1 className="fw-bold my-cart">My Cart</h1>
           </div>
           <div>
-            <a href="{{ url('/products') }}">
-              <button className="btn btn-primary">Continue Shopping</button>
-            </a>
+            <Link to='/products'><button className="btn btn-primary">Continue Shopping</button></Link>
           </div>
         </div>
 
