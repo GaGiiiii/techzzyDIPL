@@ -18,3 +18,13 @@ export function logout(user) {
 export function isLoggedIn() {
   return localStorage.getItem('user') === null ? null : JSON.parse(localStorage.getItem('user'));
 }
+
+export function calculateProductRating(product) {
+  let rating = 0;
+
+  for (let i = 0; i < product.ratings.length; i++) {
+    rating += product.ratings[i].rating;
+  }
+
+  return (Math.round(rating / product.ratings.length * 100) / 100) || 0;
+}

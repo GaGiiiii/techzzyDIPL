@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router';
 import AlertC from './AlertC';
 
-export default function NavbarC({ products, active }) {
+export default function NavbarC({ active }) {
   let history = useHistory();
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const { flashMessage, setFlashMessage } = useContext(FlashMessageContext);
@@ -41,7 +41,7 @@ export default function NavbarC({ products, active }) {
               <Nav.Link onClick={() => setFlashMessage(null)} as={Link} to="/" className={active === "home" ? 'active' : ''}>Home</Nav.Link>
               <Nav.Link onClick={() => setFlashMessage(null)} as={Link} to="/products" className={active === "products" ? 'active' : ''}>Products</Nav.Link>
             </Nav>
-            <Search products={products} />
+            <Search />
             <Nav className="ms-auto">
               {currentUser == null ?
                 <>

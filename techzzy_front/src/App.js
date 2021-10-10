@@ -14,6 +14,7 @@ export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
 export const FlashMessageContext = React.createContext(null);
 export const ProductsInCartContext = React.createContext(null);
+export const ProductsContext = React.createContext(null);
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -45,29 +46,31 @@ function App() {
   return (
     <ApiContext.Provider value="http://localhost:8000/api">
       <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
-        <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>
-          <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
-            <Router>
-              <Switch>
-                <Route path="/products/:productID">
-                  <Product products={products} />
-                </Route>
-                <Route path="/dashboard">
-                  <Dashboard products={products} />
-                </Route>
-                <Route path="/login">
-                  <Login products={products} />
-                </Route>
-                <Route path="/cart">
-                  <Cart products={products} />
-                </Route>
-                <Route path="/">
-                  <Home products={products} />
-                </Route>
-              </Switch>
-            </Router>
-          </FlashMessageContext.Provider>
-        </ProductsInCartContext.Provider>
+        <ProductsContext.Provider value={{ products, setProducts }}>
+          <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>
+            <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
+              <Router>
+                <Switch>
+                  <Route path="/products/:productID">
+                    <Product />
+                  </Route>
+                  <Route path="/dashboard">
+                    <Dashboard />
+                  </Route>
+                  <Route path="/login">
+                    <Login />
+                  </Route>
+                  <Route path="/cart">
+                    <Cart />
+                  </Route>
+                  <Route path="/">
+                    <Home />
+                  </Route>
+                </Switch>
+              </Router>
+            </FlashMessageContext.Provider>
+          </ProductsInCartContext.Provider>
+        </ProductsContext.Provider>
       </CurrentUserContext.Provider>
     </ApiContext.Provider>
   );

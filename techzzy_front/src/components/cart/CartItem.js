@@ -14,7 +14,6 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  // const [modalIndex, setModalIndex] = useState(null);
 
   useEffect(() => {
     setQuantity(product.count);
@@ -23,6 +22,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
   function qtyUp() {
     if ((quantity + 1) <= product.stock) {
       setQuantity(quantity + 1);
+      product.count = quantity + 1;
       setTotalPrice(parseFloat(totalPrice) + parseFloat(product.price));
       axios.put(`${api}/product_carts/${product.pcID}`, { count: quantity + 1 }, {
         headers: {
@@ -39,6 +39,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
   function qtyDown() {
     if ((quantity - 1) > 0) {
       setQuantity(quantity - 1);
+      product.count = quantity - 1;
       setTotalPrice(parseFloat(totalPrice) - parseFloat(product.price));
       axios.put(`${api}/product_carts/${product.pcID}`, { count: quantity - 1 }, {
         headers: {
@@ -90,7 +91,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
               <div className="quantity">
                 <ul className="quantity-ul">
                   <li onClick={() => qtyDown()} className="btn btn-outline-primary fw-bold li-minus"><i className="fas fa-minus"></i></li>
-                  <li className="btn btn-outline-primary fw-bold li-current">{product.count}</li>
+                  <li className="btn btn-outline-primary fw-bold li-current">{quantity}</li>
                   <li onClick={() => qtyUp()} className="btn btn-outline-primary fw-bold li-plus"><i className="fas fa-plus"></i></li>
                   <li onClick={(e) => { handleShow(); }} className="btn btn-outline-primary fw-bold li-delete">
                     <i className="fas fa-trash"></i>

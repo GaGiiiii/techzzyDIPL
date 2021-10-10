@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::apiResource('users', UserController::class);
-Route::apiResource('ratings', RatingController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('carts', CartController::class);
@@ -37,6 +36,10 @@ Route::post('/login', [UserController::class, 'login']);
 Route::get('/register', [UserController::class, 'register']);
 Route::get('/loggedIn', [UserController::class, 'loggedIn']);
 
+// Ratings
+Route::get('/ratings', [RatingController::class, 'index']);
+
+// PROTECTED ==================================================
 Route::group(['middleware' => 'auth:sanctum'], function () {
   // Route::get('/products', [ProductController::class, 'index']);
   Route::post('/logout', [UserController::class, 'logout']);
@@ -53,6 +56,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   Route::post('/product_carts', [ProductCartController::class, 'store']);
   Route::put('/product_carts/{product_cart}', [ProductCartController::class, 'update']);
   Route::delete('/product_carts/{product_cart}', [ProductCartController::class, 'destroy']);
+
+  // Ratings
+  Route::post('/ratings', [RatingController::class, 'store']);
+  Route::put('/ratings/{rating}', [RatingController::class, 'update']);
 });
 
 

@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
+import { calculateProductRating } from "../../Helpers";
+import { ProductsContext } from "../../App";
+import { useContext } from "react";
 
-export default function SliderRow({ products, type }) {
+export default function SliderRow({ type }) {
+  const { products } = useContext(ProductsContext);
   const tinySettings = {
     dots: true,
     infinite: true,
@@ -39,16 +43,6 @@ export default function SliderRow({ products, type }) {
       }
     ]
   };
-
-  function calculateProductRating(product) {
-    let rating = 0;
-
-    for (let i = 0; i < product.ratings.length; i++) {
-      rating += product.ratings[i].rating;
-    }
-
-    return (Math.round(rating / product.ratings.length * 100) / 100) || 0;
-  }
 
   function sortProducts() {
     let productsP = [...products];

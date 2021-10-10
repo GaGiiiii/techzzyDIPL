@@ -1,10 +1,12 @@
 import './search.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from "react-router-dom";
+import { ProductsContext } from '../../App';
 
-export default function Search({ products }) {
+export default function Search() {
   const [input, setInput] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const { products } = useContext(ProductsContext);
 
   useEffect(() => {
     setFilteredProducts(filterProducts(products, input));

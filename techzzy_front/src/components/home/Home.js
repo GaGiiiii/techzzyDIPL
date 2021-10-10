@@ -5,16 +5,16 @@ import SliderRow from './SliderRow';
 import Footer from '../Footer';
 import NavbarC from '../NavbarC';
 
-export default function Home({ products }) {
+export default function Home() {
 
   return (
     <div>
-      <NavbarC products={products} active="home" />
+      <NavbarC active="home" />
 
       <Container className="mt-5 mb-5">
-        <SliderRow products={products} type={1} /> {/* Type 1 - Latest */}
-        <SliderRow products={products} type={2} /> {/* Type 2 - MostLiked */}
-        <SliderRow products={products} type={3} /> {/* Type 3 - MostCommented */}
+        <SliderRow type={1} /> {/* Type 1 - Latest */}
+        <SliderRow type={2} /> {/* Type 2 - MostLiked */}
+        <SliderRow type={3} /> {/* Type 3 - MostCommented */}
       </Container>
 
       <Footer />

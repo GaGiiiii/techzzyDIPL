@@ -76,3 +76,11 @@ li a.cart .cart-basket {
 }
 
 /* CART END */
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}

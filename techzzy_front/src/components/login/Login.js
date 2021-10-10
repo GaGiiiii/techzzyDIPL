@@ -52,7 +52,7 @@ export default function Login({ products }) {
 
   return (
     <div>
-      <NavbarC products={products} active="login" />
+      <NavbarC active="login" />
       <Container>
         <Row className="my-5">
           <Col md={{ span: 6, offset: 3 }}>

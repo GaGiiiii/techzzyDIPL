@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './product.css';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
@@ -7,11 +7,12 @@ import Footer from '../Footer';
 import { Container, Row, Card, Col } from 'react-bootstrap';
 import Comments from './Comments';
 import ProductInfo from './ProductInfo';
+import { ProductsContext } from '../../App';
 
-export default function Product({ products }) {
+export default function Product() {
   let { productID } = useParams();
   const [product, setProduct] = useState(undefined);
-
+  const { products } = useContext(ProductsContext);
 
   useEffect(() => {
     setProduct(products.find(productG => { return productG.id === parseInt(productID) }));
@@ -19,7 +20,7 @@ export default function Product({ products }) {
 
   return (
     <>
-      <NavbarC products={products} active="products" />
+      <NavbarC active="products" />
       {product &&
         <Container>
           <Row className="mt-5 mb-5">
@@ -29,7 +30,7 @@ export default function Product({ products }) {
               </Card>
             </Col>
             <Col sm={6} className="mt-5 mt-sm-0">
-              <ProductInfo product={product} />
+              <ProductInfo product={product} setProduct={setProduct} />
             </Col>
           </Row>
           <Comments product={product} />

@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Rating;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Validator;
 
 class RatingController extends Controller {
   /**

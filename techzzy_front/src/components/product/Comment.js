@@ -4,7 +4,6 @@ import { CurrentUserContext, ApiContext } from '../../App';
 import axios from 'axios';
 import AlertC from '../AlertC';
 
-
 export default function Comment({ comment, index, product, commentsFlashMessage, setCommentsFlashMessage }) {
   const { currentUser } = useContext(CurrentUserContext);
   const [ratings, setRatings] = useState([]);

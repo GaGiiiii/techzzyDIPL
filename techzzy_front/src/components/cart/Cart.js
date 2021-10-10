@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom';
 import CartItem from './CartItem';
 import AlertC from '../AlertC';
 
-export default function Cart({ products }) {
+export default function Cart() {
   const { currentUser } = useContext(CurrentUserContext);
   const { productsInCart } = useContext(ProductsInCartContext);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -28,11 +28,9 @@ export default function Cart({ products }) {
     setTotalPrice(totalP);
   }, [productsInCart]);
 
-
-
   return (
     <>
-      <NavbarC products={products} />
+      <NavbarC />
 
       <Container className="mb-5">
         <div className="d-flex justify-content-between mt-5 first-row mb-5">
