@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import Footer from '../Footer'
 import NavbarC from '../NavbarC'
 import { ApiContext, ProductsContext } from '../../App';
@@ -8,7 +8,7 @@ import { Card, Col, Container, Pagination, Row } from 'react-bootstrap';
 import './products.css';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 
-function applyFilters(products, changePage, perPage, page, priceRange, sortBy, filterURL) {
+function applyFilters(products, changePage, perPage, page, priceRange, sortBy, filterURL, categoriesFilterArr) {
   if (!products) {
     return;
   }
@@ -19,10 +19,12 @@ function applyFilters(products, changePage, perPage, page, priceRange, sortBy, f
   productsG = sortProducts(productsG, sortBy);
   productsG = productsG.filter(p => p.price < parseFloat(priceRange));
 
+  // TO DO Filter Categories With FIlter and Includes
+
   // Create Pagination
   for (let number = 1; number <= Math.ceil(productsG.length / perPage); number++) {
     items.push(
-      <Pagination.Item onClick={() => changePage(number, sortBy, priceRange, filterURL)} key={number} active={page === number}>
+      <Pagination.Item onClick={() => changePage(number, sortBy, priceRange, filterURL, categoriesFilterArr)} key={number} active={page === number}>
         {number}
       </Pagination.Item>
     );
@@ -73,8 +75,8 @@ function sortProducts(productsG, sortBy) {
   return productsG;
 }
 
-function changePage(number, sortBy, priceRange, filterURL) {
-  filterURL(sortBy, priceRange, number);
+function changePage(number, sortBy, priceRange, filterURL, categoriesFilter) {
+  filterURL(sortBy, priceRange, number, categoriesFilter);
 }
 
 export default function Products() {
@@ -91,12 +93,16 @@ export default function Products() {
   const page = parseInt(new URLSearchParams(search).get('page')) || 1;
   const sortBy = parseInt(new URLSearchParams(search).get('sortBy')) || 1;  // 1 - Latest | 2 - Name | 3 - Price desc | 4 - Price asc | 5 - Ratings | 6 - Comments | 7 - Popularity
   const priceRange = parseInt(new URLSearchParams(search).get('priceRange')) || 125000;
+  // If there are no categories in URL make array empty otherwise split it by categories.
+  let categoriesFilterArr = useMemo(() => (new URLSearchParams(search).get('categories')) === null ? [] : (new URLSearchParams(search).get('categories')).split(','), [search]);
 
-  const filterURL = useCallback((sortBy, priceRange, page) => {
+  const filterURL = useCallback((sortBy, priceRange, page, categoriesFilterArr) => {
+    let categoriesFilter = makeStringFromCategoriesArr(categoriesFilterArr);
     let queryStringSortBy = sortBy === 1 ? '' : `sortBy=${sortBy}`;
     let queryStringPriceRange = priceRange === 125000 ? '' : `&priceRange=${priceRange}`;
+    let queryStringCategories = categoriesFilter === '' ? '' : `&categories=${categoriesFilter}`;
     let queryStringPage = page === 1 ? '' : `&page=${page}`;
-    history.push(`${window.location.pathname}?${queryStringSortBy}${queryStringPriceRange}${queryStringPage}`);
+    history.push(`${window.location.pathname}?${queryStringSortBy}${queryStringPriceRange}${queryStringCategories}${queryStringPage}`);
   }, [history]);
 
   useEffect(() => {
@@ -106,10 +112,30 @@ export default function Products() {
   }, [api]);
 
   useEffect(() => {
-    const { productsG, items } = applyFilters(products, changePage, perPage, page, priceRange, sortBy, filterURL);
+    const { productsG, items } = applyFilters(products, changePage, perPage, page, priceRange, sortBy, filterURL, categoriesFilterArr);
     setProductsToShow(productsG.slice((page - 1) * perPage, page * perPage));
     setPaginationBasic(<div className="text-center"><Pagination className="my-5">{items}</Pagination></div>);
-  }, [page, priceRange, products, sortBy, filterURL]);
+  }, [page, priceRange, products, sortBy, filterURL, categoriesFilterArr]);
+
+  function categoryChecked(e) {
+    if (e.target.checked) {
+      categoriesFilterArr.push(e.target.value);
+    } else {
+      categoriesFilterArr = categoriesFilterArr.filter(c => c !== e.target.value);
+    }
+
+    filterURL(sortBy, priceRange, 1, categoriesFilterArr);
+  }
+
+  function makeStringFromCategoriesArr(categoriesFilterArr) {
+    let categoriesFilter = '';
+
+    categoriesFilterArr.forEach((cf, index) => {
+      index === categoriesFilterArr.length - 1 ? categoriesFilter += `${cf}` : categoriesFilter += `${cf},`
+    });
+
+    return categoriesFilter;
+  }
 
   return (
     <>
@@ -121,7 +147,7 @@ export default function Products() {
             <Card className="filters shadow">
               <div id="sort">
                 <h4 className="mb-2">Sort by:</h4>
-                <select onChange={(e) => filterURL(e.target.value, priceRange, 1)} className="form-select ps-2" name="sortBy" defaultValue={parseInt(new URLSearchParams(search).get('sortBy')) || 1}>
+                <select onChange={(e) => filterURL(e.target.value, priceRange, 1, categoriesFilterArr)} className="form-select ps-2" name="sortBy" defaultValue={parseInt(new URLSearchParams(search).get('sortBy')) || 1}>
                   <option value="1">Latest</option>
                   <option value="2">Name</option>
                   <option value="3">Price desc</option>
@@ -134,13 +160,13 @@ export default function Products() {
               <div id="price" className="mt-3">
                 <h4>Price range</h4>
                 <span className="price-range-span">0 - {(priceRange).toLocaleString()} RSD</span>
-                <input type="range" min="0" max="250000" value={priceRange} onChange={(e) => filterURL(sortBy, e.target.value, 1)} className="form-range" id="customRange1" name="price-range" />
+                <input type="range" min="0" max="250000" value={priceRange} onChange={(e) => filterURL(sortBy, e.target.value, 1, categoriesFilterArr)} className="form-range" id="customRange1" name="price-range" />
               </div>
               <div id="categories" className="mt-2">
                 <h4 className="mb-2">Cetegory</h4>
                 {categories && categories.map(category => (
                   <div key={category.id} className="form-check">
-                    <input disabled className="form-check-input" type="checkbox" name="category"
+                    <input onChange={categoryChecked} className="form-check-input" type="checkbox" name="category"
                       value={category.name} />
                     <label className="form-check-label">
                       {category.name}
