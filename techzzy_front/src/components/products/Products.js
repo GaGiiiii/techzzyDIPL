@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Footer from '../Footer'
 import NavbarC from '../NavbarC'
 import { ApiContext, ProductsContext } from '../../App';
@@ -8,7 +8,76 @@ import { Card, Col, Container, Pagination, Row } from 'react-bootstrap';
 import './products.css';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 
-export default function Products({ location }) {
+function applyFilters(products, changePage, perPage, page, priceRange, sortBy, filterURL) {
+  if (!products) {
+    return;
+  }
+
+  let productsG = [...products];
+  let items = [];
+
+  productsG = sortProducts(productsG, sortBy);
+  productsG = productsG.filter(p => p.price < parseFloat(priceRange));
+
+  // Create Pagination
+  for (let number = 1; number <= Math.ceil(productsG.length / perPage); number++) {
+    items.push(
+      <Pagination.Item onClick={() => changePage(number, sortBy, priceRange, filterURL)} key={number} active={page === number}>
+        {number}
+      </Pagination.Item>
+    );
+  }
+
+  return {
+    productsG,
+    items,
+  }
+}
+
+function sortProducts(productsG, sortBy) {
+  switch (sortBy) {
+    case 1:
+      productsG.sort((productA, productB) => productB.id - productA.id);
+      break;
+    case 2:
+      productsG.sort((productA, productB) => {
+        if (productA.name.toUpperCase() < productB.name.toUpperCase()) {
+          return -1;
+        }
+        if (productA.name.toUpperCase() > productB.name.toUpperCase()) {
+          return 1;
+        }
+
+        return 0;
+      });
+      break;
+    case 3:
+      productsG.sort((productA, productB) => productB.price - productA.price);
+      break;
+    case 4:
+      productsG.sort((productA, productB) => productA.price - productB.price);
+      break;
+    case 5:
+      productsG.sort((productA, productB) => productA.id - productB.id);
+      break;
+    case 6:
+      productsG.sort((productA, productB) => productB.comments.length - productA.comments.length);
+      break;
+    case 7:
+      productsG.sort((productA, productB) => productA.id - productB.id);
+      break;
+    default:
+      break;
+  }
+
+  return productsG;
+}
+
+function changePage(number, sortBy, priceRange, filterURL) {
+  filterURL(sortBy, priceRange, number);
+}
+
+export default function Products() {
   const [categories, setCategories] = useState([]);
   const { products } = useContext(ProductsContext);
   const [productsToShow, setProductsToShow] = useState([]);
@@ -22,7 +91,13 @@ export default function Products({ location }) {
   const page = parseInt(new URLSearchParams(search).get('page')) || 1;
   const sortBy = parseInt(new URLSearchParams(search).get('sortBy')) || 1;  // 1 - Latest | 2 - Name | 3 - Price desc | 4 - Price asc | 5 - Ratings | 6 - Comments | 7 - Popularity
   const priceRange = parseInt(new URLSearchParams(search).get('priceRange')) || 125000;
-  const [stupidState, setStupidState] = useState(0); // Filter Changed
+
+  const filterURL = useCallback((sortBy, priceRange, page) => {
+    let queryStringSortBy = sortBy === 1 ? '' : `sortBy=${sortBy}`;
+    let queryStringPriceRange = priceRange === 125000 ? '' : `&priceRange=${priceRange}`;
+    let queryStringPage = page === 1 ? '' : `&page=${page}`;
+    history.push(`${window.location.pathname}?${queryStringSortBy}${queryStringPriceRange}${queryStringPage}`);
+  }, [history]);
 
   useEffect(() => {
     axios.get(`${api}/categories`).then(res => {
@@ -31,147 +106,10 @@ export default function Products({ location }) {
   }, [api]);
 
   useEffect(() => {
-    function changePage(number) {
-      filterURL(sortBy, priceRange, number);
-      setStupidState(prev => prev + 1);
-    }
-
-    function sortProducts() {
-      let productsG = [...products];
-      let items = [];
-
-      switch (sortBy) {
-        case 1:
-          productsG.sort((productA, productB) => productB.id - productA.id);
-          break;
-        case 2:
-          productsG.sort((productA, productB) => {
-            if (productA.name.toUpperCase() < productB.name.toUpperCase()) {
-              return -1;
-            }
-            if (productA.name.toUpperCase() > productB.name.toUpperCase()) {
-              return 1;
-            }
-
-            return 0;
-          });
-          break;
-        case 3:
-          productsG.sort((productA, productB) => productB.price - productA.price);
-          break;
-        case 4:
-          productsG.sort((productA, productB) => productA.price - productB.price);
-          break;
-        case 5:
-          productsG.sort((productA, productB) => productA.id - productB.id);
-          break;
-        case 6:
-          productsG.sort((productA, productB) => productB.comments.length - productA.comments.length);
-          break;
-        case 7:
-          productsG.sort((productA, productB) => productA.id - productB.id);
-          break;
-        default:
-          break;
-      }
-
-      productsG = productsG.filter(p => p.price < parseFloat(priceRange));
-
-      for (let number = 1; number <= Math.ceil(productsG.length / perPage); number++) {
-        items.push(
-          <Pagination.Item onClick={() => changePage(number)} key={number} active={page === number}>
-            {number}
-          </Pagination.Item>
-        );
-      }
-
-      setProductsToShow(productsG.slice((page - 1) * perPage, page * perPage));
-      setPaginationBasic(<div className="text-center"><Pagination className="mb-5">{items}</Pagination></div>);
-    }
-
-    sortProducts();
-  }, [stupidState, page, priceRange, products, sortBy, history]);
-
-  useEffect(() => {
-    function changePage(number) {
-      // history.push(`${window.location.pathname}?sortBy=${sortBy}&priceRange=${priceRange}&page=${number}`);
-      filterURL(sortBy, priceRange, number);
-      setStupidState(prev => prev + 1);
-    }
-
-    function sortProducts() {
-      let productsG = [...products];
-      let items = [];
-
-      switch (sortBy) {
-        case 1:
-          productsG.sort((productA, productB) => productB.id - productA.id);
-          break;
-        case 2:
-          productsG.sort((productA, productB) => {
-            if (productA.name.toUpperCase() < productB.name.toUpperCase()) {
-              return -1;
-            }
-            if (productA.name.toUpperCase() > productB.name.toUpperCase()) {
-              return 1;
-            }
-
-            return 0;
-          });
-          break;
-        case 3:
-          productsG.sort((productA, productB) => productB.price - productA.price);
-          break;
-        case 4:
-          productsG.sort((productA, productB) => productA.price - productB.price);
-          break;
-        case 5:
-          productsG.sort((productA, productB) => productA.id - productB.id);
-          break;
-        case 6:
-          productsG.sort((productA, productB) => productB.comments.length - productA.comments.length);
-          break;
-        case 7:
-          productsG.sort((productA, productB) => productA.id - productB.id);
-          break;
-        default:
-          break;
-      }
-
-      productsG = productsG.filter(p => p.price < parseFloat(priceRange));
-
-      for (let number = 1; number <= Math.ceil(productsG.length / perPage); number++) {
-        items.push(
-          <Pagination.Item onClick={() => changePage(number)} key={number} active={page === number}>
-            {number}
-          </Pagination.Item>
-        );
-      }
-
-      setProductsToShow(productsG.slice((page - 1) * perPage, page * perPage));
-      setPaginationBasic(<div className="text-center"><Pagination className="mb-5">{items}</Pagination></div>);
-    }
-
-    sortProducts();
-    filterURL(sortBy, priceRange, page);
-  }, [history, products, page, priceRange, sortBy]);
-
-  function sortChanged(e) {
-    filterURL(e.target.value, priceRange, 1);
-    setStupidState(prev => prev + 1);
-  }
-
-  function priceRangeChanged(e) {
-    filterURL(sortBy, e.target.value, 1);
-    setStupidState(prev => prev + 1);
-  }
-
-  function filterURL(sortBy, priceRange, page) {
-    let queryStringSortBy = sortBy === 1 ? '' : `sortBy=${sortBy}`;
-    let queryStringPriceRange = priceRange === 125000 ? '' : `&priceRange=${priceRange}`;
-    let queryStringPage = page === 1 ? '' : `&page=${page}`;
-    history.push(`${window.location.pathname}?${queryStringSortBy}${queryStringPriceRange}${queryStringPage}`);
-  }
+    const { productsG, items } = applyFilters(products, changePage, perPage, page, priceRange, sortBy, filterURL);
+    setProductsToShow(productsG.slice((page - 1) * perPage, page * perPage));
+    setPaginationBasic(<div className="text-center"><Pagination className="my-5">{items}</Pagination></div>);
+  }, [page, priceRange, products, sortBy, filterURL]);
 
   return (
     <>
@@ -183,7 +121,7 @@ export default function Products({ location }) {
             <Card className="filters shadow">
               <div id="sort">
                 <h4 className="mb-2">Sort by:</h4>
-                <select onChange={sortChanged} className="form-select ps-2" name="sortBy" defaultValue={parseInt(new URLSearchParams(search).get('sortBy')) || 1}>
+                <select onChange={(e) => filterURL(e.target.value, priceRange, 1)} className="form-select ps-2" name="sortBy" defaultValue={parseInt(new URLSearchParams(search).get('sortBy')) || 1}>
                   <option value="1">Latest</option>
                   <option value="2">Name</option>
                   <option value="3">Price desc</option>
@@ -196,7 +134,7 @@ export default function Products({ location }) {
               <div id="price" className="mt-3">
                 <h4>Price range</h4>
                 <span className="price-range-span">0 - {(priceRange).toLocaleString()} RSD</span>
-                <input type="range" min="0" max="250000" value={priceRange} onChange={priceRangeChanged} className="form-range" id="customRange1" name="price-range" />
+                <input type="range" min="0" max="250000" value={priceRange} onChange={(e) => filterURL(sortBy, e.target.value, 1)} className="form-range" id="customRange1" name="price-range" />
               </div>
               <div id="categories" className="mt-2">
                 <h4 className="mb-2">Cetegory</h4>
@@ -235,9 +173,6 @@ export default function Products({ location }) {
                   </Col>
                 ))}
               </Row>
-              <div id="pagination" className="mt-5">
-                {/* {{ $products-> withQueryString() -> links()}} */}
-              </div>
             </Container>
           </Col>
         </Row>
