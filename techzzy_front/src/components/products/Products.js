@@ -32,7 +32,7 @@ export default function Products({ location }) {
 
   useEffect(() => {
     function changePage(number) {
-      history.push(`${window.location.pathname}?sortBy=${sortBy}&priceRange=${priceRange}&page=${number}`);
+      filterURL(sortBy, priceRange, number);
       setStupidState(prev => prev + 1);
     }
 
@@ -94,7 +94,8 @@ export default function Products({ location }) {
 
   useEffect(() => {
     function changePage(number) {
-      history.push(`${window.location.pathname}?sortBy=${sortBy}&priceRange=${priceRange}&page=${number}`);
+      // history.push(`${window.location.pathname}?sortBy=${sortBy}&priceRange=${priceRange}&page=${number}`);
+      filterURL(sortBy, priceRange, number);
       setStupidState(prev => prev + 1);
     }
 
@@ -152,17 +153,24 @@ export default function Products({ location }) {
     }
 
     sortProducts();
-    history.push(`${window.location.pathname}?sortBy=${sortBy}&priceRange=${priceRange}&page=${page}`);
+    filterURL(sortBy, priceRange, page);
   }, [history, products, page, priceRange, sortBy]);
 
   function sortChanged(e) {
-    history.push(`${window.location.pathname}?sortBy=${e.target.value}&priceRange=${priceRange}&page=1`);
+    filterURL(e.target.value, priceRange, 1);
     setStupidState(prev => prev + 1);
   }
 
   function priceRangeChanged(e) {
-    history.push(`${window.location.pathname}?sortBy=${sortBy}&priceRange=${e.target.value}&page=1`);
+    filterURL(sortBy, e.target.value, 1);
     setStupidState(prev => prev + 1);
+  }
+
+  function filterURL(sortBy, priceRange, page) {
+    let queryStringSortBy = sortBy === 1 ? '' : `sortBy=${sortBy}`;
+    let queryStringPriceRange = priceRange === 125000 ? '' : `&priceRange=${priceRange}`;
+    let queryStringPage = page === 1 ? '' : `&page=${page}`;
+    history.push(`${window.location.pathname}?${queryStringSortBy}${queryStringPriceRange}${queryStringPage}`);
   }
 
   return (
