@@ -9,6 +9,8 @@ import axios from 'axios';
 import { isLoggedIn } from './Helpers';
 import Dashboard from './components/dashboard/Dashboard';
 import Cart from './components/cart/Cart';
+import Products from './components/products/Products';
+import ScrollToTop from './components/ScrollToTop';
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -50,23 +52,28 @@ function App() {
           <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>
             <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
               <Router>
-                <Switch>
-                  <Route path="/products/:productID">
-                    <Product />
-                  </Route>
-                  <Route path="/dashboard">
-                    <Dashboard />
-                  </Route>
-                  <Route path="/login">
-                    <Login />
-                  </Route>
-                  <Route path="/cart">
-                    <Cart />
-                  </Route>
-                  <Route path="/">
-                    <Home />
-                  </Route>
-                </Switch>
+                <ScrollToTop>
+                  <Switch>
+                    <Route path="/products/:productID">
+                      <Product />
+                    </Route>
+                    <Route path="/products">
+                      <Products />
+                    </Route>
+                    <Route path="/dashboard">
+                      <Dashboard />
+                    </Route>
+                    <Route path="/login">
+                      <Login />
+                    </Route>
+                    <Route path="/cart">
+                      <Cart />
+                    </Route>
+                    <Route path="/">
+                      <Home />
+                    </Route>
+                  </Switch>
+                </ScrollToTop>
               </Router>
             </FlashMessageContext.Provider>
           </ProductsInCartContext.Provider>

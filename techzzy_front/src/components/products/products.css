@@ -1,0 +1,32 @@
+.filters {
+  padding: 15px;
+}
+
+.product-col:nth-of-type(n+5) {
+  margin-top: 20px;
+}
+
+.product-col {
+  transition: transform .2s ease-in-out;
+}
+
+.product-col:hover {
+  transform: scale(1.03);
+}
+
+.pagination {
+  justify-content: center;
+}
+
+.p-card {
+  color: black;
+}
+
+.p-card:hover{
+  color: #769e3c;
+}
+
+.p-card .card-title{
+  font-size: 16px;
+  font-weight: 500 !important;
+}
