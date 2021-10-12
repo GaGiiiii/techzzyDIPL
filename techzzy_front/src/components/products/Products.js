@@ -18,8 +18,9 @@ function applyFilters(products, changePage, perPage, page, priceRange, sortBy, f
 
   productsG = sortProducts(productsG, sortBy);
   productsG = productsG.filter(p => p.price < parseFloat(priceRange));
-
-  // TO DO Filter Categories With FIlter and Includes
+  if (categoriesFilterArr.length !== 0) {
+    productsG = productsG.filter(p => categoriesFilterArr.includes(p.category.name));
+  }
 
   // Create Pagination
   for (let number = 1; number <= Math.ceil(productsG.length / perPage); number++) {
@@ -166,7 +167,7 @@ export default function Products() {
                 <h4 className="mb-2">Cetegory</h4>
                 {categories && categories.map(category => (
                   <div key={category.id} className="form-check">
-                    <input onChange={categoryChecked} className="form-check-input" type="checkbox" name="category"
+                    <input onChange={categoryChecked} checked={categoriesFilterArr.includes(category.name)} className="form-check-input" type="checkbox" name="category"
                       value={category.name} />
                     <label className="form-check-label">
                       {category.name}
