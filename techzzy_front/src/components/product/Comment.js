@@ -99,7 +99,7 @@ export default function Comment({ comment, index, product, commentsFlashMessage,
       {commentFlashMessage && <AlertC flashMessage={commentFlashMessage} setFlashMessage={setCommentFlashMessage} />}
       <div className="comment d-flex">
         <div className="comment-img">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Couldn't load" />
+          <img src={comment.user.img ? `http://localhost:8000/avatars/${comment.user.username}/${comment.user.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
         </div>
         <div className="comment-body flex-fill">
           <h5 className="name-rating">

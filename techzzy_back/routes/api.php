@@ -33,7 +33,7 @@ Route::get('/comments/{comment}', [CommentController::class, 'show']);
 
 // Auth
 Route::post('/login', [UserController::class, 'login']);
-Route::get('/register', [UserController::class, 'register']);
+Route::post('/register', [UserController::class, 'register']);
 Route::get('/loggedIn', [UserController::class, 'loggedIn']);
 
 // Ratings
@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
   // Users
   Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
+  Route::put('/users/{user}', [UserController::class, 'update']);
 
   // ProductCart
   Route::post('/product_carts', [ProductCartController::class, 'store']);

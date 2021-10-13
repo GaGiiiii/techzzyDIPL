@@ -115,21 +115,25 @@ export default function ProductInfo({ product, setProduct }) {
 
   function addToCart(e) {
     e.preventDefault();
-    axios.post(`${api}/product_carts`, { product_id: product.id, count: quantity }, {
-      headers: {
-        Authorization: `Bearer ${currentUser.token}`
-      }
-    }).then(response => {
-      setFlashMessage({ type: 'success', message: `Product added to cart.` }) // Add Flash Message
-      let copyArr = [...productsInCart];
-      let copyP = { ...product }; // We are making copy of product cuz we need to append pcID and count
-      copyP.pcID = response.data.product_cart.id;
-      copyP.count = response.data.product_cart.count;
-      copyArr.push(copyP);
-      setProductsInCart(copyArr);
-    }).catch((error) => {
-      console.log(error);
-    });
+    if (currentUser) {
+      axios.post(`${api}/product_carts`, { product_id: product.id, count: quantity }, {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`
+        }
+      }).then(response => {
+        setFlashMessage({ type: 'success', message: `Product added to cart.` }) // Add Flash Message
+        let copyArr = [...productsInCart];
+        let copyP = { ...product }; // We are making copy of product cuz we need to append pcID and count
+        copyP.pcID = response.data.product_cart.id;
+        copyP.count = response.data.product_cart.count;
+        copyArr.push(copyP);
+        setProductsInCart(copyArr);
+      }).catch((error) => {
+        console.log(error);
+      });
+    }else{
+      setFlashMessage({ type: 'danger', message: `You need to be logged in.` }) // Add Flash Message
+    }
   }
 
   function deleteFromCart(e) {
@@ -155,10 +159,9 @@ export default function ProductInfo({ product, setProduct }) {
         <Card.Title className="fw-bold product-title">{product.name}</Card.Title>
         <div className="mt-3">
           <p className="fw-bold m-0">
-            <i className="fas fa-star"></i>
-            {calculateProductRating(product)}/10&nbsp;({usersRating}/10)
+            <i className="fas fa-star"></i> {calculateProductRating(product)}/10&nbsp;{currentUser && `(${usersRating}/10)`}
           </p>
-          <ul className="stars-ul">{stars && stars}</ul>
+          {currentUser && <ul className="stars-ul">{stars && stars}</ul>}
           <p className="fw-bold m-0">
             <i className="fas fa-tag"></i>
             <span className="original-price-span">&nbsp;{(Math.round(product.price * 100) / 100).toLocaleString()} {quantity > 1 ? `X${quantity} = ${(Math.round(quantity * product.price * 100) / 100).toLocaleString()}` : ''} </span> RSD

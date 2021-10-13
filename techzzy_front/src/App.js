@@ -11,6 +11,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import Cart from './components/cart/Cart';
 import Products from './components/products/Products';
 import ScrollToTop from './components/ScrollToTop';
+import Register from './components/register/Register';
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -62,6 +63,9 @@ function App() {
                     </Route>
                     <Route path="/dashboard">
                       <Dashboard />
+                    </Route>
+                    <Route path="/register">
+                      <Register />
                     </Route>
                     <Route path="/login">
                       <Login />

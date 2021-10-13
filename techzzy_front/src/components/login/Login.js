@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import './login.css';
 import NavbarC from '../NavbarC';
 import Footer from '../Footer';
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import axios from 'axios';
 import { login } from '../../Helpers';
 import { CurrentUserContext, FlashMessageContext, ApiContext } from '../../App';
@@ -56,32 +56,36 @@ export default function Login({ products }) {
       <Container>
         <Row className="my-5">
           <Col md={{ span: 6, offset: 3 }}>
-            <h1 className="fw-bold mb-4">Login</h1>
-            <div className="errors">
-              {errors && errors.map((error, index) => error && (
-                <p key={index} className="m-0">&bull; {error}</p>
-              ))}
-            </div>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" value={email} onChange={(event) => setEmail(event.target.value)} />
-                <Form.Text className="text-muted">
-                  We'll never share your email with anyone else.
-                </Form.Text>
-              </Form.Group>
+            <Card className='shadow'>
+              <Card.Body>
+                <h1 className="fw-bold mb-4">Login</h1>
+                <div className="errors">
+                  {errors && errors.map((error, index) => error && (
+                    <p key={index} className="m-0">&bull; {error}</p>
+                  ))}
+                </div>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" value={email} onChange={(event) => setEmail(event.target.value)} />
+                    <Form.Text className="text-muted">
+                      We'll never share your email with anyone else.
+                    </Form.Text>
+                  </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" onChange={(event) => setPassword(event.target.value)} />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                <Form.Check type="checkbox" label="Remember me" />
-              </Form.Group>
-              <Button variant="primary" type="submit" className="w-100">
-                Submit
-              </Button>
-            </Form>
+                  <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="password" placeholder="Password" onChange={(event) => setPassword(event.target.value)} />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                    <Form.Check type="checkbox" label="Remember me" />
+                  </Form.Group>
+                  <Button variant="primary" type="submit" className="w-100">
+                    Submit
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
       </Container>
