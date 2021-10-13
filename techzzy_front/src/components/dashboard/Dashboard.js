@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Footer from '../Footer';
 import NavbarC from '../NavbarC';
 import { ApiContext, CurrentUserContext, FlashMessageContext } from '../../App';
 import { Redirect } from 'react-router';
 import './dashboard.css';
 import { Accordion, Alert, Card, Col, Container, Form, Row } from 'react-bootstrap';
-import { isLoggedIn, login } from '../../Helpers';
+import { login } from '../../Helpers';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
 
 export default function Dashboard({ products }) {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
@@ -17,27 +16,17 @@ export default function Dashboard({ products }) {
   const [show, setShow] = useState(true);
 
   // Fields
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState(currentUser.first_name);
+  const [lastName, setLastName] = useState(currentUser.last_name);
+  const [username, setUsername] = useState(currentUser.username);
+  const [email, setEmail] = useState(currentUser.email);
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const [image, setImage] = useState();
-  const [imgSRC, setImgSRC] = useState("");
+  const [image, setImage] = useState("");
+  const imgSRC = currentUser.img ? `http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}` : `http://localhost:8000/avatars/no_image.jpg`;
   const api = useContext(ApiContext);
 
-  useEffect(() => {
-    if (currentUser) {
-      setFirstName(currentUser.first_name);
-      setLastName(currentUser.last_name);
-      setUsername(currentUser.username);
-      setEmail(currentUser.email);
-      currentUser.img ? setImgSRC(`http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}`) : setImgSRC(`http://localhost:8000/avatars/no_image.jpg`);
-    }
-  }, [currentUser]);
-
-  if (!isLoggedIn()) {
+  if (!currentUser) {
     return <Redirect to="/login" />
   }
 

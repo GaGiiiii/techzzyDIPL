@@ -21,14 +21,13 @@ export const ProductsContext = React.createContext(null);
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => isLoggedIn());
   const [flashMessage, setFlashMessage] = useState(null);
   const [productsInCart, setProductsInCart] = useState([]);
 
   const api = "http://localhost:8000/api";
 
   useEffect(() => {
-    setCurrentUser(isLoggedIn());
     axios.get(`${api}/products`).then(res => {
       setProducts(res.data.products);
     }).catch(err => console.log(err));
