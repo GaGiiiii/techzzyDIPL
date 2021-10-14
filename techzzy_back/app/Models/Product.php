@@ -32,4 +32,8 @@ class Product extends Model {
   public function productCarts() {
     return $this->hasMany(ProductCart::class);
   }
+
+  public function paymentProducts() {
+    return $this->hasMany(PaymentProduct::class);
+  }
 }

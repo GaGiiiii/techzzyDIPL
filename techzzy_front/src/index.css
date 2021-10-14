@@ -85,7 +85,11 @@ li a.cart .cart-basket {
   display: block;
 }
 
-.navbar-expand-lg .navbar-nav .dropdown-menu{
+.navbar-expand-lg .navbar-nav .dropdown-menu {
   left: auto;
   right: 0;
+}
+
+html, body {
+  scroll-behavior: auto !important;
 }

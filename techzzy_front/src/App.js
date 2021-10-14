@@ -12,6 +12,7 @@ import Cart from './components/cart/Cart';
 import Products from './components/products/Products';
 import ScrollToTop from './components/ScrollToTop';
 import Register from './components/register/Register';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -46,43 +47,45 @@ function App() {
   }, [currentUser])
 
   return (
-    <ApiContext.Provider value="http://localhost:8000/api">
-      <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
-        <ProductsContext.Provider value={{ products, setProducts }}>
-          <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>
-            <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
-              <Router>
-                <ScrollToTop>
-                  <Switch>
-                    <Route path="/products/:productID">
-                      <Product />
-                    </Route>
-                    <Route path="/products">
-                      <Products />
-                    </Route>
-                    <Route path="/dashboard">
-                      <Dashboard />
-                    </Route>
-                    <Route path="/register">
-                      <Register />
-                    </Route>
-                    <Route path="/login">
-                      <Login />
-                    </Route>
-                    <Route path="/cart">
-                      <Cart />
-                    </Route>
-                    <Route path="/">
-                      <Home />
-                    </Route>
-                  </Switch>
-                </ScrollToTop>
-              </Router>
-            </FlashMessageContext.Provider>
-          </ProductsInCartContext.Provider>
-        </ProductsContext.Provider>
-      </CurrentUserContext.Provider>
-    </ApiContext.Provider>
+    <PayPalScriptProvider options={{ 'client-id': 'AZTTSjbiEU5RyGlyMSCxqn0LifK02-cl1VJi1cPgFT4XaVZUcUPW5DEWQMQ_MPjHZ7qEbmALthMGcDTk', currency: 'EUR' }}>
+      <ApiContext.Provider value="http://localhost:8000/api">
+        <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
+          <ProductsContext.Provider value={{ products, setProducts }}>
+            <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>
+              <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage }}>
+                <Router>
+                  <ScrollToTop>
+                    <Switch>
+                      <Route path="/products/:productID">
+                        <Product />
+                      </Route>
+                      <Route path="/products">
+                        <Products />
+                      </Route>
+                      <Route path="/dashboard">
+                        <Dashboard />
+                      </Route>
+                      <Route path="/register">
+                        <Register />
+                      </Route>
+                      <Route path="/login">
+                        <Login />
+                      </Route>
+                      <Route path="/cart">
+                        <Cart />
+                      </Route>
+                      <Route path="/">
+                        <Home />
+                      </Route>
+                    </Switch>
+                  </ScrollToTop>
+                </Router>
+              </FlashMessageContext.Provider>
+            </ProductsInCartContext.Provider>
+          </ProductsContext.Provider>
+        </CurrentUserContext.Provider>
+      </ApiContext.Provider>
+    </PayPalScriptProvider>
   );
 }
 

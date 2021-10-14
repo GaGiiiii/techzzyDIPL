@@ -1,19 +1,21 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Footer from '../Footer';
 import NavbarC from '../NavbarC';
 import { ApiContext, CurrentUserContext, FlashMessageContext } from '../../App';
 import { Redirect } from 'react-router';
 import './dashboard.css';
-import { Accordion, Alert, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Accordion, Alert, Card, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { login } from '../../Helpers';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { formatDate } from '../../Helpers';
 
 export default function Dashboard({ products }) {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const { setFlashMessage } = useContext(FlashMessageContext);
   const [errors, setErrors] = useState(null);
   const [show, setShow] = useState(true);
+  const [payments, setPayments] = useState([]);
 
   // Fields
   const [firstName, setFirstName] = useState(currentUser.first_name);
@@ -25,6 +27,20 @@ export default function Dashboard({ products }) {
   const [image, setImage] = useState("");
   const imgSRC = currentUser.img ? `http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}` : `http://localhost:8000/avatars/no_image.jpg`;
   const api = useContext(ApiContext);
+
+
+  useEffect(() => {
+    axios.get(`${api}/users/${currentUser.id}/payments`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.token}`,
+      }
+    }).then(response => {
+      console.log(response.data);
+      setPayments(response.data.payments);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [api, currentUser]);
 
   if (!currentUser) {
     return <Redirect to="/login" />
@@ -73,9 +89,9 @@ export default function Dashboard({ products }) {
       <NavbarC products={products} />
       <Container className='mb-5'>
         {currentUser && <div className="main-body mt-5">
-          <Row>
-            <Col lg={4}>
-              <Card>
+          <Row className='equal'>
+            <Col lg={4} style={{ height: `100%` }}>
+              <Card className="shadow">
                 <Card.Body>
                   <div className="d-flex flex-column align-items-center text-center">
                     <img src={`${imgSRC}`} alt="Couldn't load." className="rounded-circle p-1 bg-primary" style={{ width: `110px`, }} />
@@ -108,7 +124,7 @@ export default function Dashboard({ products }) {
               </Card>
             </Col>
             <Col lg={8}>
-              <Card>
+              <Card className='shadow'>
                 <Card.Body>
                   {errors && show &&
                     <Alert variant="danger" onClose={() => setShow(false)} dismissible>
@@ -185,40 +201,46 @@ export default function Dashboard({ products }) {
                   </Form>
                 </Card.Body>
               </Card>
-              <Row className='mt-3'>
-                <Col sm={12}>
-                  <Card>
-                    <Card.Body>
-                      <h5 className="d-flex align-items-center mb-3">Project Status</h5>
-                      <p>Web Design</p>
-                      <div className="progress mb-3" style={{ height: `5px` }}>
-                        <div className="progress-bar bg-primary" role="progressbar" style={{ width: `80%` }}
-                          aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p>Website Markup</p>
-                      <div className="progress mb-3" style={{ height: `5px` }}>
-                        <div className="progress-bar bg-danger" role="progressbar" style={{ width: `72%` }}
-                          aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p>One Page</p>
-                      <div className="progress mb-3" style={{ height: `5px` }}>
-                        <div className="progress-bar bg-success" role="progressbar" style={{ width: `89%` }}
-                          aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p>Mobile Template</p>
-                      <div className="progress mb-3" style={{ height: `5px` }}>
-                        <div className="progress-bar bg-warning" role="progressbar" style={{ width: `55%` }}
-                          aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p>Backend API</p>
-                      <div className="progress" style={{ height: `5px` }}>
-                        <div className="progress-bar bg-info" role="progressbar" style={{ width: `66%` }}
-                          aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+            </Col>
+          </Row>
+          <Row className='mt-5'>
+            <Col sm={12}>
+              <Card className='shadow'>
+                <Card.Body>
+                  <h5 className="d-flex align-items-center mb-3">Payments</h5>
+                  {payments && payments.length > 0 ? <Table striped bordered hover className='payments-table'>
+                    <thead>
+                      <tr className='text-center'>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Products</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payments.map((payment, index) => (
+                        <tr key={index}>
+                          <td>{payment.order_id}</td>
+                          <td>&nbsp;{formatDate(payment.created_at)}h</td>
+                          <td>
+                            <Accordion>
+                              <Accordion.Item eventKey="1">
+                                <Accordion.Header>&nbsp;{payment.payment_products.length} - Products</Accordion.Header>
+                                <Accordion.Body className='text-start'>
+                                  {payment.payment_products.map(pp => (
+                                    <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li>{pp.product.name}</li></Link>
+                                  ))}
+                                </Accordion.Body>
+                              </Accordion.Item>
+                            </Accordion>
+                          </td>
+                          <td>{(Math.round(payment.price * 100) / 100).toLocaleString()} RSD</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table> : 'No payments'}
+                </Card.Body>
+              </Card>
             </Col>
           </Row>
         </div>}

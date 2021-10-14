@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { CurrentUserContext, ApiContext } from '../../App';
 import axios from 'axios';
 import AlertC from '../AlertC';
+import { formatDate } from '../../Helpers';
 
 export default function Comment({ comment, index, product, commentsFlashMessage, setCommentsFlashMessage }) {
   const { currentUser } = useContext(CurrentUserContext);
@@ -39,13 +40,6 @@ export default function Comment({ comment, index, product, commentsFlashMessage,
     let rating = ratings.find((rating) => rating.user_id === user.id && rating.product_id === product.id);
 
     return rating ? rating.rating : 0;
-  }
-
-  function formatDate(date) {
-    let formattedDate = new Date(date);
-    formattedDate = `${("0" + formattedDate.getDay()).slice(-2)}.${("0" + (formattedDate.getMonth() + 1)).slice(-2)}.${formattedDate.getFullYear()}. ${("0" + formattedDate.getHours()).slice(-2)}:${("0" + formattedDate.getMinutes()).slice(-2)}`;
-
-    return formattedDate;
   }
 
   function deleteComment(commentID) {

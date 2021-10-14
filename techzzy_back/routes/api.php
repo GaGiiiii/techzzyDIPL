@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductCartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RatingController;
@@ -51,6 +52,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
   // Users
   Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
+  Route::get('/users/{user}/payments', [UserController::class, 'getAllPayments']);
   Route::put('/users/{user}', [UserController::class, 'update']);
 
   // ProductCart
@@ -61,7 +63,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   // Ratings
   Route::post('/ratings', [RatingController::class, 'store']);
   Route::put('/ratings/{rating}', [RatingController::class, 'update']);
+
+  // Payments
+  Route::post('/payments', [PaymentController::class, 'store']);
 });
+// PROTECTED ==================================================
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

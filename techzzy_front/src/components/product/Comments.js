@@ -58,7 +58,7 @@ export default function Comments({ product, setProduct }) {
               {product.comments.length === 0 ? <h5 className="mb-4">No comments.</h5> : ""}
               {currentUser && <div className="new-comment d-flex">
                 <div className="comment-img">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png" alt="Couldn't load" />
+                  <img src={currentUser.img ? `http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
                 </div>
                 <div className="comment-textarea flex-fill">
                   {errors && <p className="error">{errors}</p>}

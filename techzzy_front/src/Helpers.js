@@ -28,3 +28,10 @@ export function calculateProductRating(product) {
 
   return (Math.round(rating / product.ratings.length * 100) / 100) || 0;
 }
+
+export function formatDate(date) {
+  let formattedDate = new Date(date);
+  formattedDate = `${("0" + formattedDate.getDate()).slice(-2)}.${("0" + (formattedDate.getMonth() + 1)).slice(-2)}.${formattedDate.getFullYear()}. ${("0" + formattedDate.getHours()).slice(-2)}:${("0" + formattedDate.getMinutes()).slice(-2)}`;
+
+  return formattedDate;
+}

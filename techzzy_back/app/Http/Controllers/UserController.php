@@ -250,4 +250,14 @@ class UserController extends Controller {
       "message" => "Products found",
     ], 200);
   }
+
+  public function getAllPayments($user_id) {
+    $user = User::with(['payments', 'payments.paymentProducts', 'payments.paymentProducts.product'])->where('id', $user_id)->get();
+    $payments = $user[0]['payments'];
+
+    return response([
+      "payments" => $payments,
+      "message" => "Payments found",
+    ], 200);
+  }
 }
