@@ -76,3 +76,7 @@ html, body, #root {
   transform: scale(1.025);
   cursor: pointer;
 }
+
+.th-hover:hover{
+  cursor: pointer;
+}
