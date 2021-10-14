@@ -18,7 +18,12 @@ class UserController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
-    //
+    $users = User::all();
+
+    return response([
+      "users" => $users,
+      "message" => "Users found",
+    ], 200);
   }
 
   /**

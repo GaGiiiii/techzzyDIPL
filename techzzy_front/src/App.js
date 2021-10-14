@@ -13,6 +13,7 @@ import Products from './components/products/Products';
 import ScrollToTop from './components/ScrollToTop';
 import Register from './components/register/Register';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import Admin from './components/admin/Admin';
 
 export const ApiContext = React.createContext();
 export const CurrentUserContext = React.createContext(null);
@@ -61,6 +62,9 @@ function App() {
                       </Route>
                       <Route path="/products">
                         <Products />
+                      </Route>
+                      <Route path="/admin">
+                        <Admin />
                       </Route>
                       <Route path="/dashboard">
                         <Dashboard />

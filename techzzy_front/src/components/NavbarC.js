@@ -61,7 +61,7 @@ export default function NavbarC({ active }) {
                   <NavDropdown className={active === "dashboard" ? 'active' : ''} title={currentUser.username} id="basic-nav-dropdown">
                     <NavDropdown.Item onClick={() => setFlashMessage(null)} as={Link} to="/dashboard">Dashboard</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={(e) => { handleRegister(); setFlashMessage(null); }}>Admin</NavDropdown.Item>
+                    <NavDropdown.Item onClick={(e) => { handleRegister(); setFlashMessage(null); }} as={Link} to='/admin'>Admin</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => handleLogout()}>Logout</NavDropdown.Item>
                   </NavDropdown>

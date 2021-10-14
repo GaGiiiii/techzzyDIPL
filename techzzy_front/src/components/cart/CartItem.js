@@ -86,7 +86,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
               <div className="mt-2 price">
                 <span className="current-count-span">{quantity}</span> x
                 <span className="original-product-price"> {(Math.round(product.price * 100) / 100).toLocaleString()} </span>
-                RSD
+                &euro;
               </div>
               <div className="quantity">
                 <ul className="quantity-ul">
@@ -101,7 +101,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
               <div className="total fw-bold">Total:
                 <span
                   className="total-product-price"> {(Math.round(quantity * product.price * 100) / 100).toLocaleString()} </span>
-                RSD
+                &euro;
               </div>
             </Card.Body>
           </div>

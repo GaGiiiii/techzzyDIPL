@@ -234,7 +234,7 @@ export default function Dashboard({ products }) {
                               </Accordion.Item>
                             </Accordion>
                           </td>
-                          <td>{(Math.round(payment.price * 100) / 100).toLocaleString()} RSD</td>
+                          <td>{(Math.round(payment.price * 100) / 100).toLocaleString()} &euro;</td>
                         </tr>
                       ))}
                     </tbody>

@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::apiResource('users', UserController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('carts', CartController::class);
@@ -46,11 +45,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   Route::post('/logout', [UserController::class, 'logout']);
 
   // Comments
+  Route::get('/comments', [CommentController::class, 'index']);
   Route::post('/comments', [CommentController::class, 'store']);
   Route::put('/comments/{comment}', [CommentController::class, 'update']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
   // Users
+  Route::get('/users', [UserController::class, 'index']);
   Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
   Route::get('/users/{user}/payments', [UserController::class, 'getAllPayments']);
   Route::put('/users/{user}', [UserController::class, 'update']);
@@ -65,6 +66,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   Route::put('/ratings/{rating}', [RatingController::class, 'update']);
 
   // Payments
+  Route::get('/payments', [PaymentController::class, 'index']);
   Route::post('/payments', [PaymentController::class, 'store']);
 });
 // PROTECTED ==================================================

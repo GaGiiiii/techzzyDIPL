@@ -12,6 +12,20 @@ use Validator;
 
 class PaymentController extends Controller {
   /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index() {
+    $payments = Payment::all();
+
+    return response([
+      "payments" => $payments,
+      "message" => "Payments found",
+    ], 200);
+  }
+
+  /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
@@ -42,7 +56,7 @@ class PaymentController extends Controller {
     ProductCart::where('cart_id', $cartID)->get()->each->delete();
 
     // Save Products
-    foreach($request->products as $product){
+    foreach ($request->products as $product) {
       $pp = new PaymentProduct;
       $pp->product_id = $product['id'];
       $pp->payment_id = $payment->id;

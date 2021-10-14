@@ -110,12 +110,12 @@ export default function Cart() {
           </Col>
           <Col xs={4}>
             <div className="total-div shadow payment-col">
-              <h5><strong className="fw-bold">SUBTOTAL:</strong> <span className="subtotal-price-span">{totalPrice.toLocaleString()}</span> RSD</h5>
-              <h5><strong>SHIPPING:</strong> <span>0 RSD</span></h5>
-              <h5><strong>TAX:</strong> <span className="tax-span">{(Math.round(totalPrice * 0.1 * 100) / 100).toLocaleString()}</span> RSD
+              <h5><strong className="fw-bold">SUBTOTAL:</strong> <span className="subtotal-price-span">{totalPrice.toLocaleString()}</span> &euro;</h5>
+              <h5><strong>SHIPPING:</strong> <span>0 &euro;</span></h5>
+              <h5><strong>TAX:</strong> <span className="tax-span">{(Math.round(totalPrice * 0.1 * 100) / 100).toLocaleString()}</span> &euro;
                 (10%)</h5>
               <h5 className="totalG2"><strong>TOTAL:</strong> <span
-                className="total-price-span">{(Math.round((totalPrice + totalPrice * 0.1) * 100) / 100).toLocaleString()}</span> RSD
+                className="total-price-span">{(Math.round((totalPrice + totalPrice * 0.1) * 100) / 100).toLocaleString()}</span> &euro;
               </h5>
               {/* <button className="btn btn-primary btn-lg checkout-btn">Checkout</button> */}
               {productsInCart.length > 0 && <PayPalButtons style={{ marginTop: `10px` }} createOrder={createOrder} onApprove={onApprove} forceReRender={[totalPrice]} />}
