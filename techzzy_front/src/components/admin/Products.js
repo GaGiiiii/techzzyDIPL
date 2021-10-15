@@ -107,7 +107,7 @@ export default function Products() {
           </thead>
           <tbody>
             {products && products.slice((page - 1) * 10, (page - 1) * 10 + 10).map((product, index) => (
-              <ProductRow key={index} index={index} product={product} products={products} setProducts={setProducts} />
+              <ProductRow key={index} index={index} product={product} products={products} setProducts={setProducts} categories={categories} setErrors={setErrors} setShowErrors={setShowErrors} />
             ))}
           </tbody>
         </Table>

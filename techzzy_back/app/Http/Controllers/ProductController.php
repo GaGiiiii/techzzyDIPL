@@ -145,8 +145,9 @@ class ProductController extends Controller {
     $product->img = $request->img;
     $product->stock = $request->stock;
     $product->price = $request->price;
-
     $product->save();
+
+    $product = $product->fresh(['ratings', 'comments', 'category', 'comments.user']);
 
     return response([
       "product" => $product,
