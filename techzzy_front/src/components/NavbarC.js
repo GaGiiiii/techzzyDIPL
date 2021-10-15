@@ -4,7 +4,6 @@ import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { CurrentUserContext, FlashMessageContext, ProductsInCartContext } from '../App';
 import { logout } from '../Helpers';
-import axios from 'axios';
 import { useHistory } from 'react-router';
 import AlertC from './AlertC';
 
