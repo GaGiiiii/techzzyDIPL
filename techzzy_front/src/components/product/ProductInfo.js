@@ -21,9 +21,11 @@ export default function ProductInfo({ product, setProduct }) {
   }, [product.id, productsInCart]);
 
   useEffect(() => {
-    let rating = product.ratings.find(rating => rating.user_id === currentUser.id);
-    if (rating) {
-      setUsersRating(rating.rating);
+    if (currentUser) {
+      let rating = product.ratings.find(rating => rating.user_id === currentUser.id);
+      if (rating) {
+        setUsersRating(rating.rating);
+      }
     }
   }, [product, currentUser]);
 
@@ -131,7 +133,7 @@ export default function ProductInfo({ product, setProduct }) {
       }).catch((error) => {
         console.log(error);
       });
-    }else{
+    } else {
       setFlashMessage({ type: 'danger', message: `You need to be logged in.` }) // Add Flash Message
     }
   }
