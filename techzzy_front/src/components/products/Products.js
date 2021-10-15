@@ -143,8 +143,8 @@ export default function Products() {
       <NavbarC active="products" />
 
       <Container>
-        <Row className="mt-5">
-          <Col xs={2}>
+        <Row className="mt-4 mt-lg-5">
+          <Col xl={2} lg={{ span: 3, offset: 0 }} xs={{ span: 8, offset: 2 }}>
             <Card className="filters shadow">
               <div id="sort">
                 <h4 className="mb-2">Sort by:</h4>
@@ -177,11 +177,11 @@ export default function Products() {
               </div>
             </Card>
           </Col>
-          <Col xs={10}>
-            <Container fluid className="pe-2">
+          <Col xl={10} lg={9} md={12}>
+            <Container fluid className="g-1">
               <Row>
                 {productsToShow && productsToShow.map(product => (
-                  <Col lg={3} md={4} sm={6} key={product.id} className="product-col">
+                  <Col xxl={3} xl={4} lg={6} md={4} sm={6} key={product.id} className="product-col">
                     <Link to={`/products/${product.id}`} className="text-decoration-none">
                       <Card className="shadow p-card">
                         <img src={product.img} className="card-img-top" alt="Couldn't load" style={{ height: `300px` }} />
