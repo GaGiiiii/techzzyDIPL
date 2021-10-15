@@ -62,3 +62,18 @@ a.reactistrash:hover {
   transform: scale(1.03);
   padding-top: 7px;
 }
+
+@media (max-width: 1030px) {
+  #search {
+    width: 400px;
+    margin-right: 30px;
+    margin-left: 20px;
+  }
+}
+
+@media (max-width: 991px) {
+  #search {
+    margin-left: 0px;
+    width: 100%;
+  }
+}

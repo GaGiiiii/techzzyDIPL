@@ -154,7 +154,7 @@ export default function ProductInfo({ product, setProduct }) {
   }
 
   return (
-    <Card className="product-card">
+    <Card className="product-card shadow">
       <Card.Body>
         <Card.Title className="fw-bold product-title">{product.name}</Card.Title>
         <div className="mt-3">

@@ -23,7 +23,7 @@ export default function NavbarC({ active }) {
 
   return (
     <>
-      <Navbar className="navbar text-white" bg="primary" expand="lg">
+      <Navbar className="navbar navbar-dark text-white" bg="primary" expand="lg">
         <Container>
           <Navbar.Brand className="text-white fw-bold"><Link to="/" className="text-white text-decoration-none">Techzzy  <i className="fas fa-desktop"></i></Link></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

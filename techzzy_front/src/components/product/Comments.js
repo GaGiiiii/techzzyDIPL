@@ -50,7 +50,7 @@ export default function Comments({ product, setProduct }) {
   return (
     <Row className="my-5">
       <Col>
-        <Card>
+        <Card className='shadow'>
           <Card.Body>
             <Card.Title className="fw-bold product-title">Comments and Ratings</Card.Title>
             {commentsFlashMessage && <AlertC flashMessage={commentsFlashMessage} setFlashMessage={setCommentsFlashMessage} />}

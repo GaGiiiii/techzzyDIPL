@@ -24,12 +24,12 @@ export default function Product() {
       {product &&
         <Container>
           <Row className="mt-5 mb-5">
-            <Col sm={6}>
-              <Card>
-                <img src={product.img} className="card-img-top thumbnail" alt="Couldn't load." />
+            <Col md={6} className='order-2 order-md-1 mt-3 mt-md-0'>
+              <Card className='shadow'>
+                <img src={product.img} className="card-img-top" alt="Couldn't load." />
               </Card>
             </Col>
-            <Col sm={6} className="mt-5 mt-sm-0">
+            <Col md={6} className="mt-sm-0 order-1 order-md-2">
               <ProductInfo product={product} setProduct={setProduct} />
             </Col>
           </Row>
