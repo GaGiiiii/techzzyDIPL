@@ -90,6 +90,8 @@ export default function Products({ categories }) {
             </ul>
           </Alert>
         }
+
+        <div className='table-container'>
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -109,6 +111,7 @@ export default function Products({ categories }) {
             ))}
           </tbody>
         </Table>
+        </div>
 
         {paginationBasic}
 

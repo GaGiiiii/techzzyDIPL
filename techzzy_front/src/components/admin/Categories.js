@@ -47,20 +47,22 @@ export default function Categories({ categories, setCategories }) {
             </ul>
           </Alert>
         }
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th className="th-hover" onClick={handleShow}><i className="fas fa-plus"></i></th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories && categories.map((category, index) => (
-              <CategoryRow key={index} index={index} category={category} categories={categories} setCategories={setCategories} setErrors={setErrors} setShowErrors={setShowErrors} />
-            ))}
-          </tbody>
-        </Table>
+        <div className='table-container'>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th className="th-hover" onClick={handleShow}><i className="fas fa-plus"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              {categories && categories.map((category, index) => (
+                <CategoryRow key={index} index={index} category={category} categories={categories} setCategories={setCategories} setErrors={setErrors} setShowErrors={setShowErrors} />
+              ))}
+            </tbody>
+          </Table>
+        </div>
       </Col>
 
       <Modal show={show} onHide={handleClose}>

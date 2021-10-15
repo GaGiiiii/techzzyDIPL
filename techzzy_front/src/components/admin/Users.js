@@ -32,32 +32,34 @@ export default function Users({ users }) {
   return (
     <Col>
       <h1 className="mb-4">Users</h1>
-      <Table striped bordered hover>
-        <thead>
-          <tr className='text-center'>
-            <th>#</th>
-            <th>Image</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Username</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users && users.slice((page - 1) * 5, (page - 1) * 5 + 5).map((user, index) => (
-            <tr key={index} style={{ verticalAlign: 'middle' }} className='text-center'>
-              <td>{++index}</td>
-              <td>
-                <img style={{ width: '50px' }} src={user.img ? `http://localhost:8000/avatars/${user.username}/${user.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
-              </td>
-              <td>{user.first_name}</td>
-              <td>{user.last_name}</td>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-            </tr>))}
-        </tbody>
-      </Table>
-
+      <div className='table-container'>
+        <Table striped bordered hover>
+          <thead>
+            <tr className='text-center'>
+              <th>#</th>
+              <th>Image</th>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Username</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users && users.slice((page - 1) * 5, (page - 1) * 5 + 5).map((user, index) => (
+              <tr key={index} style={{ verticalAlign: 'middle' }} className='text-center'>
+                <td>{++index}</td>
+                <td>
+                  <img style={{ width: '50px' }} src={user.img ? `http://localhost:8000/avatars/${user.username}/${user.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
+                </td>
+                <td>{user.first_name}</td>
+                <td>{user.last_name}</td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+              </tr>))}
+          </tbody>
+        </Table>
+      </div>
+      
       {paginationBasic}
 
     </Col>

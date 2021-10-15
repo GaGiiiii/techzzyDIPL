@@ -36,40 +36,42 @@ export default function Payments({ payments }) {
   return (
     <Col>
       <h1 className="mb-4">Payments</h1>
-      <Table striped bordered hover>
-        <thead>
-          <tr className='text-center'>
-            <th>#</th>
-            <th>OrderID</th>
-            <th>User</th>
-            <th>Products</th>
-            <th>Price</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {payments && payments.slice((page - 1) * 5, (page - 1) * 5 + 5).map((payment, index) => (
-            <tr key={index} style={{ verticalAlign: 'middle' }} className='text-center'>
-              <td>{++index}</td>
-              <td>{payment.order_id}</td>
-              <td>{`${payment.user.first_name} ${payment.user.last_name}`}</td>
-              <td style={{ maxWidth: '160px' }}>
-                <Accordion>
-                  <Accordion.Item eventKey="1">
-                    <Accordion.Header>&nbsp;{payment.payment_products.length} - Products</Accordion.Header>
-                    <Accordion.Body className='text-start'>
-                      {payment.payment_products.map(pp => (
-                        <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li>{pp.product.name}</li></Link>
-                      ))}
-                    </Accordion.Body>
-                  </Accordion.Item>
-                </Accordion>
-              </td>
-              <td>{(Math.round(payment.price * 100) / 100).toLocaleString()}&euro;</td>
-              <td>&nbsp;{formatDate(payment.created_at)}h</td>
-            </tr>))}
-        </tbody>
-      </Table>
+      <div className='table-container'>
+        <Table striped bordered hover>
+          <thead>
+            <tr className='text-center'>
+              <th>#</th>
+              <th>OrderID</th>
+              <th>User</th>
+              <th>Products</th>
+              <th>Price</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payments && payments.slice((page - 1) * 5, (page - 1) * 5 + 5).map((payment, index) => (
+              <tr key={index} style={{ verticalAlign: 'middle' }} className='text-center'>
+                <td>{++index}</td>
+                <td>{payment.order_id}</td>
+                <td>{`${payment.user.first_name} ${payment.user.last_name}`}</td>
+                <td style={{ maxWidth: '160px' }}>
+                  <Accordion>
+                    <Accordion.Item eventKey="1">
+                      <Accordion.Header>&nbsp;{payment.payment_products.length} - Products</Accordion.Header>
+                      <Accordion.Body className='text-start'>
+                        {payment.payment_products.map(pp => (
+                          <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li>{pp.product.name}</li></Link>
+                        ))}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                </td>
+                <td>{(Math.round(payment.price * 100) / 100).toLocaleString()}&euro;</td>
+                <td>&nbsp;{formatDate(payment.created_at)}h</td>
+              </tr>))}
+          </tbody>
+        </Table>
+      </div>
 
       {paginationBasic}
 

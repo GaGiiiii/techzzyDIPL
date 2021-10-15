@@ -60,10 +60,10 @@ export default function Admin() {
     <>
       <Container fluid className='h-100'>
         <Row className='h-100'>
-          <Col xs={"auto"} className='g-0'>
+          <Col sm={4} md={3} xl={2} className='g-0'>
             <Sidebar setActivePage={setActivePage} />
           </Col>
-          <Col className='mt-5'>
+          <Col className='mt-5' xl={10} md={9} sm={8}>
             <Container fluid>
               <Row>
                 <Cards products={products} users={users} comments={comments} payments={payments} />

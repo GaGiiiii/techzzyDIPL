@@ -53,7 +53,7 @@ html, body, #root {
   cursor: pointer;
 }
 
-.admin-card{
+.admin-card {
   flex-direction: row;
   justify-content: space-between;
   padding: 30px 30px;
@@ -63,20 +63,50 @@ html, body, #root {
   height: 100px;
 }
 
-.admin-card .admin-text{
+.admin-card .admin-text {
   font-size: 17px;
   font-weight: 500;
 }
 
-.admin-card i{
+.admin-card i {
   font-size: 35px;
 }
 
-.admin-card:hover{
+.admin-card:hover {
   transform: scale(1.025);
   cursor: pointer;
 }
 
-.th-hover:hover{
+.th-hover:hover {
   cursor: pointer;
+}
+
+.table-container {
+  overflow-x: scroll;
+}
+
+.table-container table {
+  min-width: 1400px;
+}
+
+@media (max-width: 1405px) {
+  .admin-card .admin-text{
+    font-size: 14px;
+  }
+  .admin-card i{
+    font-size: 25px;
+  }
+}
+
+
+@media (max-width: 1255px) {
+  .admin-card .admin-text{
+    font-size: 13px;
+  }
+  .admin-card i{
+    font-size: 20px;
+  }
+  .admin-card{
+    padding: 15px;
+  }
 }
