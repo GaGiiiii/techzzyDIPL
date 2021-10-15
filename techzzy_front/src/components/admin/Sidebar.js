@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import { Col, Container, Navbar, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { CurrentUserContext } from '../../App';
 
-export default function Sidebar() {
+export default function Sidebar({ setActivePage }) {
   const { currentUser } = useContext(CurrentUserContext);
+  const history = useHistory();
 
   return (
     <div className='sidebar'>
@@ -23,10 +24,10 @@ export default function Sidebar() {
           </Row>
           <Row>
             <ul className='admin-ul'>
-              <li><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fas fa-shopping-cart"></i></Col> <Col>Products</Col> </Row></li>
-              <li><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fab fa-cuttlefish"></i></Col> <Col>Categories</Col> </Row></li>
-              <li><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fas fa-user"></i></Col> <Col>Users</Col> </Row></li>
-              <li><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fas fa-money-check-alt"></i></Col> <Col>Payments</Col> </Row></li>
+              <li onClick={() => { history.push(`${window.location.pathname}`); setActivePage('products') }}><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fas fa-shopping-cart"></i></Col> <Col>Products</Col> </Row></li>
+              <li onClick={() => { history.push(`${window.location.pathname}`); setActivePage('categories') }}><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fab fa-cuttlefish"></i></Col> <Col>Categories</Col> </Row></li>
+              <li onClick={() => { history.push(`${window.location.pathname}`); setActivePage('users') }}><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fas fa-user"></i></Col> <Col>Users</Col> </Row></li>
+              <li onClick={() => { history.push(`${window.location.pathname}`); setActivePage('payments') }}><Row><Col className='pe-0 text-center' xs={'auto'} style={{ width: '35px' }}><i className="fas fa-money-check-alt"></i></Col> <Col>Payments</Col> </Row></li>
             </ul>
           </Row>
         </Container>

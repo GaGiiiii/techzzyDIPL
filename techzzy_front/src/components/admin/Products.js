@@ -5,10 +5,9 @@ import { ApiContext, CurrentUserContext, ProductsContext } from '../../App';
 import ProductRow from './ProductRow';
 import axios from 'axios';
 
-export default function Products() {
+export default function Products({ categories }) {
   const { products, setProducts } = useContext(ProductsContext);
   const { currentUser } = useContext(CurrentUserContext);
-  const [categories, setCategories] = useState([]);
   const [errors, setErrors] = useState(null);
   const api = useContext(ApiContext);
 
@@ -24,7 +23,7 @@ export default function Products() {
   const [img, setImg] = useState("");
   const [stock, setStock] = useState(0);
   const [price, setPrice] = useState(0.0);
-  const [categoryID, setCategoryID] = useState(null);
+  const [categoryID, setCategoryID] = useState(1);
 
   // MODAL
   const [show, setShow] = useState(false);
@@ -32,17 +31,16 @@ export default function Products() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  useEffect(() => {
+    if (categories[0]) {
+      setCategoryID(categories[0].id);
+    }
+  }, [categories])
+
   const changePage = useCallback(
     (number) => {
       number === 1 ? history.push(`${window.location.pathname}`) : history.push(`${window.location.pathname}?page=${number}`);
     }, [history]);
-
-  useEffect(() => {
-    axios.get(`${api}/categories`).then(res => {
-      setCategories(res.data.categories);
-      setCategoryID(res.data.categories[0].id);
-    }).catch(err => console.log(err));
-  }, [api]);
 
   useEffect(() => {
     let productsG = [...products];

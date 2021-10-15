@@ -18,8 +18,11 @@ export default function ProductRow({ products, setProducts, product, index, cate
 
   // MODAL
   const [show, setShow] = useState(false);
+  const [show2, setShow2] = useState(false);
   const handleClose = () => setShow(false);
+  const handleClose2 = () => setShow2(false);
   const handleShow = () => setShow(true);
+  const handleShow2 = () => setShow2(true);
 
   function handleDelete(e) {
     e.preventDefault();
@@ -48,6 +51,7 @@ export default function ProductRow({ products, setProducts, product, index, cate
       let indexOfChanged = productsG.findIndex(p => p.id === response.data.product.id);
       productsG[indexOfChanged] = response.data.product;
       setProducts(productsG);
+      setShow2(false);
     }).catch((error) => {
       setErrors(Object.values(error.response.data.errors));
       setShowErrors(true);
@@ -64,7 +68,7 @@ export default function ProductRow({ products, setProducts, product, index, cate
         <td>{product.img}</td>
         <td>{product.stock}</td>
         <td>{(Math.round(product.price * 100) / 100).toLocaleString()}&euro;</td>
-        <td><i className="fas fa-edit" onClick={handleShow}></i><i className="fas fa-trash" onClick={handleDelete}></i></td>
+        <td><i className="fas fa-edit" onClick={handleShow}></i><i className="fas fa-trash" onClick={handleShow2}></i></td>
       </tr>
 
       <Modal show={show} onHide={handleClose}>
@@ -126,6 +130,20 @@ export default function ProductRow({ products, setProducts, product, index, cate
             </Button>
           </Form>
         </Modal.Body>
+      </Modal>
+
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>Are You sure that you want to delete {product.name} product?</Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+          <Button variant="danger" onClick={handleDelete}>
+            Yes
+          </Button>
+          <Button variant="secondary" onClick={handleClose2}>
+            Cancel
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   )

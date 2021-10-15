@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Validator;
 
 class CategoryController extends Controller {
   /**
@@ -12,7 +13,7 @@ class CategoryController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
-    $categories = Category::with('products')->get();
+    $categories = Category::with('products')->orderBy('created_at', 'DESC')->get();
 
     return response([
       "categories" => $categories,
@@ -47,6 +48,8 @@ class CategoryController extends Controller {
     $category = new Category;
     $category->name = $request->name;
     $category->save();
+
+    $category = $category->fresh(['products']);
 
     return response([
       "category" => $category,
@@ -112,6 +115,8 @@ class CategoryController extends Controller {
 
     $category->name = $request->name;
     $category->save();
+
+    $category = $category->fresh(['products']);
 
     return response([
       "category" => $category,

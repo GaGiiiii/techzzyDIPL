@@ -6,16 +6,25 @@ import './admin.css';
 import Sidebar from './Sidebar';
 import Cards from './Cards';
 import Products from './Products';
+import Categories from './Categories';
+import Users from './Users';
+import Payments from './Payments';
 
 export default function Admin() {
   const { currentUser } = useContext(CurrentUserContext);
   const [comments, setComments] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [users, setUsers] = useState([]);
   const [payments, setPayments] = useState([]);
   const { products } = useContext(ProductsContext);
   const api = useContext(ApiContext);
+  const [activePage, setActivePage] = useState('products');
 
   useEffect(() => {
+    axios.get(`${api}/categories`).then(res => {
+      setCategories(res.data.categories);
+    }).catch(err => console.log(err));
+
     axios.get(`${api}/comments`, {
       headers: {
         Authorization: `Bearer ${currentUser.token}`
@@ -52,7 +61,7 @@ export default function Admin() {
       <Container fluid className='h-100'>
         <Row className='h-100'>
           <Col xs={"auto"} className='g-0'>
-            <Sidebar />
+            <Sidebar setActivePage={setActivePage} />
           </Col>
           <Col className='mt-5'>
             <Container fluid>
@@ -60,7 +69,10 @@ export default function Admin() {
                 <Cards products={products} users={users} comments={comments} payments={payments} />
               </Row>
               <Row className='mt-5'>
-                <Products />
+                {activePage === 'products' && <Products categories={categories} />}
+                {activePage === 'categories' && <Categories categories={categories} setCategories={setCategories} />}
+                {activePage === 'users' && <Users users={users} />}
+                {activePage === 'payments' && <Payments payments={payments} />}
               </Row>
             </Container>
           </Col>
