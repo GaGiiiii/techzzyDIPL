@@ -22,14 +22,6 @@ export default function NavbarC({ active }) {
     setFlashMessage({ type: 'success', message: `Logout successful. See ya soon ${username}!` }) // Add Flash Message
   }
 
-  function handleRegister() {
-    axios.get(`http://localhost:8000/register`, { withCredentials: true }).then(res => {
-      console.log(res.data);
-    }).catch(error => {
-      console.log(error);
-    });
-  }
-
   return (
     <>
       <Navbar className="navbar text-white" bg="primary" expand="lg">
@@ -46,7 +38,7 @@ export default function NavbarC({ active }) {
               {currentUser == null ?
                 <>
                   <Nav.Link onClick={() => setFlashMessage(null)} as={Link} to="/login" className={active === "login" ? 'active' : ''}>Login</Nav.Link>
-                  <Nav.Link onClick={() => { setFlashMessage(null); handleRegister(); }} as={Link} to="/register" className={active === "register" ? 'active' : ''}>Register</Nav.Link>
+                  <Nav.Link onClick={() => setFlashMessage(null)} as={Link} to="/register" className={active === "register" ? 'active' : ''}>Register</Nav.Link>
                 </>
                 :
                 <>
@@ -61,7 +53,7 @@ export default function NavbarC({ active }) {
                   <NavDropdown className={active === "dashboard" ? 'active' : ''} title={currentUser.username} id="basic-nav-dropdown">
                     <NavDropdown.Item onClick={() => setFlashMessage(null)} as={Link} to="/dashboard">Dashboard</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={(e) => { handleRegister(); setFlashMessage(null); }} as={Link} to='/admin'>Admin</NavDropdown.Item>
+                    <NavDropdown.Item onClick={(e) => setFlashMessage(null)} as={Link} to='/admin'>Admin</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => handleLogout()}>Logout</NavDropdown.Item>
                   </NavDropdown>
