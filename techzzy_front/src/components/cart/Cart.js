@@ -96,29 +96,35 @@ export default function Cart() {
             <h1 className="fw-bold my-cart">My Cart</h1>
           </div>
           <div>
-            <Link to='/products'><button className="btn btn-primary">Continue Shopping</button></Link>
+            <Link to='/products'><button className="btn btn-primary continue">Continue Shopping</button></Link>
           </div>
         </div>
 
         {cartFlashMessage && <AlertC cartAlert={true} flashMessage={cartFlashMessage} setFlashMessage={setCartFlashMessage} />}
 
         <Row>
-          <Col xs={8}>
+          <Col sm={12} md={8}>
             {productsInCart && productsInCart.map(product => (
               <CartItem product={product} key={product.id} totalPrice={totalPrice} setTotalPrice={setTotalPrice} setCartFlashMessage={setCartFlashMessage} />
             ))}
           </Col>
-          <Col xs={4}>
+          <Col sm={12} md={4}>
             <div className="total-div shadow payment-col">
-              <h5><strong className="fw-bold">SUBTOTAL:</strong> <span className="subtotal-price-span">{totalPrice.toLocaleString()}</span> &euro;</h5>
-              <h5><strong>SHIPPING:</strong> <span>0 &euro;</span></h5>
-              <h5><strong>TAX:</strong> <span className="tax-span">{(Math.round(totalPrice * 0.1 * 100) / 100).toLocaleString()}</span> &euro;
-                (10%)</h5>
-              <h5 className="totalG2"><strong>TOTAL:</strong> <span
-                className="total-price-span">{(Math.round((totalPrice + totalPrice * 0.1) * 100) / 100).toLocaleString()}</span> &euro;
-              </h5>
-              {/* <button className="btn btn-primary btn-lg checkout-btn">Checkout</button> */}
-              {productsInCart.length > 0 && <PayPalButtons style={{ marginTop: `10px` }} createOrder={createOrder} onApprove={onApprove} forceReRender={[totalPrice]} />}
+              <Row>
+                <Col xs={"auto"} md={12}>
+                  <h5><strong className="fw-bold">SUBTOTAL: </strong> <span className="subtotal-price-span">{totalPrice.toLocaleString()}</span> &euro; </h5>
+                  <h5><strong>SHIPPING: </strong> <span>0 &euro; </span></h5>
+                  <h5><strong>TAX: </strong> <span className="tax-span">{(Math.round(totalPrice * 0.1 * 100) / 100).toLocaleString()}</span> &euro;
+                    (10%)</h5>
+                  <h5 className="totalG2"><strong>TOTAL: </strong> <span
+                    className="total-price-span">{(Math.round((totalPrice + totalPrice * 0.1) * 100) / 100).toLocaleString()}</span> &euro;
+                  </h5>
+                  {/* <button className="btn btn-primary btn-lg checkout-btn">Checkout</button> */}
+                </Col>
+                <Col>
+                  {productsInCart.length > 0 && <PayPalButtons style={{ marginTop: `10px` }} createOrder={createOrder} onApprove={onApprove} forceReRender={[totalPrice]} />}
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>

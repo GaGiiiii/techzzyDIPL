@@ -123,7 +123,7 @@ export default function Dashboard({ products }) {
                 </Card.Body>
               </Card>
             </Col>
-            <Col lg={8}>
+            <Col lg={8} className='mt-5 mt-lg-0'>
               <Card className='shadow'>
                 <Card.Body>
                   {errors && show &&
@@ -205,7 +205,7 @@ export default function Dashboard({ products }) {
           </Row>
           <Row className='mt-5'>
             <Col sm={12}>
-              <Card className='shadow'>
+              <Card className='shadow payment-card'>
                 <Card.Body>
                   <h5 className="d-flex align-items-center mb-3">Payments</h5>
                   {payments && payments.length > 0 ? <Table striped bordered hover className='payments-table'>
@@ -223,12 +223,12 @@ export default function Dashboard({ products }) {
                           <td>{payment.order_id}</td>
                           <td>&nbsp;{formatDate(payment.created_at)}h</td>
                           <td>
-                            <Accordion>
+                            <Accordion className='acc-payments'>
                               <Accordion.Item eventKey="1">
                                 <Accordion.Header>&nbsp;{payment.payment_products.length} - Products</Accordion.Header>
                                 <Accordion.Body className='text-start'>
                                   {payment.payment_products.map(pp => (
-                                    <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li>{pp.product.name}</li></Link>
+                                    <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li className='acc-p-name'>{pp.product.name}</li></Link>
                                   ))}
                                 </Accordion.Body>
                               </Accordion.Item>

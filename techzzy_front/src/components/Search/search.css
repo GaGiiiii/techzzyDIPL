@@ -65,9 +65,7 @@ a.reactistrash:hover {
 
 @media (max-width: 1030px) {
   #search {
-    width: 400px;
-    margin-right: 30px;
-    margin-left: 20px;
+    width: 350px;
   }
 }
 

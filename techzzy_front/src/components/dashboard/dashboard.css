@@ -8,3 +8,24 @@
   text-align: center;
   vertical-align: middle;
 }
+
+.payment-card {
+  overflow-x: scroll;
+}
+
+.payment-card .card-body {
+  min-width: 750px;
+}
+
+.payment-card table {
+  min-width: 700px;
+}
+
+@media(max-width: 991px) {
+  .acc-p-name {
+    font-size: 12px;
+  }
+  .acc-payments .accordion-body {
+    padding: .25rem .5rem;
+  }
+}

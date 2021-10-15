@@ -143,3 +143,81 @@
 .paypal-buttons {
   margin-top: 20px;
 }
+
+@media (max-width: 1024px) {
+  .cart-row .product-img {
+    width: 150px;
+  }
+  .cart-row .card-title {
+    font-size: 14px;
+  }
+  .cart-item .quantity {
+    position: static;
+  }
+  .cart-item .price {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  .cart-item .quantity ul li {
+    padding: .1rem .4rem;
+    font-size: 11px;
+  }
+  .total-div span {
+    font-size: 11px;
+  }
+  .total-div h5 {
+    font-size: 13px;
+    ;
+  }
+  .cart-item .total {
+    font-size: 13px;
+  }
+  .paypal-buttons {
+    min-width: auto !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .cart-row .product-img {
+    width: 100px;
+  }
+  .product-img-div {
+    margin-right: 0;
+    align-items: center;
+    display: flex;
+  }
+  .cart-row .card-title {
+    font-size: 11px;
+  }
+  .cart-item .quantity {
+    position: static;
+  }
+  .cart-item .price {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+  .cart-item .quantity ul li {
+    padding: 0 6px;
+    font-size: 9px;
+  }
+  .total-div span {
+    font-size: 12px;
+  }
+  .total-div h5 {
+    font-size: 13px;
+    ;
+  }
+  .cart-item .total {
+    font-size: 11px;
+  }
+  .paypal-buttons {
+    min-width: auto !important;
+    margin-top: 0;
+  }
+  .cart-row:last-of-type {
+    margin-bottom: 25px;
+  }
+  .paypal-button.paypal-button-shape-rect{
+    padding: 10px;
+  }
+}
