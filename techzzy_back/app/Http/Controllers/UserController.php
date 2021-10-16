@@ -265,4 +265,8 @@ class UserController extends Controller {
       "message" => "Payments found",
     ], 200);
   }
+
+  public function isAdmin(){
+    return auth()->user()->is_admin;
+  }
 }
