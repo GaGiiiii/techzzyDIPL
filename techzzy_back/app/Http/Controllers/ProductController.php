@@ -29,10 +29,6 @@ class ProductController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
-    // if ($request->user_id != auth()->user()->id) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
-
     $category = Category::find($request->category_id);
 
     if (!$category) {
@@ -40,6 +36,13 @@ class ProductController extends Controller {
         'product' => null,
         'message' => 'Category not found.',
       ], 400);
+    }
+
+    if (auth()->user()->cannot('create', Product::class)) {
+      return response([
+        "product" => null,
+        "message" => "Unauthorized.",
+      ], 401);
     }
 
     // VALIDATE DATA
@@ -117,9 +120,12 @@ class ProductController extends Controller {
       ], 404);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    if (auth()->user()->cannot('update', $product)) {
+      return response([
+        "product" => $product,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
@@ -164,9 +170,12 @@ class ProductController extends Controller {
   public function destroy($id) {
     $product = Product::find($id);
 
-    // if (auth()->user()->cannot('delete', $product)) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->cannot('forceDelete', $product)) {
+      return response([
+        "product" => $product,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     $product->delete();
 

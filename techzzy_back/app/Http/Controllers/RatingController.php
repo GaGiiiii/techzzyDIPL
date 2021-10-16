@@ -30,10 +30,6 @@ class RatingController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
-    // if ($request->user_id != auth()->user()->id) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
-
     $product = Product::find($request->product_id);
     $user = User::find($request->user_id);
 
@@ -42,6 +38,13 @@ class RatingController extends Controller {
         'product' => null,
         'message' => 'Product / User not found.',
       ], 400);
+    }
+
+    if (auth()->user()->id !== $request->user_id) {
+      return response([
+        "rating" => null,
+        "message" => "Unauthorized.",
+      ], 401);
     }
 
     // VALIDATE DATA
@@ -112,9 +115,12 @@ class RatingController extends Controller {
       ], 404);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    if (auth()->user()->cannot('update', $rating)) {
+      return response([
+        "rating" => $rating,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
@@ -149,18 +155,13 @@ class RatingController extends Controller {
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id) {
-    $rating = Rating::find($id);
+  // public function destroy($id) {
+  //   $rating = Rating::find($id);
+  //   $rating->delete();
 
-    // if (auth()->user()->cannot('delete', $rating)) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
-
-    $rating->delete();
-
-    return response([
-      "rating" => $rating,
-      "message" => "Rating deleted.",
-    ], 200);
-  }
+  //   return response([
+  //     "rating" => $rating,
+  //     "message" => "Rating deleted.",
+  //   ], 200);
+  // }
 }

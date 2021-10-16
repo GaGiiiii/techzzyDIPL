@@ -29,9 +29,12 @@ class CommentController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
-    // if ($request->user_id != auth()->user()->id) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->id !== $request->user_id) {
+      return response([
+        "comment" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     $product = Product::find($request->product_id);
 
@@ -109,9 +112,12 @@ class CommentController extends Controller {
       ], 404);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    if (auth()->user()->cannot('update', $comment)) {
+      return response([
+        "comment" => $comment,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
@@ -144,9 +150,12 @@ class CommentController extends Controller {
   public function destroy($id) {
     $comment = Comment::find($id);
 
-    // if (auth()->user()->cannot('delete', $comment)) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->cannot('forceDelete', $comment)) {
+      return response([
+        "comment" => $comment,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     $comment->delete();
 

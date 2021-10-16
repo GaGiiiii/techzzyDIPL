@@ -28,9 +28,12 @@ class CategoryController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
-    // if ($request->user_id != auth()->user()->id) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->cannot('create', Category::class)) {
+      return response([
+        "category" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
@@ -89,6 +92,13 @@ class CategoryController extends Controller {
   public function update(Request $request, $id) {
     $category = Category::find($id);
 
+    if (auth()->user()->cannot('update', $category)) {
+      return response([
+        "category" => $category,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
+
     if (!$category) {
       return response([
         'category' => null,
@@ -133,9 +143,12 @@ class CategoryController extends Controller {
   public function destroy($id) {
     $category = Category::find($id);
 
-    // if (auth()->user()->cannot('delete', $category)) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->cannot('forceDelete', $category)) {
+      return response([
+        "category" => $category,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     $category->delete();
 

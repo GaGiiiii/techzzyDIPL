@@ -17,6 +17,13 @@ class PaymentController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function index() {
+    if (auth()->user()->cannot('viewAny', Payment::class)) {
+      return response([
+        "payments" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
+
     $payments = Payment::with(['paymentProducts', 'paymentProducts.product', 'user'])->get();
 
     return response([
@@ -32,6 +39,13 @@ class PaymentController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
+    if (auth()->user()->id !== $request->user_id) {
+      return response([
+        "payment" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
+
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
       'price' => 'required|numeric',

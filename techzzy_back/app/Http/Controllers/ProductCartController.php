@@ -24,9 +24,12 @@ class ProductCartController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
-    // if ($request->user_id != auth()->user()->id) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->cart->id !== $request->cart_id) {
+      return response([
+        "product_cart" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     $product = Product::find($request->product_id);
 
@@ -92,9 +95,12 @@ class ProductCartController extends Controller {
       ], 404);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    if (auth()->user()->cannot('update', $product_cart)) {
+      return response([
+        "product_cart" => $product_cart,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
@@ -127,9 +133,12 @@ class ProductCartController extends Controller {
   public function destroy($id) {
     $product_cart = ProductCart::find($id);
 
-    // if (auth()->user()->cannot('delete', $comment)) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
+    if (auth()->user()->cannot('forceDelete', $product_cart)) {
+      return response([
+        "product_cart" => $product_cart,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     $product_cart->delete();
 

@@ -34,6 +34,7 @@ export default function ProductRow({ products, setProducts, product, index, cate
       let newProducts = [...products];
       newProducts.splice(newProducts.indexOf(product), 1);
       setProducts(newProducts);
+      setShow2(false);
     }).catch((error) => {
       console.log(error);
     });

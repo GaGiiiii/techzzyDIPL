@@ -22,14 +22,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::apiResource('products', ProductController::class);
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('carts', CartController::class);
-
 // Comments
 Route::get('/comments', [CommentController::class, 'index']);
 Route::get('/comments/{comment}', [CommentController::class, 'show']);
+
+// Products
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{product}', [ProductController::class, 'show']);
+
+// Categories
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/category/{category}', [CategoryController::class, 'show']);
 
 // Auth
 Route::post('/login', [UserController::class, 'login']);
@@ -41,14 +44,18 @@ Route::get('/ratings', [RatingController::class, 'index']);
 
 // PROTECTED ==================================================
 Route::group(['middleware' => 'auth:sanctum'], function () {
-  // Route::get('/products', [ProductController::class, 'index']);
+  // Auth
   Route::post('/logout', [UserController::class, 'logout']);
 
   // Comments
-  Route::get('/comments', [CommentController::class, 'index']);
   Route::post('/comments', [CommentController::class, 'store']);
   Route::put('/comments/{comment}', [CommentController::class, 'update']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
+  // Products
+  Route::post('/products', [ProductController::class, 'store']);
+  Route::put('/products/{product}', [ProductController::class, 'update']);
+  Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
   // Users
   Route::get('/users', [UserController::class, 'index']);

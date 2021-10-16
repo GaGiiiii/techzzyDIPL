@@ -20,6 +20,13 @@ class UserController extends Controller {
   public function index() {
     $users = User::all();
 
+    if (auth()->user()->cannot('viewAny', User::class)) {
+      return response([
+        "users" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
+
     return response([
       "users" => $users,
       "message" => "Users found",
@@ -63,9 +70,12 @@ class UserController extends Controller {
       ], 404);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    if (auth()->user()->cannot('update', $user)) {
+      return response([
+        "user" => $user,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
 
     // VALIDATE DATA
     $validator = Validator::make($request->all(), [
@@ -243,6 +253,13 @@ class UserController extends Controller {
     $pcs = ProductCart::with('product', 'product.ratings', 'product.category')->where('cart_id', $user->cart->id)->get();
     $products = [];
 
+    if (auth()->user()->cannot('getAllProductsInCart', $user)) {
+      return response([
+        "products" => null,
+        "message" => "Unauthorized.",
+      ], 401);
+    }
+
     foreach ($pcs as $pc) {
       $product = $pc['product'];
       $product->count = $pc->count;
@@ -257,8 +274,15 @@ class UserController extends Controller {
   }
 
   public function getAllPayments($user_id) {
-    $user = User::with(['payments', 'payments.paymentProducts', 'payments.paymentProducts.product'])->where('id', $user_id)->get();
-    $payments = $user[0]['payments'];
+    $users = User::with(['payments', 'payments.paymentProducts', 'payments.paymentProducts.product'])->where('id', $user_id)->get();
+    $payments = $users[0]['payments'];
+
+    if (auth()->user()->cannot('getAllPayments', $users[0])) {
+      return response([
+        "payments" => null,
+        "message" => "Unauthorizedd.",
+      ], 401);
+    }
 
     return response([
       "payments" => $payments,
@@ -266,7 +290,7 @@ class UserController extends Controller {
     ], 200);
   }
 
-  public function isAdmin(){
+  public function isAdmin() {
     return auth()->user()->is_admin;
   }
 }
