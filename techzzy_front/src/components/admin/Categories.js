@@ -26,8 +26,11 @@ export default function Categories({ categories, setCategories }) {
       }
     }).then(response => {
       let categoriesG = [...categories];
+      console.log(categoriesG)
       categoriesG.unshift(response.data.category);
       setCategories(categoriesG);
+      console.log(categoriesG)
+      setName('');
     }).catch((error) => {
       setErrors(Object.values(error.response.data.errors));
       setShowErrors(true);

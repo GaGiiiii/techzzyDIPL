@@ -71,6 +71,14 @@ export default function Products({ categories }) {
       console.log(response.data.product);
       productsG.unshift(response.data.product);
       setProducts(productsG);
+
+      // EMPTY FORM
+      setName("");
+      setDesc("");
+      setImg("");
+      setStock(0);
+      setPrice(0.0);
+      setCategoryID(1);
     }).catch((error) => {
       setErrors(Object.values(error.response.data.errors));
       setShowErrors(true);
@@ -92,25 +100,25 @@ export default function Products({ categories }) {
         }
 
         <div className='table-container'>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Desc</th>
-              <th>Img</th>
-              <th>Stock</th>
-              <th>Price</th>
-              <th className="th-hover" onClick={handleShow}><i className="fas fa-plus"></i></th>
-            </tr>
-          </thead>
-          <tbody>
-            {products && products.slice((page - 1) * 10, (page - 1) * 10 + 10).map((product, index) => (
-              <ProductRow key={index} index={index} product={product} products={products} setProducts={setProducts} categories={categories} setErrors={setErrors} setShowErrors={setShowErrors} />
-            ))}
-          </tbody>
-        </Table>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Desc</th>
+                <th>Img</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th className="th-hover" onClick={handleShow}><i className="fas fa-plus"></i></th>
+              </tr>
+            </thead>
+            <tbody>
+              {products && products.slice((page - 1) * 10, (page - 1) * 10 + 10).map((product, index) => (
+                <ProductRow key={index} index={index} product={product} products={products} setProducts={setProducts} categories={categories} setErrors={setErrors} setShowErrors={setShowErrors} />
+              ))}
+            </tbody>
+          </Table>
         </div>
 
         {paginationBasic}

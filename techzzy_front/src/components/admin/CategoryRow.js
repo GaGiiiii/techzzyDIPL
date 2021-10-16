@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { ApiContext, CurrentUserContext } from '../../App';
 import axios from 'axios';
@@ -17,6 +17,10 @@ export default function CategoryRow({ category, categories, setCategories, index
   const handleClose2 = () => setShow2(false);
   const handleShow = () => setShow(true);
   const handleShow2 = () => setShow2(true);
+
+  useEffect(() => {
+    setName(category.name);
+  }, [category])
 
   function handleDelete(e) {
     e.preventDefault();

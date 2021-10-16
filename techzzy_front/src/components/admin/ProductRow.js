@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { ApiContext, CurrentUserContext } from '../../App';
 import { Col, Form, Modal, Row, Button } from 'react-bootstrap';
@@ -23,6 +23,15 @@ export default function ProductRow({ products, setProducts, product, index, cate
   const handleClose2 = () => setShow2(false);
   const handleShow = () => setShow(true);
   const handleShow2 = () => setShow2(true);
+
+  useEffect(() => {
+    setName(product.name);
+    setDesc(product.desc);
+    setImg(product.img);
+    setStock(product.stock);
+    setPrice(product.price);
+    setCategoryID(product.category_id);
+  }, [product]);
 
   function handleDelete(e) {
     e.preventDefault();

@@ -57,6 +57,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
   Route::put('/products/{product}', [ProductController::class, 'update']);
   Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
+  // Categories
+  Route::post('/categories', [CategoryController::class, 'store']);
+  Route::put('/categories/{category}', [CategoryController::class, 'update']);
+  Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+
   // Users
   Route::get('/users', [UserController::class, 'index']);
   Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
