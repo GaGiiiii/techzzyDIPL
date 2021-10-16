@@ -24,13 +24,6 @@ class ProductCartController extends Controller {
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request) {
-    if (auth()->user()->cart->id !== $request->cart_id) {
-      return response([
-        "product_cart" => null,
-        "message" => "Unauthorized.",
-      ], 401);
-    }
-
     $product = Product::find($request->product_id);
 
     if (!$product) {

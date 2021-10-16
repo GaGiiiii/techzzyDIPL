@@ -55,26 +55,42 @@ export default function Cart() {
     });
   }
 
-  function onApprove(data, actions) {
-    return actions.order.capture().then(function (details) {
-      setFlashMessage({ type: 'success', message: `Transaction completed by ${details.payer.name.given_name}!` }) // Add Flash Message
-      savePayment(details);
-    });
+  async function onApprove(data, actions) {
+    let { dbSucc } = await savePayment(data.orderID);
+
+    if (dbSucc) { // Saved in DB
+      return actions.order.capture().then(function (details) {
+        setFlashMessage({ type: 'success', message: `Transaction completed by ${details.payer.name.given_name}!` }) // Add Flash Message
+        let newUser = { ...currentUser };
+        newUser.cart.product_carts = [];
+        setCurrentUser(newUser);
+        setProductsInCart([]);
+      }).catch(e => console.log(e));
+    }
   }
 
-  function savePayment(details) {
-    console.log(details)
-    axios.post(`${api}/payments`, { order_id: details.id, user_id: currentUser.id, price: Math.round((totalPrice + totalPrice * 0.1) * 100) / 100, products: productsInCart }, {
+  async function savePayment(orderID) {
+    return axios({
+      method: 'post',
+      url: `${api}/payments`,
       headers: {
         Authorization: `Bearer ${currentUser.token}`
+      },
+      data: { order_id: orderID, user_id: currentUser.id, price: Math.round((totalPrice + totalPrice * 0.1) * 100) / 100, products: productsInCart },
+    }).then(res => {
+      return {
+        dbSucc: true, // Did Payment Save In Database
+        resData: res.data,
       }
-    }).then(response => {
-      let newUser = { ...currentUser };
-      newUser.cart.product_carts = [];
-      setCurrentUser(newUser);
-      setProductsInCart([]);
     }).catch((error) => {
-      console.log("Payment Save Error");
+      if (error.response) {
+        setFlashMessage({ type: 'danger', message: `${error.response.data.errors[0][0]}` }) // Add Flash Message
+      }
+
+      return {
+        dbSucc: false,
+        error,
+      };
     });
   }
 

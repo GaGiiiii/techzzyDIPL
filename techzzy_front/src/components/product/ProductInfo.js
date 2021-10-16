@@ -183,15 +183,18 @@ export default function ProductInfo({ product, setProduct }) {
             </ul>
           </div>
         </div>
-        {inCart !== undefined ?
-          <Button onClick={deleteFromCart} type="button" variant="outline-primary" className="add-to-cart-btn w-100 fw-bold mt-4">
-            Remove from cart
+        {product.stock === 0 ?
+          <Button type="button" variant="outline-primary" className="add-to-cart-btn w-100 fw-bold mt-4">
+            Out of stock
           </Button> :
-          <Button onClick={addToCart} type="button" variant="outline-primary" className="add-to-cart-btn w-100 fw-bold mt-4">
-            Add to cart
-          </Button>
+          inCart !== undefined ?
+            <Button onClick={deleteFromCart} type="button" variant="outline-primary" className="add-to-cart-btn w-100 fw-bold mt-4">
+              Remove from cart
+            </Button> :
+            <Button onClick={addToCart} type="button" variant="outline-primary" className="add-to-cart-btn w-100 fw-bold mt-4">
+              Add to cart
+            </Button>
         }
-
       </Card.Body>
     </Card>
   )
