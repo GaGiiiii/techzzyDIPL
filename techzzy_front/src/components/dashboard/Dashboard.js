@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import Footer from '../Footer';
 import NavbarC from '../NavbarC';
 import { ApiContext, CurrentUserContext, FlashMessageContext } from '../../App';
-import { Redirect } from 'react-router';
 import './dashboard.css';
 import { Accordion, Alert, Card, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { login } from '../../Helpers';
@@ -35,16 +34,11 @@ export default function Dashboard({ products }) {
         'Authorization': `Bearer ${currentUser.token}`,
       }
     }).then(response => {
-      console.log(response.data);
       setPayments(response.data.payments);
     }).catch((error) => {
       console.log(error);
     });
   }, [api, currentUser]);
-
-  if (!currentUser) {
-    return <Redirect to="/login" />
-  }
 
   function handleChanges(e) {
     e.preventDefault();

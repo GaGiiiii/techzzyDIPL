@@ -6,7 +6,7 @@ import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import axios from 'axios';
 import { login } from '../../Helpers';
 import { CurrentUserContext, FlashMessageContext, ApiContext } from '../../App';
-import { Redirect, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 export default function Login({ products }) {
   let history = useHistory();
@@ -16,11 +16,7 @@ export default function Login({ products }) {
   const { setFlashMessage } = useContext(FlashMessageContext);
 
   const api = useContext(ApiContext)
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
-
-  if (currentUser) {
-    return <Redirect to="/" />
-  }
+  const { setCurrentUser } = useContext(CurrentUserContext);
 
   function handleSubmit(event) {
     event.preventDefault();

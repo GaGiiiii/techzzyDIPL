@@ -31,7 +31,6 @@ export default function ProductRow({ products, setProducts, product, index, cate
         Authorization: `Bearer ${currentUser.token}`
       }
     }).then(response => {
-      console.log(response.data);
       let newProducts = [...products];
       newProducts.splice(newProducts.indexOf(product), 1);
       setProducts(newProducts);

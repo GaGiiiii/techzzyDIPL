@@ -67,7 +67,7 @@ export default function Categories({ categories, setCategories }) {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Adding Product</Modal.Title>
+          <Modal.Title>Adding Category</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>

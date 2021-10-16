@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import "bootswatch/dist/sandstone/bootstrap.min.css";
 import Home from "./components/home/Home";
 import Product from './components/product/Product';
@@ -64,19 +64,19 @@ function App() {
                         <Products />
                       </Route>
                       <Route path="/admin">
-                        <Admin />
+                        {(!currentUser || (currentUser && !currentUser.is_admin)) ? <Redirect to='/' /> : <Admin />}
                       </Route>
                       <Route path="/dashboard">
-                        <Dashboard />
+                        {currentUser ? <Dashboard /> : <Redirect to='/login' />}
                       </Route>
                       <Route path="/register">
-                        <Register />
+                        {!currentUser ? <Register /> : <Redirect to='/' />}
                       </Route>
                       <Route path="/login">
-                        <Login />
+                        {!currentUser ? <Login /> : <Redirect to='/' />}
                       </Route>
                       <Route path="/cart">
-                        <Cart />
+                        {currentUser ? <Cart /> : <Redirect to='/login' />}
                       </Route>
                       <Route path="/">
                         <Home />

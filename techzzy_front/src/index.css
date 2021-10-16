@@ -1,3 +1,7 @@
+html, body, #root {
+  height: 100%;
+}
+
 body {
   font-family: "Nunito", "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   overflow-x: hidden;
@@ -94,4 +98,3 @@ li a.cart .cart-basket {
 html, body {
   scroll-behavior: auto !important;
 }
-

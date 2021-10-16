@@ -4,7 +4,7 @@ import Footer from '../Footer'
 import NavbarC from '../NavbarC'
 import './cart.css';
 import { ApiContext, CurrentUserContext, FlashMessageContext, ProductsInCartContext } from '../../App';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 import CartItem from './CartItem';
 import AlertC from '../AlertC';
 import { PayPalButtons } from "@paypal/react-paypal-js";
@@ -21,10 +21,6 @@ export default function Cart() {
   const { setFlashMessage } = useContext(FlashMessageContext);
 
   useEffect(() => {
-    if (!currentUser) {
-      return <Redirect to="/" />
-    }
-
     axios.get(`${api}/users/${currentUser.id}/cart`, {
       headers: {
         Authorization: `Bearer ${currentUser.token}`
@@ -41,6 +37,7 @@ export default function Cart() {
     });
     setTotalPrice(totalP);
   }, [productsInCart]);
+
 
   function createOrder(data, actions) {
     return actions.order.create({
@@ -62,8 +59,6 @@ export default function Cart() {
     return actions.order.capture().then(function (details) {
       setFlashMessage({ type: 'success', message: `Transaction completed by ${details.payer.name.given_name}!` }) // Add Flash Message
       savePayment(details);
-      console.log(details)
-
     });
   }
 
@@ -74,13 +69,10 @@ export default function Cart() {
         Authorization: `Bearer ${currentUser.token}`
       }
     }).then(response => {
-      console.log(response.data);
       let newUser = { ...currentUser };
       newUser.cart.product_carts = [];
       setCurrentUser(newUser);
       setProductsInCart([]);
-      console.log(newUser);
-      console.log(currentUser);
     }).catch((error) => {
       console.log("Payment Save Error");
     });

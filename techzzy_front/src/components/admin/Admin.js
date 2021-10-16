@@ -54,6 +54,12 @@ export default function Admin() {
     }).catch((error) => {
       console.log("Admin Error");
     });
+    return () => {
+      setCategories(null);
+      setComments(null);
+      setUsers(null);
+      setPayments(null);
+    }
   }, [api, currentUser]);
 
   return (

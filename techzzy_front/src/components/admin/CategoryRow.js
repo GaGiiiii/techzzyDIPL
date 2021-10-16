@@ -10,7 +10,7 @@ export default function CategoryRow({ category, categories, setCategories, index
   // CATEGORY DATA
   const [name, setName] = useState(category.name);
 
-  // MODAL
+  // MODAL FOR ADD AND DELETE
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
   const handleClose = () => setShow(false);
@@ -25,7 +25,6 @@ export default function CategoryRow({ category, categories, setCategories, index
         Authorization: `Bearer ${currentUser.token}`
       }
     }).then(response => {
-      console.log(response.data);
       let newCategories = [...categories];
       newCategories.splice(newCategories.indexOf(category), 1);
       setCategories(newCategories);
