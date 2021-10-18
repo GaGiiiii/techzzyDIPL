@@ -7,7 +7,7 @@ import axios from 'axios';
 export default function Categories({ categories, setCategories }) {
   const { currentUser } = useContext(CurrentUserContext);
   const [errors, setErrors] = useState(null);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
 
   // CATEGORY DATA
   const [name, setName] = useState("");

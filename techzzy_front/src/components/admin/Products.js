@@ -9,7 +9,7 @@ export default function Products({ categories }) {
   const { products, setProducts } = useContext(ProductsContext);
   const { currentUser } = useContext(CurrentUserContext);
   const [errors, setErrors] = useState(null);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
 
   // PAGINATION
   const search = useLocation().search;

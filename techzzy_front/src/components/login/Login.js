@@ -15,7 +15,7 @@ export default function Login({ products }) {
   const [errors, setErrors] = useState([]);
   const { setFlashMessage } = useContext(FlashMessageContext);
 
-  const api = useContext(ApiContext)
+  const { api } = useContext(ApiContext);
   const { setCurrentUser } = useContext(CurrentUserContext);
 
   function handleSubmit(event) {

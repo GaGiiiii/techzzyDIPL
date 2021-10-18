@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 14, 2021 at 03:27 AM
+-- Generation Time: Oct 18, 2021 at 11:25 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -80,8 +80,8 @@ INSERT INTO `categories` (`id`, `name`, `created_at`, `updated_at`) VALUES
 
 CREATE TABLE `comments` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) NOT NULL,
-  `product_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
   `body` varchar(5000) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -331,7 +331,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2021_09_25_173442_create_products_table', 1),
 (10, '2021_09_25_174311_create_product_carts_table', 1),
 (11, '2021_10_13_221327_create_payments_table', 2),
-(13, '2021_10_13_234351_create_payment_products_table', 3);
+(13, '2021_10_13_234351_create_payment_products_table', 3),
+(14, '2021_10_14_222022_add_foreign_key_constraint_products', 4),
+(15, '2021_10_15_233137_add_is_admin_to_users', 5),
+(16, '2021_10_16_024551_add_count_column_to_payment_products', 6);
 
 -- --------------------------------------------------------
 
@@ -353,7 +356,7 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `payments` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
   `order_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(8,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -365,9 +368,7 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `user_id`, `order_id`, `price`, `created_at`, `updated_at`) VALUES
-(11, 1, '5MS308995N4483217', '141501.43', '2021-10-13 22:08:15', '2021-10-13 22:08:15'),
-(12, 1, '8W595285LJ882224L', '76136.82', '2021-10-13 22:54:33', '2021-10-13 22:54:33'),
-(13, 1, '4A965348HL8694924', '77483.11', '2021-10-13 23:23:00', '2021-10-13 23:23:00');
+(71, 1, '0SP47742KJ7582531', '346283.73', '2021-10-16 03:12:24', '2021-10-16 03:12:24');
 
 -- --------------------------------------------------------
 
@@ -377,22 +378,20 @@ INSERT INTO `payments` (`id`, `user_id`, `order_id`, `price`, `created_at`, `upd
 
 CREATE TABLE `payment_products` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  `payment_id` bigint(20) NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `payment_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `payment_products`
 --
 
-INSERT INTO `payment_products` (`id`, `product_id`, `payment_id`, `created_at`, `updated_at`) VALUES
-(1, 56, 11, '2021-10-13 22:08:15', '2021-10-13 22:08:15'),
-(2, 57, 11, '2021-10-13 22:08:15', '2021-10-13 22:08:15'),
-(3, 51, 11, '2021-10-13 22:08:15', '2021-10-13 22:08:15'),
-(4, 7, 12, '2021-10-13 22:54:33', '2021-10-13 22:54:33'),
-(5, 57, 13, '2021-10-13 23:23:00', '2021-10-13 23:23:00');
+INSERT INTO `payment_products` (`id`, `product_id`, `payment_id`, `created_at`, `updated_at`, `count`) VALUES
+(95, 15, 71, '2021-10-16 03:12:24', '2021-10-16 03:12:24', 3),
+(96, 17, 71, '2021-10-16 03:12:24', '2021-10-16 03:12:24', 2);
 
 -- --------------------------------------------------------
 
@@ -418,7 +417,7 @@ CREATE TABLE `personal_access_tokens` (
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `created_at`, `updated_at`) VALUES
 (45, 'App\\Models\\User', 11, 'usertoken', '134d2edf8df7c4f119fe97d93de570e9ba723f6588409cb7491188772a397721', '[\"*\"]', '2021-10-12 23:40:14', '2021-10-12 23:38:03', '2021-10-12 23:40:14'),
-(50, 'App\\Models\\User', 1, 'usertoken', '43cd8583d13d0caa7a8d2764ed7fb01b97649f7a9d87e2b932e851c750421132', '[\"*\"]', '2021-10-13 23:23:04', '2021-10-13 00:03:24', '2021-10-13 23:23:04');
+(57, 'App\\Models\\User', 1, 'usertoken', '76700a27449a27f5f7ba3b9d42483f5e50198c196127011f25f9f4cae213fff3', '[\"*\"]', '2021-10-16 15:18:56', '2021-10-15 21:52:23', '2021-10-16 15:18:56');
 
 -- --------------------------------------------------------
 
@@ -428,7 +427,7 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 
 CREATE TABLE `products` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `category_id` bigint(20) NOT NULL,
+  `category_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `desc` varchar(5000) COLLATE utf8mb4_unicode_ci NOT NULL,
   `img` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -457,9 +456,9 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `desc`, `img`, `stock`, `pr
 (12, 4, 'AMD Ryzen 9 5900X 3.7GHz', 'Est est totam quae. Ratione qui qui doloribus voluptatibus enim autem minima mollitia.', 'https://img.gigatron.rs/img/products/large/AMD-Ryzen-9-5900X-3.7GHz-43.png', 46, '68789.96', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (13, 4, 'INTEL Core i9-11900KF 3.5GHz (5.30 GHz)', 'Aut officiis eligendi ab voluptatem sapiente fugit aut id. Non quia est molestiae et.', 'https://img.gigatron.rs/img/products/large/INTEL-Core-i9-11900KF-3.5GHz-(5.30-GHz)-22.png', 58, '78175.82', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (14, 4, 'INTEL Core i9-10850K 3.6GHz (5.20 GHz)', 'Fuga officiis qui dolore. Voluptas labore aut aut ut aut iure. Harum repellendus ut qui fugit.', 'https://img.gigatron.rs/img/products/large/Intel-Core-i9-10850K-3.6GHz-31.png', 53, '15495.96', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
-(15, 4, 'AMD Ryzen 7 5800X 3.8GHz (4.7GHz)', 'Mollitia aperiam voluptatem et. Dolores tenetur et ullam eligendi. Blanditiis minima est quos sed.', 'https://img.gigatron.rs/img/products/large/image5fa937bc875af.png', 20, '55826.75', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
+(15, 4, 'AMD Ryzen 7 5800X 3.8GHz (4.7GHz)', 'Mollitia aperiam voluptatem et. Dolores tenetur et ullam eligendi. Blanditiis minima est quos sed.', 'https://img.gigatron.rs/img/products/large/image5fa937bc875af.png', 17, '55826.75', '2021-07-31 12:17:56', '2021-10-16 03:12:24'),
 (16, 5, 'GIGABYTE AORUS GeForce RTX 3090 XTREME WATERFORCE WB 24GB GDDR6X 384-bit GV-N3090AORUSX WB-24GD', 'Eos impedit aut eum delectus numquam. Tempora sapiente hic dignissimos atque.', 'https://img.gigatron.rs/img/products/large/GIGABYTE-AORUS-Radeon-RTX-3090-XTREME-WATERFORCE-WB-24GB-GDDR6X-384-bit-GV-N3090AORUSX-WB-24GD-21.png', 72, '78162.41', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
-(17, 5, 'MSI Radeon RX 6900 XT GAMING Z TRIO 16GB', 'Saepe quam voluptatem aut vel. Ut odio voluptatem aut inventore est. Quibusdam sit et perferendis.', 'https://img.gigatron.rs/img/products/large/product_16213155974734fe4b66ccd21988000dd6b30504d7-min-77.png', 73, '73661.57', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
+(17, 5, 'MSI Radeon RX 6900 XT GAMING Z TRIO 16GB', 'Saepe quam voluptatem aut vel. Ut odio voluptatem aut inventore est. Quibusdam sit et perferendis.', 'https://img.gigatron.rs/img/products/large/product_16213155974734fe4b66ccd21988000dd6b30504d7-min-77.png', 71, '73661.57', '2021-07-31 12:17:56', '2021-10-16 03:12:24'),
 (18, 5, 'SAPPHIRE TOXIC RX 6900 XT 16GB GDDR6 256-bit Limited Edition 11308-06-20G', 'Aut voluptates asperiores in assumenda eum harum qui. Commodi quis et sed beatae.', 'https://img.gigatron.rs/img/products/large/SAPPHIRE-TOXIC-RX-6900-XT-16GB-GDDR6-256-bit-Limited-Edition-11308-06-20G-79.png', 53, '13225.38', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (19, 5, 'GAINWARD NVIdia GeForce RTX 3070 Phoenix LHR 8GB GS NE63070S19P2-1041X', 'Tempora expedita eaque eos. Doloribus ea natus sit. Quia et sunt iure.', 'https://img.gigatron.rs/img/products/large/GAINWARD-NVIdia-GeForce-RTX-3070-Phoenix-GS-NE63070S19P2-1041X-.png', 65, '61636.37', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (20, 5, 'ASUS TUF Gaming GeForce GTX 1650 4GB GDDR6 128-bit - TUF-GTX1650-4GD6-P-G', 'Impedit totam velit pariatur minima. Cumque occaecati nulla et vero. Et perspiciatis modi et.', 'https://img.gigatron.rs/img/products/large/ASUS-TUF-Gaming-GeForce-GTX-1650-GAMING-4GB-GDDR6-128-bit-TUF-GTX1650-4GD6-P-G-86.png', 78, '6331.10', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
@@ -476,7 +475,7 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `desc`, `img`, `stock`, `pr
 (31, 8, 'NZXT Vodeno procesorsko hlađenje Kraken Z63 - RL-KRZ63-01', 'Error fuga nihil ipsum deleniti. Nobis est magni reprehenderit. Et repudiandae sit aperiam.', 'https://img.gigatron.rs/img/products/large/image5e7b796a12cfa.png', 75, '75904.67', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (32, 8, 'GIGABYTE Vodeno procesorsko hlađenje AORUS WATERFORCE 240', 'Et optio est dolorum officia nihil rerum qui quia. Enim quia nam asperiores aliquid.', 'https://img.gigatron.rs/img/products/large/GIGABYTE-Vodeno-procesorsko-hlađenje-AORUS-WATERFORCE-240-26.png', 34, '66137.49', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (33, 8, 'THERMALTAKE Vodeno procesorsko hlađanje 3.0 Riing RGB 360 CL-W108-PL12SW-A', 'Est natus earum iure iusto quia atque incidunt. Aliquam sunt dolores rem distinctio.', 'https://img.gigatron.rs/img/products/large/THERMALTAKE-Vodeno-procesorsko-hlađanje-3.0-Riing-RGB-360-CL-W108-PL12SW-A-14.png', 62, '69601.93', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
-(34, 8, 'MSI Vodeno procesorsko hlađenje MAG CORELIQUID 280R', 'Eos voluptates aut voluptatem quae id. Aspernatur qui voluptatum error magnam.', 'https://img.gigatron.rs/img/products/large/MSI-Vodeno-procesorsko-hlađenje-MAG-CORELIQUID-280R-36.png', 1, '10658.06', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
+(34, 8, 'MSI Vodeno procesorsko hlađenje MAG CORELIQUID 280R', 'Eos voluptates aut voluptatem quae id. Aspernatur qui voluptatum error magnam.', 'https://img.gigatron.rs/img/products/large/MSI-Vodeno-procesorsko-hlađenje-MAG-CORELIQUID-280R-36.png', 21, '10658.06', '2021-07-31 12:17:56', '2021-10-16 02:20:02'),
 (35, 8, 'GIGABYTE Procesorski hladnjak AORUS ATC800', 'Quo eum ipsam eveniet praesentium neque. Quia maiores voluptas vero accusamus.', 'https://img.gigatron.rs/img/products/large/GIGABYTE-Procesorski-hladnjak-AORUS-ATC800-.png', 19, '42060.01', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (36, 9, 'ASUS ROG Crosshair VIII Hero (Wi-Fi)', 'Et minima ipsa eum sit suscipit et. Aut omnis harum quia. Eum sint deserunt itaque enim rerum.', 'https://img.gigatron.rs/img/products/large/image5da70d65a8cfc.png', 77, '9980.40', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (37, 9, 'GIGABYTE Z590 AORUS MASTER (rev. 1.0)', 'Qui hic odio id magnam fuga. Dolores eum inventore labore fuga.', 'https://img.gigatron.rs/img/products/large/GIGABYTE-Z590-AORUS-MASTER-(rev.-1.0)-47.png', 82, '27272.83', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
@@ -495,15 +494,16 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `desc`, `img`, `stock`, `pr
 (50, 11, 'SAMSUNG SSD 2TB 870 QVO 2.5\" SATA III - MZ-77Q2T0BW', 'Autem iusto rerum dolorem consequatur. Est dolorem distinctio ut officiis.', 'https://img.gigatron.rs/img/products/large/6c88f1536ba8b74ac4ead55d7ef6f87b.png', 9, '11058.67', '2021-07-31 12:17:56', '2021-07-31 12:17:56'),
 (51, 11, 'SAMSUNG SSD 1TB 980 PRO NVMe M.2 MZ-V8P1T0BW/', 'Est esse autem deserunt illo. Et non quae reiciendis in. Sed omnis est beatae minima.', 'https://img.gigatron.rs/img/products/large/SAMSUNG-SSD-1TB-980-PRO-NVMe-M.2-MZ-V8P1T0BW-0.png', 52, '12752.16', '2021-07-31 12:31:09', '2021-07-31 12:31:09'),
 (52, 11, 'TRANSCEND SSD 2TB SATA III - TS2TSSD220Q', 'Distinctio fugiat dolor quas sed voluptatibus. Quia doloribus temporibus libero.', 'https://img.gigatron.rs/img/products/large/TRANSCEND-SSD-2TB-SATA-III-TS2TSSD220Q-8.png', 79, '16533.24', '2021-07-31 12:31:09', '2021-07-31 12:31:09'),
-(53, 11, 'KINGSTON KC600 series SSD 2.5\" 1024GB, SATA III - SKC600/1024G', 'Autem non voluptatum debitis in. Error pariatur omnis sit officiis. Sed alias cupiditate sint quia.', 'https://img.gigatron.rs/img/products/large/image5df7a3007b7c8.png', 61, '44124.32', '2021-07-31 12:31:09', '2021-07-31 12:31:09'),
+(53, 11, 'KINGSTON KC600 series SSD 2.5\" 1024GB, SATA III - SKC600/1024G', 'Autem non voluptatum debitis in. Error pariatur omnis sit officiis. Sed alias cupiditate sint quia.', 'https://img.gigatron.rs/img/products/large/image5df7a3007b7c8.png', 49, '44124.32', '2021-07-31 12:31:09', '2021-10-16 02:20:02'),
 (54, 2, 'LOGITECH G703 LIGHTSPEED', 'Eos recusandae et eos. Inventore optio voluptas sunt. Rerum dolor magnam et non sit nisi.', 'https://img.gigatron.rs/img/products/large/image5d4adf0fcc37a.png', 48, '3673.41', '2021-07-31 12:31:26', '2021-07-31 12:31:26'),
-(55, 2, 'ASUS ROG Gladius III Wireless 90MP0200-BMUA00', 'Id aperiam sed deleniti eaque. Optio in delectus eligendi in. Quibusdam quae fuga quae.', 'https://img.gigatron.rs/img/products/large/ASUS-Bežični-gejmerski-miš-ROG-Gladius-III-90MP0200-BMUA00-78.png', 77, '78167.88', '2021-07-31 12:31:26', '2021-07-31 12:31:26'),
+(55, 2, 'ASUS ROG Gladius III Wireless 90MP0200-BMUA00', 'Id aperiam sed deleniti eaque. Optio in delectus eligendi in. Quibusdam quae fuga quae.', 'https://img.gigatron.rs/img/products/large/ASUS-Bežični-gejmerski-miš-ROG-Gladius-III-90MP0200-BMUA00-78.png', 71, '78167.88', '2021-07-31 12:31:26', '2021-10-16 02:20:02'),
 (56, 2, 'RAZER OROCHI V2', 'Animi impedit quo possimus dolor ad corrupti eveniet. Dolorem voluptas autem incidunt aliquid.', 'https://img.gigatron.rs/img/products/large/RAZER-Bežični-gejmerski-miš-OROCHI-V2-(Crni)-RZ01-03730100-R3G1-59.png', 25, '45446.31', '2021-07-31 12:31:26', '2021-07-31 12:31:26'),
 (57, 9, 'ASUS X570 ATX ROG Strix X570-F GAMING', 'Consequatur quo dolorem quidem repellat sed. A animi earum expedita. Ipsa voluptates eaque dolore.', 'https://img.gigatron.rs/img/products/large/image5d25c5405644a.png', 41, '70439.19', '2021-07-31 12:31:40', '2021-07-31 12:31:40'),
-(58, 9, 'MSI MPG Z590 GAMING FORCE', 'Et necessitatibus delectus exercitationem fugiat. Totam facere sit assumenda omnis.', 'https://img.gigatron.rs/img/products/large/MSI-MPG-Z590-GAMING-FORCE-77.png', 0, '40990.91', '2021-07-31 12:31:40', '2021-07-31 12:31:40'),
+(58, 9, 'MSI MPG Z590 GAMING FORCE', 'Et necessitatibus delectus exercitationem fugiat. Totam facere sit assumenda omnis.', 'https://img.gigatron.rs/img/products/large/MSI-MPG-Z590-GAMING-FORCE-77.png', 115, '40990.91', '2021-07-31 12:31:40', '2021-10-16 03:07:26'),
 (59, 9, 'GIGABYTE Z490I AORUS ULTRA (rev. 1.x)', 'Velit similique qui aut eos et dignissimos. Dignissimos rerum eos cum.', 'https://img.gigatron.rs/img/products/large/GIGABYTE-Z490I-AORUS-ULTRA-(rev.-1.x)--60.png', 95, '74644.32', '2021-07-31 12:31:40', '2021-07-31 12:31:40'),
 (60, 9, 'GIGABYTE Z590 AORUS ELITE AX (rev. 1.0)', 'Qui quam et et praesentium. Aut eligendi voluptatibus molestias.', 'https://img.gigatron.rs/img/products/large/GIGABYTE-Z590-AORUS-ELITE-AX-(rev.-1.0)-25.png', 46, '70894.45', '2021-07-31 12:31:40', '2021-07-31 12:31:40'),
-(61, 9, 'ASUS PRIME Z590-A', 'Ab magni voluptas saepe ad reiciendis. Qui eius facere quisquam assumenda dolor fugiat.', 'https://img.gigatron.rs/img/products/large/ASUS-PRIME-Z590-A-.png', 91, '27523.39', '2021-07-31 12:31:40', '2021-07-31 12:31:40');
+(61, 9, 'ASUS PRIME Z590-A', 'Ab magni voluptas saepe ad reiciendis. Qui eius facere quisquam assumenda dolor fugiat.', 'https://img.gigatron.rs/img/products/large/ASUS-PRIME-Z590-A-.png', 91, '27523.39', '2021-07-31 12:31:40', '2021-07-31 12:31:40'),
+(66, 2, 'LOGITECH G102 LIGHTSYNC', 'Mis Logitech Veoma kul mis', 'https://img.gigatron.rs/img/products/large/image5ef470f8be4a7.png', 295, '3500.00', '2021-10-14 21:45:55', '2021-10-16 03:07:26');
 
 -- --------------------------------------------------------
 
@@ -513,8 +513,8 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `desc`, `img`, `stock`, `pr
 
 CREATE TABLE `product_carts` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  `cart_id` bigint(20) NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `cart_id` bigint(20) UNSIGNED NOT NULL,
   `count` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -535,8 +535,8 @@ INSERT INTO `product_carts` (`id`, `product_id`, `cart_id`, `count`, `created_at
 
 CREATE TABLE `ratings` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` bigint(20) NOT NULL,
-  `user_id` bigint(20) NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
   `rating` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -598,7 +598,9 @@ INSERT INTO `ratings` (`id`, `product_id`, `user_id`, `rating`, `created_at`, `u
 (50, 46, 6, 7, '2021-09-30 16:29:15', '2021-09-30 16:29:15'),
 (56, 1, 1, 6, '2021-10-10 01:02:17', '2021-10-10 01:23:33'),
 (57, 4, 1, 7, '2021-10-10 01:25:25', '2021-10-10 01:25:25'),
-(58, 39, 1, 6, '2021-10-12 15:03:22', '2021-10-12 15:03:22');
+(58, 39, 1, 6, '2021-10-12 15:03:22', '2021-10-12 15:03:22'),
+(60, 60, 1, 7, '2021-10-15 20:21:59', '2021-10-15 20:21:59'),
+(61, 66, 1, 4, '2021-10-15 23:30:49', '2021-10-15 23:30:49');
 
 -- --------------------------------------------------------
 
@@ -617,26 +619,27 @@ CREATE TABLE `users` (
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `img`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Dragoslav', 'Jankovic', 'GaGiiiii', 'GaGiiiii_13102021_0333.png', 'dragoslav.gagi8@gmail.com', '2021-09-30 16:26:09', '$2y$10$R60grxXuzkHM0H2/D3wO9e89tkud7AxvVuZzrh.nOwpSZcY9.dGe6', '09SypW7aBr9TDtcOb5dChw77k4yPe9JV7bWpPRsTg6sicshyg6buQSjbyIQ0', '2021-09-30 16:26:12', '2021-10-13 01:33:33'),
-(2, 'Natasha', 'Senger', 'mcollier', NULL, 'kariane.ryan@example.org', '2021-09-30 16:26:09', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ioCAGgWIlR', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(3, 'Garett', 'Strosin', 'nikolaus.laney', NULL, 'sgottlieb@example.org', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'unCnh6SXWz', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(4, 'Peter', 'Brekke', 'hunter49', NULL, 'vdare@example.com', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'G4lD7a1Nsq', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(5, 'Courtney', 'Mayer', 'nkassulke', NULL, 'rodriguez.carrie@example.net', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'j6gW4nwPSD', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(6, 'Rollin', 'Runte', 'wolff.amina', NULL, 'imani58@example.com', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'M0H6KS565L', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(7, 'Monserrate', 'Maggio', 'urunte', NULL, 'theron10@example.net', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'LfZSv968IL', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(8, 'Chaz', 'Cole', 'wisoky.ashley', NULL, 'brielle.west@example.org', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ZUEeKEsAEZ', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(9, 'Edward', 'Kilback', 'george.kautzer', NULL, 'mauer@example.org', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'pWj28WwSXz', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(10, 'Nicolas', 'Hintz', 'melyssa.nienow', NULL, 'nsatterfield@example.org', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '6N44fbFx3d', '2021-09-30 16:26:12', '2021-09-30 16:26:12'),
-(13, 'Mateja', 'Ivanovic', 'Matica', NULL, 'mata@mata.com', NULL, '$2y$10$tCIaoJUg6jhtJLSVfl//9e/S2Gq/R3pznVEdnjKZXKoqKnXtKKVNS', NULL, '2021-10-12 23:44:05', '2021-10-12 23:44:05'),
-(14, 'Petar', 'Janjusevic', 'Pera_PJ', 'Pera_PJ_13102021_0121.jpg', 'pera@pera.com', NULL, '$2y$10$6zDEjND8fKQ/UQgUGYn90urR5ZI2fMNyffeQu.MuNdwx94GOf66Im', NULL, '2021-10-12 23:52:21', '2021-10-12 23:52:21');
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `img`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `is_admin`) VALUES
+(1, 'Dragoslav', 'Jankovic', 'GaGiiiii', 'GaGiiiii_15102021_2250.png', 'dragoslav.gagi8@gmail.com', '2021-09-30 16:26:09', '$2y$10$R60grxXuzkHM0H2/D3wO9e89tkud7AxvVuZzrh.nOwpSZcY9.dGe6', '09SypW7aBr9TDtcOb5dChw77k4yPe9JV7bWpPRsTg6sicshyg6buQSjbyIQ0', '2021-09-30 16:26:12', '2021-10-15 20:28:23', 1),
+(2, 'Natasha', 'Senger', 'mcollier', NULL, 'kariane.ryan@example.org', '2021-09-30 16:26:09', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ioCAGgWIlR', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(3, 'Garett', 'Strosin', 'nikolaus.laney', NULL, 'sgottlieb@example.org', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'unCnh6SXWz', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(4, 'Peter', 'Brekke', 'hunter49', NULL, 'vdare@example.com', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'G4lD7a1Nsq', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(5, 'Courtney', 'Mayer', 'nkassulke', NULL, 'rodriguez.carrie@example.net', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'j6gW4nwPSD', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(6, 'Rollin', 'Runte', 'wolff.amina', NULL, 'imani58@example.com', '2021-09-30 16:26:10', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'M0H6KS565L', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(7, 'Monserrate', 'Maggio', 'urunte', NULL, 'theron10@example.net', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'LfZSv968IL', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(8, 'Chaz', 'Cole', 'wisoky.ashley', NULL, 'brielle.west@example.org', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ZUEeKEsAEZ', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(9, 'Edward', 'Kilback', 'george.kautzer', NULL, 'mauer@example.org', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'pWj28WwSXz', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(10, 'Nicolas', 'Hintz', 'melyssa.nienow', NULL, 'nsatterfield@example.org', '2021-09-30 16:26:11', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '6N44fbFx3d', '2021-09-30 16:26:12', '2021-09-30 16:26:12', 0),
+(13, 'Mateja', 'Ivanovic', 'Matica', NULL, 'mata@mata.com', NULL, '$2y$10$tCIaoJUg6jhtJLSVfl//9e/S2Gq/R3pznVEdnjKZXKoqKnXtKKVNS', NULL, '2021-10-12 23:44:05', '2021-10-12 23:44:05', 0),
+(14, 'Petar', 'Janjusevic', 'Pera_PJ', 'Pera_PJ_13102021_0121.jpg', 'pera@pera.com', NULL, '$2y$10$6zDEjND8fKQ/UQgUGYn90urR5ZI2fMNyffeQu.MuNdwx94GOf66Im', NULL, '2021-10-12 23:52:21', '2021-10-12 23:52:21', 0);
 
 --
 -- Indexes for dumped tables
@@ -658,7 +661,9 @@ ALTER TABLE `categories`
 -- Indexes for table `comments`
 --
 ALTER TABLE `comments`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comments_user_id_foreign` (`user_id`),
+  ADD KEY `comments_product_id_foreign` (`product_id`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -683,13 +688,16 @@ ALTER TABLE `password_resets`
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `payments_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `payment_products`
 --
 ALTER TABLE `payment_products`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `payment_products_payment_id_foreign` (`payment_id`),
+  ADD KEY `payment_products_product_id_foreign` (`product_id`);
 
 --
 -- Indexes for table `personal_access_tokens`
@@ -703,19 +711,24 @@ ALTER TABLE `personal_access_tokens`
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `products_category_id_foreign` (`category_id`);
 
 --
 -- Indexes for table `product_carts`
 --
 ALTER TABLE `product_carts`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_carts_cart_id_foreign` (`cart_id`),
+  ADD KEY `product_carts_product_id_foreign` (`product_id`);
 
 --
 -- Indexes for table `ratings`
 --
 ALTER TABLE `ratings`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ratings_user_id_foreign` (`user_id`),
+  ADD KEY `ratings_product_id_foreign` (`product_id`);
 
 --
 -- Indexes for table `users`
@@ -738,13 +751,13 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -756,49 +769,93 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `payment_products`
 --
 ALTER TABLE `payment_products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `product_carts`
 --
 ALTER TABLE `product_carts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `ratings`
 --
 ALTER TABLE `ratings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `comments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `payment_products`
+--
+ALTER TABLE `payment_products`
+  ADD CONSTRAINT `payment_products_payment_id_foreign` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `payment_products_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `products_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `product_carts`
+--
+ALTER TABLE `product_carts`
+  ADD CONSTRAINT `product_carts_cart_id_foreign` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `product_carts_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `ratings`
+--
+ALTER TABLE `ratings`
+  ADD CONSTRAINT `ratings_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `ratings_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -4,7 +4,7 @@ import { ApiContext, CurrentUserContext } from '../../App';
 import { Col, Form, Modal, Row, Button } from 'react-bootstrap';
 
 export default function ProductRow({ products, setProducts, product, index, categories, setErrors, setShowErrors }) {
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
   const { currentUser } = useContext(CurrentUserContext);
 
 

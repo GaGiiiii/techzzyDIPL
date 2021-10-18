@@ -11,7 +11,7 @@ export default function Register() {
   let history = useHistory();
   const [errors, setErrors] = useState([]);
   const { setFlashMessage } = useContext(FlashMessageContext);
-  const api = useContext(ApiContext)
+  const { api } = useContext(ApiContext)
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
   // Fields

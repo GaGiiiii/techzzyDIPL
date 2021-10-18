@@ -17,7 +17,7 @@ export default function Cart() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [cartFlashMessage, setCartFlashMessage] = useState(null);
   const [orderID, setOrderID] = useState(null);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
   const { setFlashMessage } = useContext(FlashMessageContext);
 
   useEffect(() => {

@@ -5,8 +5,8 @@ export function login(user) {
   localStorage.setItem("user", JSON.stringify(user));
 }
 
-export function logout(user) {
-  axios.post(`http://localhost:8000/api/logout`, {}, { headers: { Authorization: `Bearer ${user.token}` } }).then(res => {
+export function logout(user, api) {
+  axios.post(`${api}/logout`, {}, { headers: { Authorization: `Bearer ${user.token}` } }).then(res => {
     localStorage.removeItem("user");
   }).catch(error => {
     console.log(error.response.data);

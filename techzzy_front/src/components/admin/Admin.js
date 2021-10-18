@@ -17,7 +17,7 @@ export default function Admin() {
   const [users, setUsers] = useState([]);
   const [payments, setPayments] = useState([]);
   const { products } = useContext(ProductsContext);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
   const [activePage, setActivePage] = useState('products');
 
   useEffect(() => {

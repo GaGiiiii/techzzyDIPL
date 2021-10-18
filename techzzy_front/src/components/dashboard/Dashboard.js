@@ -24,8 +24,9 @@ export default function Dashboard({ products }) {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [image, setImage] = useState("");
-  const imgSRC = currentUser.img ? `http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}` : `http://localhost:8000/avatars/no_image.jpg`;
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
+  const { backURL } = useContext(ApiContext);
+  const imgSRC = currentUser.img ? `${backURL}/avatars/${currentUser.username}/${currentUser.img}` : `${backURL}/avatars/no_image.jpg`;
 
 
   useEffect(() => {

@@ -12,7 +12,8 @@ export default function Comment({ comment, index, product, commentsFlashMessage,
   const [editCommentValue, setEditCommentValue] = useState(comment.body);
   const [errors, setErrors] = useState("");
   const [commentFlashMessage, setCommentFlashMessage] = useState(null)
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
+  const { backURL } = useContext(ApiContext);
 
   // MODAL
   const [show, setShow] = useState(false);
@@ -93,7 +94,7 @@ export default function Comment({ comment, index, product, commentsFlashMessage,
       {commentFlashMessage && <AlertC flashMessage={commentFlashMessage} setFlashMessage={setCommentFlashMessage} />}
       <div className="comment d-flex">
         <div className="comment-img">
-          <img src={comment.user.img ? `http://localhost:8000/avatars/${comment.user.username}/${comment.user.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
+          <img src={comment.user.img ? `${backURL}/avatars/${comment.user.username}/${comment.user.img}` : `${backURL}/avatars/no_image.jpg`} alt="Couldn't load" />
         </div>
         <div className="comment-body flex-fill">
           <h5 className="name-rating">

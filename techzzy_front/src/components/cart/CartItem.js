@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 export default function CartItem({ product, totalPrice, setTotalPrice, setCartFlashMessage }) {
   const [quantity, setQuantity] = useState(0);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
   const { currentUser } = useContext(CurrentUserContext);
   const { productsInCart, setProductsInCart } = useContext(ProductsInCartContext);
 

@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import { Col, Container, Navbar, Row } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom';
-import { CurrentUserContext } from '../../App';
+import { ApiContext, CurrentUserContext } from '../../App';
 
 export default function Sidebar({ setActivePage }) {
   const { currentUser } = useContext(CurrentUserContext);
+  const { backURL } = useContext(ApiContext);
   const history = useHistory();
 
   return (
@@ -16,7 +17,7 @@ export default function Sidebar({ setActivePage }) {
         <Container fluid className='g-0'>
           <Row className='admin-user-info'>
             <Col xs={"auto"} className='g-0'>
-              <img className='admin-img' src={currentUser.img ? `http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
+              <img className='admin-img' src={currentUser.img ? `${backURL}/avatars/${currentUser.username}/${currentUser.img}` : `${backURL}/avatars/no_image.jpg`} alt="Couldn't load" />
             </Col>
             <Col className="d-flex align-items-center">
               {`${currentUser.first_name} ${currentUser.last_name}`}

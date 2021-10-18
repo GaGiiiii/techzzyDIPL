@@ -10,7 +10,8 @@ export default function Comments({ product, setProduct }) {
   const [body, setBody] = useState("");
   const [errors, setErrors] = useState("");
   const [commentsFlashMessage, setCommentsFlashMessage] = useState(null);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
+  const { backURL } = useContext(ApiContext);
 
   useEffect(() => {
     if (body.length < 20 && body.length !== 0) {
@@ -58,7 +59,7 @@ export default function Comments({ product, setProduct }) {
               {product.comments.length === 0 ? <h5 className="mb-4">No comments.</h5> : ""}
               {currentUser && <div className="new-comment d-flex">
                 <div className="comment-img">
-                  <img src={currentUser.img ? `http://localhost:8000/avatars/${currentUser.username}/${currentUser.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
+                  <img src={currentUser.img ? `${backURL}/avatars/${currentUser.username}/${currentUser.img}` : `${backURL}/avatars/no_image.jpg`} alt="Couldn't load" />
                 </div>
                 <div className="comment-textarea flex-fill">
                   {errors && <p className="error">{errors}</p>}

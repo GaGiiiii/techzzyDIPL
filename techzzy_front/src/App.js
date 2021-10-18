@@ -27,13 +27,14 @@ function App() {
   const [flashMessage, setFlashMessage] = useState(null);
   const [productsInCart, setProductsInCart] = useState([]);
 
-  const api = "http://localhost:8000/api";
+  const api = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? "http://localhost:8000/api" : 'https://techzzy-back.herokuapp.com/api';
+  const backURL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? "http://localhost:8000" : 'https://techzzy-back.herokuapp.com';
 
   useEffect(() => {
     axios.get(`${api}/products`).then(res => {
       setProducts(res.data.products);
     }).catch(err => console.log(err));
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     if (currentUser) {
@@ -45,11 +46,11 @@ function App() {
         setProductsInCart(res.data.products);
       }).catch(err => console.log(err));
     }
-  }, [currentUser])
+  }, [currentUser, api])
 
   return (
     <PayPalScriptProvider options={{ 'client-id': 'AZTTSjbiEU5RyGlyMSCxqn0LifK02-cl1VJi1cPgFT4XaVZUcUPW5DEWQMQ_MPjHZ7qEbmALthMGcDTk', currency: 'EUR' }}>
-      <ApiContext.Provider value="http://localhost:8000/api">
+      <ApiContext.Provider value={{ api, backURL }}>
         <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
           <ProductsContext.Provider value={{ products, setProducts }}>
             <ProductsInCartContext.Provider value={{ productsInCart, setProductsInCart }}>

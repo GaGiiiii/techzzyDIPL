@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Search from './Search/Search';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { CurrentUserContext, FlashMessageContext, ProductsInCartContext } from '../App';
+import { ApiContext, CurrentUserContext, FlashMessageContext, ProductsInCartContext } from '../App';
 import { logout } from '../Helpers';
 import { useHistory } from 'react-router';
 import AlertC from './AlertC';
@@ -12,10 +12,11 @@ export default function NavbarC({ active }) {
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const { flashMessage, setFlashMessage } = useContext(FlashMessageContext);
   const { productsInCart } = useContext(ProductsInCartContext);
+  const { api } = useContext(ApiContext);
 
   function handleLogout() {
     let username = currentUser.username; // Save Username Before Delete
-    logout(currentUser); // Delete Tokens And Remove From Storage
+    logout(currentUser, api); // Delete Tokens And Remove From Storage
     setCurrentUser(null); // Remove From Global State
     history.push('/'); // Redirect
     setFlashMessage({ type: 'success', message: `Logout successful. See ya soon ${username}!` }) // Add Flash Message

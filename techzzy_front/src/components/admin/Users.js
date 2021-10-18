@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Col, Pagination, Table } from 'react-bootstrap'
 import { useLocation, useHistory } from 'react-router-dom';
+import { ApiContext } from '../../App';
 
 export default function Users({ users }) {
   // PAGINATION
@@ -8,6 +9,7 @@ export default function Users({ users }) {
   const history = useHistory();
   const page = parseInt(new URLSearchParams(search).get('page')) || 1;
   const [paginationBasic, setPaginationBasic] = useState(null);
+  const { backURL } = useContext(ApiContext);
 
   const changePage = useCallback(
     (number) => {
@@ -49,7 +51,7 @@ export default function Users({ users }) {
               <tr key={index} style={{ verticalAlign: 'middle' }} className='text-center'>
                 <td>{++index}</td>
                 <td>
-                  <img style={{ width: '50px' }} src={user.img ? `http://localhost:8000/avatars/${user.username}/${user.img}` : `http://localhost:8000/avatars/no_image.jpg`} alt="Couldn't load" />
+                  <img style={{ width: '50px' }} src={user.img ? `${backURL}/avatars/${user.username}/${user.img}` : `${backURL}/avatars/no_image.jpg`} alt="Couldn't load" />
                 </td>
                 <td>{user.first_name}</td>
                 <td>{user.last_name}</td>
@@ -59,7 +61,7 @@ export default function Users({ users }) {
           </tbody>
         </Table>
       </div>
-      
+
       {paginationBasic}
 
     </Col>

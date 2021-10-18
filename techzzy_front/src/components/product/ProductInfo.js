@@ -7,7 +7,7 @@ import { ProductsContext } from '../../App';
 
 export default function ProductInfo({ product, setProduct }) {
   const [quantity, setQuantity] = useState(1);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
   const { currentUser } = useContext(CurrentUserContext);
   const { productsInCart, setProductsInCart } = useContext(ProductsInCartContext);
   const { setFlashMessage } = useContext(FlashMessageContext);

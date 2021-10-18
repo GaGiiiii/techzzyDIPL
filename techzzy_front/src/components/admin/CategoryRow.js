@@ -4,7 +4,7 @@ import { ApiContext, CurrentUserContext } from '../../App';
 import axios from 'axios';
 
 export default function CategoryRow({ category, categories, setCategories, index, setErrors, setShowErrors }) {
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
   const { currentUser } = useContext(CurrentUserContext);
 
   // CATEGORY DATA

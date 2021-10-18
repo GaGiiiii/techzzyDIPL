@@ -85,7 +85,7 @@ export default function Products() {
   const { products } = useContext(ProductsContext);
   const [productsToShow, setProductsToShow] = useState([]);
   const [paginationBasic, setPaginationBasic] = useState(null);
-  const api = useContext(ApiContext);
+  const { api } = useContext(ApiContext);
 
   // PAGINATION
   const search = useLocation().search;
