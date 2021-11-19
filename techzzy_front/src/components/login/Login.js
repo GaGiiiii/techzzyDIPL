@@ -31,17 +31,19 @@ export default function Login({ products }) {
     }).catch((error) => {
       let errorsG = [];
       console.log(error);
-      switch (error.response.data.message) {
-        case "Validation failed.":
-          errorsG = [error.response.data.errors.email || "", error.response.data.errors.password || ""];
-          setErrors(errorsG);
-          break;
-        case "Login failed.":
-          errorsG = ["Wrong combination."];
-          setErrors(errorsG);
-          break;
-        default:
-          break;
+      if (error.response) {
+        switch (error.response.data.message) {
+          case "Validation failed.":
+            errorsG = [error.response.data.errors.email || "", error.response.data.errors.password || ""];
+            setErrors(errorsG);
+            break;
+          case "Login failed.":
+            errorsG = ["Wrong combination."];
+            setErrors(errorsG);
+            break;
+          default:
+            break;
+        }
       }
     });
   }

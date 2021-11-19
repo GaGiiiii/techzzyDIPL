@@ -109,9 +109,11 @@ export default function Dashboard({ products }) {
                     <Accordion.Item eventKey="1">
                       <Accordion.Header><i className="fas fa-star"></i>&nbsp;{currentUser.ratings ? currentUser.ratings.length : 0} - Ratings</Accordion.Header>
                       <Accordion.Body>
+
                         {currentUser.ratings && currentUser.ratings.length > 0 ? currentUser.ratings.map(rating => (
                           <Link className="cmnt" key={rating.id} to={`/products/${rating.product.id}`}><li>{rating.product.name}</li></Link>
                         )) : 'No ratings.'}
+
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
