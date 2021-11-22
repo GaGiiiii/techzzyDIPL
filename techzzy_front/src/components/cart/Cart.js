@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row, Button, Form } from 'react-bootstrap';
 import Footer from '../Footer'
 import NavbarC from '../NavbarC'
 import './cart.css';
@@ -9,6 +9,7 @@ import CartItem from './CartItem';
 import AlertC from '../AlertC';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import axios from 'axios';
+import sha512 from 'js-sha512';
 
 
 export default function Cart() {
@@ -94,6 +95,26 @@ export default function Cart() {
     });
   }
 
+  // async function handleNestPay(e) {
+  //   try {
+  //     let response = await axios.post(`https://testsecurepay.eway2pay.com/fim/est3Dgate`, { name }, {
+  //       headers: {
+  //         Authorization: `Bearer ${currentUser.token}`
+  //       }
+  //     });
+  //     console.log(response)
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  function calculateHash() {
+    let plainText = `13IN001798|489|5990.00|https://localhost:3000/cart|https://localhost:3000/cart|PreAuth||N2855INH5EM5T7VYL9LA||||941|Igostore123`;
+
+    return btoa(sha512(plainText));
+  }
+
+
   return (
     <>
       <NavbarC />
@@ -129,8 +150,29 @@ export default function Cart() {
                   </h5>
                   {/* <button className="btn btn-primary btn-lg checkout-btn">Checkout</button> */}
                 </Col>
-                <Col>
+                <Col md={12}>
                   {productsInCart.length > 0 && <PayPalButtons style={{ marginTop: `10px` }} createOrder={createOrder} onApprove={onApprove} forceReRender={[totalPrice]} />}
+                </Col>
+                <Col md={12}>
+                  {productsInCart.length > 0 &&
+                    <Form action='https://testsecurepay.eway2pay.com/fim/est3Dgate' method='POST'>
+                      <input type='hidden' name='failUrl' value='https://localhost:3000/cart' />
+                      <input type='hidden' name='currency' value='941' />
+                      <input type='hidden' name='trantype' value='PreAuth' />
+                      <input type='hidden' name='okUrl' value='https://localhost:3000/cart' />
+                      <input type='hidden' name='amount' value='5990.00' />
+                      <input type='hidden' name='oid' value='489' />
+                      <input type='hidden' name='clientid' value='13IN001798' />
+                      <input type='hidden' name='storetype' value='3d_pay_hosting' />
+                      <input type='hidden' name='lang' value='en' />
+                      <input type='hidden' name='hashAlgorithm' value='ver2' />
+                      <input type='hidden' name='rnd' value='N2855INH5EM5T7VYL9LA' />
+                      <input type='hidden' name='encoding' value='utf-8' />
+                      <input type='hidden' name='hash' value={calculateHash()} />
+                      <input type='hidden' name='shopurl' value='https://localhost:3000/cart' />
+                      <Button type="submit" className='w-100'>Pay With NestPay</Button>
+                    </Form>
+                  }
                 </Col>
               </Row>
             </div>

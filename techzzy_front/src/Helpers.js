@@ -2,12 +2,12 @@ import axios from "axios";
 
 export function login(user) {
   console.log(user);
-  localStorage.setItem("user", JSON.stringify(user));
+  localStorage.setItem("techzzy_user", JSON.stringify(user));
 }
 
 export function logout(user, api) {
   axios.post(`${api}/logout`, {}, { headers: { Authorization: `Bearer ${user.token}` } }).then(res => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("techzzy_user");
   }).catch(error => {
     console.log(error.response.data);
     console.log(error.response.status);
@@ -16,7 +16,7 @@ export function logout(user, api) {
 }
 
 export function isLoggedIn() {
-  return localStorage.getItem('user') === null ? null : JSON.parse(localStorage.getItem('user'));
+  return localStorage.getItem('techzzy_user') === null ? null : JSON.parse(localStorage.getItem('techzzy_user'));
 }
 
 export function calculateProductRating(product) {
