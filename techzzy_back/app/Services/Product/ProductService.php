@@ -22,7 +22,7 @@ class ProductService
     }
 
     /**
-     * Retrieves all the products.
+     * Retrieves single product.
      *
      * @param int $id
      * @return Product
