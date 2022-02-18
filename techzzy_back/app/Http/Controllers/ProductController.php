@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Data\Product\ProductData;
 use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\DeleteProductRequest;
 use App\Http\Requests\Product\GetProductsRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
-use App\Models\Category;
-use App\Models\Product;
 use App\Services\Product\ProductService;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Validator;
 
 class ProductController extends Controller
 {
@@ -32,7 +30,19 @@ class ProductController extends Controller
      */
     public function index(GetProductsRequest $request)
     {
-        $products = Product::with(['ratings', 'comments', 'category', 'comments.user'])->orderBy('id', 'desc')->get();
+        try {
+            $products = $this->productService->getAll();
+        } catch (QueryException $e) {
+            return response()->json([
+                "products" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "products" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
         return response()->json([
             "products" => ProductResource::collection($products),
@@ -74,20 +84,30 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(GetProductsRequest $request, $id)
+    public function show(GetProductsRequest $request, int $id)
     {
-        $product = Product::with('comments', 'comments.user')->find($id);
-
-        if (!$product) {
-            return response([
-                'product' => null,
-                'message' => 'Product not found.',
+        try {
+            $product = $this->productService->getById($id);
+        } catch (QueryException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Product not found",
             ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Server Error",
+            ], 500);
         }
 
         return response([
-            "product" => $product,
-            "message" => "Product found",
+            "product" => $product === null ? null : new ProductResource($product),
+            "message" => $product === null ? 'Product not found' : "Product found",
         ], 200);
     }
 
@@ -98,55 +118,19 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, int $id)
     {
-        $product = Product::find($id);
-        $category = Category::find($request->category_id);
-
-        if (!$product || !$category) {
-            return response([
-                'product' => null,
-                'message' => 'Product / Category not found.',
+        try {
+            $product = $this->productService->update(ProductData::fromRequest($request), $request->product);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Product not found.",
             ], 404);
         }
 
-        if (auth()->user()->cannot('update', $product)) {
-            return response([
-                "product" => $product,
-                "message" => "Unauthorized.",
-            ], 401);
-        }
-
-        // VALIDATE DATA
-        $validator = Validator::make($request->all(), [
-            'category_id' => 'required|integer',
-            'name' => 'required|string|min:10',
-            'desc' => 'required|string|min:10',
-            'img' => 'required|string',
-            'stock' => 'required|integer',
-            'price' => 'required|numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                'product' => $product,
-                'message' => 'Validation failed.',
-                'errors' => $validator->messages(),
-            ], 400);
-        }
-
-        $product->category_id = $request->category_id;
-        $product->name = $request->name;
-        $product->desc = $request->desc;
-        $product->img = $request->img;
-        $product->stock = $request->stock;
-        $product->price = $request->price;
-        $product->save();
-
-        $product = $product->fresh(['ratings', 'comments', 'category', 'comments.user']);
-
         return response([
-            "product" => $product,
+            "product" => new ProductResource($product),
             "message" => "Product updated.",
         ], 200);
     }
@@ -154,24 +138,23 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  DeleteProductRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(DeleteProductRequest $request, int $id)
     {
-        $product = Product::find($id);
-
-        if (auth()->user()->cannot('forceDelete', $product)) {
-            return response([
-                "product" => $product,
-                "message" => "Unauthorized.",
-            ], 401);
+        try {
+            $product = $this->productService->delete($request->product);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Product not found.",
+            ], 404);
         }
 
-        $product->delete();
-
         return response([
-            "product" => $product,
+            "product" => new ProductResource($product),
             "message" => "Product deleted.",
         ], 200);
     }
