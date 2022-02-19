@@ -12,6 +12,7 @@ use App\Services\Product\ProductService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,8 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param  GetProductsRequest  $request
+     * @return JsonResponse
      */
     public function index(GetProductsRequest $request)
     {
@@ -53,8 +55,8 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  CreateProductRequest  $request
+     * @return JsonResponse
      */
     public function store(CreateProductRequest $request)
     {
@@ -82,7 +84,8 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  GetProductsRequest  $request
+     * @return JsonResponse
      */
     public function show(GetProductsRequest $request, int $id)
     {
@@ -106,17 +109,17 @@ class ProductController extends Controller
         }
 
         return response([
-            "product" => $product === null ? null : new ProductResource($product),
-            "message" => $product === null ? 'Product not found' : "Product found",
+            "product" => new ProductResource($product),
+            "message" => "Product found",
         ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  UpdateProductRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function update(UpdateProductRequest $request, int $id)
     {
@@ -140,7 +143,7 @@ class ProductController extends Controller
      *
      * @param  DeleteProductRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function destroy(DeleteProductRequest $request, int $id)
     {

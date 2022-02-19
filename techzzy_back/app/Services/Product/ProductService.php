@@ -69,7 +69,7 @@ class ProductService
     /**
      * Deletes a existing product.
      *
-     * @param Product $product
+     * @param Product|null $product
      * @return Product
      */
     public function delete(?Product $product): Product

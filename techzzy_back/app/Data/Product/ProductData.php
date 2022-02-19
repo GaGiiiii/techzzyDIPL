@@ -3,11 +3,11 @@
 namespace App\Data\Product;
 
 use Illuminate\Http\Request;
-use PhpParser\Node\Expr\Cast\Double;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class ProductData extends DataTransferObject
 {
+    public int $id;
     public int $category_id;
     public string $name;
     public string $desc;
@@ -18,6 +18,7 @@ class ProductData extends DataTransferObject
     public static function fromRequest(Request $request)
     {
         return new static([
+            'id' => $request->id,
             'category_id' => $request->category_id,
             'name' => $request->name,
             'desc' => $request->desc,

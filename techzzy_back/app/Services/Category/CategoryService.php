@@ -30,7 +30,7 @@ class CategoryService
      */
     public function getById(int $id): ?Category
     {
-        return Category::with('comments', 'comments.user')->findOrFail($id);
+        return Category::with('products')->findOrFail($id);
     }
 
     /**
@@ -41,10 +41,11 @@ class CategoryService
      */
     public function create(CategoryData $categoryData): Category
     {
-        $Category = new Category();
-        $Category = $Category->create($categoryData->toArray());
+        $category = new Category();
+        $category = $category->create($categoryData->toArray());
+        $category = $category->fresh(['products']);
 
-        return $Category;
+        return $category;
     }
 
     /**
@@ -63,7 +64,7 @@ class CategoryService
 
         $category->update($categoryData->toArray());
 
-        return $category->fresh(['ratings', 'comments', 'category', 'comments.user']);
+        return $category->fresh(['products']);
     }
 
     /**
