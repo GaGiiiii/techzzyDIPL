@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Data\Category;
+namespace App\Data\Cart;
 
 use Illuminate\Http\Request;
 use Spatie\DataTransferObject\DataTransferObject;
 
-class CategoryData extends DataTransferObject
+class CartData extends DataTransferObject
 {
-    public string $name;
+    public int $user_id;
 
     public static function fromRequest(Request $request)
     {
         return new static([
-            'name' => $request->name,
+            'user_id' => $request->user_id,
         ]);
     }
 }

@@ -2,152 +2,160 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\Cart\CreateCartRequest;
+use App\Http\Requests\Cart\DeleteCartRequest;
+use App\Http\Requests\Cart\GetCartRequest;
+use App\Http\Requests\Cart\GetCartsRequest;
+use App\Http\Requests\Cart\UpdateCartRequest;
+use App\Http\Resources\Cart\CartResource;
+use App\Services\Cart\CartService;
+use Illuminate\Http\JsonResponse;
 
-class CartController extends Controller {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index() {
-    $carts = Cart::all();
+class CartController extends Controller
+{
 
-    return response([
-      "carts" => $carts,
-      "message" => "Carts found",
-    ], 200);
-  }
+    private CartService $cartService;
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request) {
-    // if ($request->user_id != auth()->user()->id) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
-
-    $user = User::find($request->user_id);
-
-    if (!$user) {
-      return response([
-        'cart' => null,
-        'message' => 'User not found.',
-      ], 400);
+    public function __construct(CartService $cartService)
+    {
+        $this->CartService = $cartService;
     }
 
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'user_id' => 'required|integer',
-    ]);
+    /**
+     * Display a listing of the resource.
+     *
+     * @param GetCartsRequest $request
+     * @return JsonResponse
+     */
+    public function index(GetCartsRequest $request)
+    {
+        try {
+            $carts = $this->cartService->getAll();
+        } catch (QueryException $e) {
+            return response()->json([
+                "carts" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "carts" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    if ($validator->fails()) {
-      return response([
-        'cart' => null,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
+        return response()->json([
+            "carts" => CartResource::collection($carts),
+            "message" => "Carts found.",
+        ], 200);
     }
 
-    $cart = new Cart;
-    $cart->user_id = $request->user_id;
-    $cart->save();
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CreateCartRequest  $request
+     * @return JsonResponse
+     */
+    public function store(CreateCartRequest $request)
+    {
+        try {
+            $cart = $this->cartService->create(CartData::fromRequest($request));
+        } catch (QueryException $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    return response([
-      "cart" => $cart,
-      "message" => "Cart created.",
-    ], 201);
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show($id) {
-    $cart = Cart::find($id);
-
-    if (!$cart) {
-      return response([
-        'cart' => null,
-        'message' => 'Cart not found.',
-      ], 404);
+        return response()->json([
+            "cart" => new CartResource($cart),
+            "message" => "Cart created.",
+        ], 201);
     }
 
-    return response([
-      "cart" => $cart,
-      "message" => "Cart found",
-    ], 200);
-  }
+    /**
+     * Display the specified resource.
+     *
+     * @param  GetCartRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function show(GetCartRequest $request, int $id)
+    {
+        try {
+            $cart = $this->cartService->getById($id);
+        } catch (QueryException $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Cart not found",
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id) {
-    $cart = Cart::find($id);
-    $user = User::find($request->user_id);
-
-    if (!$cart || !$user) {
-      return response([
-        'cart' => null,
-        'message' => 'Cart / User not found.',
-      ], 404);
+        return response([
+            "cart" =>  new CartResource($cart),
+            "message" => "cart found",
+        ], 200);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  UpdateCartRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function update(UpdateCartRequest $request, int $id)
+    {
+        try {
+            $cart = $this->cartService->update(CartData::fromRequest($request), $request->cart);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Cart not found.",
+            ], 404);
+        }
 
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'user_id' => 'required|integer',
-    ]);
-
-    if ($validator->fails()) {
-      return response([
-        'cart' => $cart,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
+        return response([
+            "cart" => new CartResource($cart),
+            "message" => "Cart updated.",
+        ], 200);
     }
 
-    $cart->user_id = $request->user_id;
-    $cart->save();
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  DeleteCartRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy(DeleteCartRequest $request, int $id)
+    {
+        try {
+            $cart = $this->cartService->delete($request->cart);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "cart" => null,
+                "message" => "Cart not found.",
+            ], 404);
+        }
 
-    return response([
-      "cart" => $cart,
-      "message" => "Cart updated.",
-    ], 200);
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id) {
-    $cart = Cart::find($id);
-
-    // if (auth()->user()->cannot('delete', $cart)) {
-    //   return back()->with('unauthorized', 'Unauthorized access!');
-    // }
-
-    $cart->delete();
-
-    return response([
-      "cart" => $cart,
-      "message" => "Cart deleted.",
-    ], 200);
-  }
+        return response([
+            "cart" => new CartResource($cart),
+            "message" => "Cart deleted.",
+        ], 200);
+    }
 }
