@@ -1,22 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Cart;
+namespace App\Http\Requests\ProductCart;
 
-use App\Services\Cart\CartService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class UpdateCartRequest extends FormRequest
+class CreateProductCartRequest extends FormRequest
 {
-
-    private CartService $cartService;
-
-    public function __construct(CartService $cartService)
-    {
-        $this->CartService = $cartService;
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,15 +16,7 @@ class UpdateCartRequest extends FormRequest
      */
     public function authorize()
     {
-        try {
-            $this->cart = $this->cartService->getById($this->cart);
-        } catch (ModelNotFoundException $e) {
-            $this->cart = null;
-            
-            return true;
-        }
-
-        return auth()->check() && auth()->user()->can('update', $this->cart);
+        return auth()->check();
     }
 
     /**
@@ -43,12 +27,13 @@ class UpdateCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => [
+            'count' => 'required|int|min:1|max:1000',
+            'product_id' => [
                 'required',
                 'integer',
                 'min:1',
                 'max:1000000',
-                Rule::exists('users', 'id'),
+                Rule::exists('products', 'id'),
             ],
         ];
     }
@@ -56,7 +41,7 @@ class UpdateCartRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
-            'product' => null,
+            'product_cart' => null,
             'message' => 'Validation failed.',
             'errors' => $validator->messages(),
             ], 400);

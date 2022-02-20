@@ -2,166 +2,160 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
-use App\Models\Product;
-use Illuminate\Http\Request;
-use Validator;
+use App\Data\Comment\CommentData;
+use App\Http\Requests\Comment\CreateCommentRequest;
+use App\Http\Requests\Comment\DeleteCommentRequest;
+use App\Http\Requests\Comment\GetCommentsRequest;
+use App\Http\Requests\Comment\UpdateCommentRequest;
+use App\Http\Resources\Comment\CommentResource;
+use App\Services\Comment\CommentService;
+use Illuminate\Http\JsonResponse;
 
-class CommentController extends Controller {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index() {
-    $comments = Comment::all();
+class CommentController extends Controller
+{
 
-    return response([
-      "comments" => $comments,
-      "message" => "Comments found",
-    ], 200);
-  }
+    private CommentService $commentService;
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request) {
-    if (auth()->user()->id !== $request->user_id) {
-      return response([
-        "comment" => null,
-        "message" => "Unauthorized.",
-      ], 401);
+    public function __construct(CommentService $commentService)
+    {
+        $this->commentService = $commentService;
     }
 
-    $product = Product::find($request->product_id);
+    /**
+     * Display a listing of the resource.
+     *
+     * @param GetCommentsRequest $request
+     * @return JsonResponse
+     */
+    public function index(GetCommentsRequest $request)
+    {
+        try {
+            $comments = $this->commentService->getAll();
+        } catch (QueryException $e) {
+            return response()->json([
+                "comments" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "comments" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    if (!$product) {
-      return response([
-        'comment' => null,
-        'message' => 'Product not found.',
-      ], 400);
+        return response()->json([
+            "comments" => CommentResource::collection($comments),
+            "message" => "Comments found.",
+        ], 200);
     }
 
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'body' => 'required|min:20',
-    ]);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CreateCommentRequest $request
+     * @return JsonResponse
+     */
+    public function store(CreateCommentRequest $request)
+    {
+        try {
+            $comment = $this->commentService->create(CommentData::fromRequest($request));
+        } catch (QueryException $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    if ($validator->fails()) {
-      return response([
-        'comment' => null,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
+        return response()->json([
+            "comment" => new CommentResource($comment),
+            "message" => "Comment created.",
+        ], 201);
     }
 
-    $comment = new Comment;
+    /**
+     * Display the specified resource.
+     *
+     * @param  GetCommentsRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function show(GetCommentsRequest $request, int $id)
+    {
+        try {
+            $comment = $this->commentService->getById($id);
+        } catch (QueryException $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "comment not found",
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    $comment->body = $request->body;
-    $comment->user_id = $request->user_id;
-    $comment->product_id = $request->product_id;
-
-    $comment->save();
-    $comment = $comment->fresh('user');
-
-    return response([
-      "comment" => $comment,
-      "message" => "Comment created.",
-    ], 201);
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show($id) {
-    $comment = Comment::find($id);
-
-    if (!$comment) {
-      return response([
-        'comment' => null,
-        'message' => 'Comment not found.',
-      ], 404);
+        return response([
+            "comment" =>  new CommentResource($comment),
+            "message" => "Comment found",
+        ], 200);
     }
 
-    return response([
-      "comment" => $comment,
-      "message" => "Comment found",
-    ], 200);
-  }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  UpdateCommentRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function update(UpdateCommentRequest $request, $id)
+    {
+        try {
+            $comment = $this->commentService->update(CommentData::fromRequest($request), $request->comment);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "comment not found.",
+            ], 404);
+        }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id) {
-    $comment = Comment::find($id);
-
-    if (!$comment) {
-      return response([
-        'comment' => null,
-        'message' => 'Comment not found.',
-      ], 404);
+        return response([
+            "comment" => new CommentResource($comment),
+            "message" => "Comment updated.",
+        ], 200);
     }
 
-    if (auth()->user()->cannot('update', $comment)) {
-      return response([
-        "comment" => $comment,
-        "message" => "Unauthorized.",
-      ], 401);
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  DeleteCommentRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy(DeleteCommentRequest $request, int $id)
+    {
+        try {
+            $comment = $this->commentService->delete($request->comment);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "comment" => null,
+                "message" => "comment not found.",
+            ], 404);
+        }
+
+        return response([
+            "comment" => new CommentResource($comment),
+            "message" => "Comment deleted.",
+        ], 200);
     }
-
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'body' => 'required|min:20',
-    ]);
-
-    if ($validator->fails()) {
-      return response([
-        'comment' => $comment,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
-    }
-
-    $comment->body = $request->body;
-    $comment->save();
-
-    return response([
-      "comment" => $comment,
-      "message" => "Comment updated.",
-    ], 200);
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id) {
-    $comment = Comment::find($id);
-
-    if (auth()->user()->cannot('forceDelete', $comment)) {
-      return response([
-        "comment" => $comment,
-        "message" => "Unauthorized.",
-      ], 401);
-    }
-
-    $comment->delete();
-
-    return response([
-      "comment" => $comment,
-      "message" => "Comment deleted.",
-    ], 200);
-  }
 }

@@ -3,8 +3,10 @@
 namespace App\Http\Requests\Cart;
 
 use App\Models\Cart;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class CreateCartRequest extends FormRequest
 {
@@ -34,5 +36,16 @@ class CreateCartRequest extends FormRequest
                 Rule::exists('users', 'id'),
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = response()->json([
+            'cart' => null,
+            'message' => 'Validation failed.',
+            'errors' => $validator->messages(),
+            ], 400);
+
+        throw new ValidationException($validator, $response);
     }
 }

@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Http\Requests\Cart;
+namespace App\Http\Requests\ProductCart;
 
-use App\Services\Cart\CartService;
+use App\Services\ProductCart\ProductCartService;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class UpdateCartRequest extends FormRequest
+class UpdateProductCartRequest extends FormRequest
 {
 
-    private CartService $cartService;
+    private ProductCartService $productCartService;
 
-    public function __construct(CartService $cartService)
+    public function __construct(ProductCartService $productCartService)
     {
-        $this->CartService = $cartService;
+        $this->productCartService = $productCartService;
     }
 
     /**
@@ -25,14 +27,14 @@ class UpdateCartRequest extends FormRequest
     public function authorize()
     {
         try {
-            $this->cart = $this->cartService->getById($this->cart);
+            $this->product_cart = $this->productCartService->getById($this->product_cart);
         } catch (ModelNotFoundException $e) {
-            $this->cart = null;
-            
+            $this->product_cart = null;
+
             return true;
         }
 
-        return auth()->check() && auth()->user()->can('update', $this->cart);
+        return auth()->check() && auth()->user()->can('update', $this->product_cart);
     }
 
     /**
@@ -43,20 +45,14 @@ class UpdateCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => [
-                'required',
-                'integer',
-                'min:1',
-                'max:1000000',
-                Rule::exists('users', 'id'),
-            ],
+            'count' => 'required|int|min:1|max:1000',
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
-            'product' => null,
+            'product_cart' => null,
             'message' => 'Validation failed.',
             'errors' => $validator->messages(),
             ], 400);

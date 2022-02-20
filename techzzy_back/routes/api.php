@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/linkstorage', function () {
-  Artisan::call('storage:link');
+    Artisan::call('storage:link');
 });
 
 // Comments
@@ -50,46 +50,46 @@ Route::get('/ratings', [RatingController::class, 'index']);
 // PROTECTED ==================================================
 Route::group(['middleware' => 'auth:sanctum'], function () {
   // Auth
-  Route::post('/logout', [UserController::class, 'logout']);
+    Route::post('/logout', [UserController::class, 'logout']);
 
   // Comments
-  Route::post('/comments', [CommentController::class, 'store']);
-  Route::put('/comments/{comment}', [CommentController::class, 'update']);
-  Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::post('/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
   // Products
-  Route::post('/products', [ProductController::class, 'store']);
-  Route::put('/products/{product}', [ProductController::class, 'update']);
-  Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
   // Categories
-  Route::post('/categories', [CategoryController::class, 'store']);
-  Route::put('/categories/{category}', [CategoryController::class, 'update']);
-  Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{category}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
   // Users
-  Route::get('/users', [UserController::class, 'index']);
-  Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
-  Route::get('/users/{user}/payments', [UserController::class, 'getAllPayments']);
-  Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
+    Route::get('/users/{user}/payments', [UserController::class, 'getAllPayments']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
 
   // ProductCart
-  Route::post('/product_carts', [ProductCartController::class, 'store']);
-  Route::put('/product_carts/{product_cart}', [ProductCartController::class, 'update']);
-  Route::delete('/product_carts/{product_cart}', [ProductCartController::class, 'destroy']);
+    Route::post('/product_carts', [ProductCartController::class, 'store']);
+    Route::put('/product_carts/{product_cart}', [ProductCartController::class, 'update']);
+    Route::delete('/product_carts/{product_cart}', [ProductCartController::class, 'destroy']);
 
   // Ratings
-  Route::post('/ratings', [RatingController::class, 'store']);
-  Route::put('/ratings/{rating}', [RatingController::class, 'update']);
+    Route::post('/ratings', [RatingController::class, 'store']);
+    Route::put('/ratings/{rating}', [RatingController::class, 'update']);
 
   // Payments
-  Route::get('/payments', [PaymentController::class, 'index']);
-  Route::post('/payments', [PaymentController::class, 'store']);
+    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::post('/payments', [PaymentController::class, 'store']);
 });
 // PROTECTED ==================================================
 
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-  return $request->user();
+    return $request->user();
 });

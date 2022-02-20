@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Requests\Cart;
+namespace App\Http\Requests\Comment;
 
-use App\Services\Cart\CartService;
+use App\Services\Comment\CommentService;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class UpdateCartRequest extends FormRequest
+class UpdateCommentRequest extends FormRequest
 {
+    private CommentService $commentService;
 
-    private CartService $cartService;
-
-    public function __construct(CartService $cartService)
+    public function __construct(CommentService $commentService)
     {
-        $this->CartService = $cartService;
+        $this->commentService = $commentService;
     }
 
     /**
@@ -25,14 +25,14 @@ class UpdateCartRequest extends FormRequest
     public function authorize()
     {
         try {
-            $this->cart = $this->cartService->getById($this->cart);
+            $this->comment = $this->commentService->getById($this->comment);
         } catch (ModelNotFoundException $e) {
-            $this->cart = null;
-            
+            $this->comment = null;
+
             return true;
         }
 
-        return auth()->check() && auth()->user()->can('update', $this->cart);
+        return auth()->check() && auth()->user()->can('update', $this->comment);
     }
 
     /**
@@ -43,23 +43,24 @@ class UpdateCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => [
+            'body' => 'required|min:20|max:10000|string',
+            'product_id' => [
                 'required',
                 'integer',
                 'min:1',
                 'max:1000000',
-                Rule::exists('users', 'id'),
-            ],
+                Rule::exists('products', 'id'),
+            ]
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
-            'product' => null,
+            'comment' => null,
             'message' => 'Validation failed.',
             'errors' => $validator->messages(),
-            ], 400);
+        ], 400);
 
         throw new ValidationException($validator, $response);
     }

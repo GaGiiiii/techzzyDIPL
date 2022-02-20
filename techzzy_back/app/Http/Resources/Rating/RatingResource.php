@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Rating;
 
+use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RatingResource extends JsonResource
@@ -14,6 +16,11 @@ class RatingResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'product' => new ProductResource($this->product),
+            'user' => new UserResource($this->user),
+            'rating' => $this->rating,
+        ];
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Cart;
+namespace App\Http\Resources\ProductCart;
 
-use App\Http\Resources\User\UserResource;
+use App\Http\Resources\Cart\CartResource;
+use App\Http\Resources\Product\ProductResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CartResource extends JsonResource
+class ProductCartResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +16,11 @@ class CartResource extends JsonResource
      */
     public function toArray($request)
     {
-        [
+        return [
             'id' => $this->id,
-            'user' => new UserResource($this->user),
+            'product' => new ProductResource($this->product),
+            'cart' => new CartResource($this->cart),
+            'count' => $this->count,
         ];
     }
 }

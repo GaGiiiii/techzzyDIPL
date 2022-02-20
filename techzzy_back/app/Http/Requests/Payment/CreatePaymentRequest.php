@@ -1,23 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\Payment;
 
-use App\Services\Product\CategoryService;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-class UpdateCategoryRequest extends FormRequest
+class CreatePaymentRequest extends FormRequest
 {
-
-    private CategoryService $categoryService;
-
-    public function __construct(CategoryService $categoryService)
-    {
-        $this->categoryService = $categoryService;
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,15 +16,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        try {
-            $this->category = $this->categoryService->getById($this->category);
-        } catch (ModelNotFoundException $e) {
-            $this->category = null;
-            
-            return true;
-        }
-
-        return auth()->check() && auth()->user()->can('update', $this->category);
+        return auth()->check() && auth()->user()->id === $this->user_id;
     }
 
     /**
@@ -44,14 +27,14 @@ class UpdateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:2|max:100',
+            'price' => 'required|numeric|min:1|max:100000000',
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
-            'category' => null,
+            'payment' => null,
             'message' => 'Validation failed.',
             'errors' => $validator->messages(),
             ], 400);
