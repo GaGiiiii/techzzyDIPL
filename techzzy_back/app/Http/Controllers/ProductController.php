@@ -2,186 +2,163 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
-use Illuminate\Http\Request;
-use Validator;
+use App\Data\Product\ProductData;
+use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\DeleteProductRequest;
+use App\Http\Requests\Product\GetProductsRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Resources\Product\ProductResource;
+use App\Services\Product\ProductService;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 
-class ProductController extends Controller {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index() {
-    $products = Product::with(['ratings', 'comments', 'category', 'comments.user'])->orderBy('id', 'desc')->get();
+class ProductController extends Controller
+{
 
-    return response([
-      "products" => $products,
-      "message" => "Products found",
-    ], 200);
-  }
+    private ProductService $productService;
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request) {
-    $category = Category::find($request->category_id);
-
-    if (!$category) {
-      return response([
-        'product' => null,
-        'message' => 'Category not found.',
-      ], 400);
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
     }
 
-    if (auth()->user()->cannot('create', Product::class)) {
-      return response([
-        "product" => null,
-        "message" => "Unauthorized.",
-      ], 401);
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  GetProductsRequest  $request
+     * @return JsonResponse
+     */
+    public function index(GetProductsRequest $request)
+    {
+        try {
+            $products = $this->productService->getAll();
+        } catch (QueryException $e) {
+            return response()->json([
+                "products" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "products" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
+
+        return response()->json([
+            "products" => ProductResource::collection($products),
+            "message" => "Products found",
+        ], 200);
     }
 
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'category_id' => 'required|integer',
-      'name' => 'required|string|min:10',
-      'desc' => 'required|string|min:10',
-      'img' => 'required|string',
-      'stock' => 'required|integer',
-      'price' => 'required|numeric',
-    ]);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CreateProductRequest  $request
+     * @return JsonResponse
+     */
+    public function store(CreateProductRequest $request)
+    {
+        try {
+            $product = $this->productService->create(ProductData::fromRequest($request));
+        } catch (QueryException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    if ($validator->fails()) {
-      return response([
-        'product' => null,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
+        return response()->json([
+            "product" => new ProductResource($product),
+            "message" => "Product created.",
+        ], 201);
     }
 
-    $product = new Product;
-    $product->category_id = $request->category_id;
-    $product->name = $request->name;
-    $product->desc = $request->desc;
-    $product->img = $request->img;
-    $product->stock = $request->stock;
-    $product->price = $request->price;
-    $product->save();
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @param  GetProductsRequest  $request
+     * @return JsonResponse
+     */
+    public function show(GetProductsRequest $request, int $id)
+    {
+        try {
+            $product = $this->productService->getById($id);
+        } catch (QueryException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Product not found",
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    $product = $product->fresh(['ratings', 'comments', 'category', 'comments.user']);
-
-    return response([
-      "product" => $product,
-      "message" => "Product created.",
-    ], 201);
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show($id) {
-    $product = Product::with('comments', 'comments.user')->find($id);
-
-    if (!$product) {
-      return response([
-        'product' => null,
-        'message' => 'Product not found.',
-      ], 404);
+        return response([
+            "product" => new ProductResource($product),
+            "message" => "Product found",
+        ], 200);
     }
 
-    return response([
-      "product" => $product,
-      "message" => "Product found",
-    ], 200);
-  }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  UpdateProductRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function update(UpdateProductRequest $request, int $id)
+    {
+        try {
+            $product = $this->productService->update(ProductData::fromRequest($request), $request->product);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Product not found.",
+            ], 404);
+        }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id) {
-    $product = Product::find($id);
-    $category = Category::find($request->category_id);
-
-    if (!$product || !$category) {
-      return response([
-        'product' => null,
-        'message' => 'Product / Category not found.',
-      ], 404);
+        return response([
+            "product" => new ProductResource($product),
+            "message" => "Product updated.",
+        ], 200);
     }
 
-    if (auth()->user()->cannot('update', $product)) {
-      return response([
-        "product" => $product,
-        "message" => "Unauthorized.",
-      ], 401);
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  DeleteProductRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy(DeleteProductRequest $request, int $id)
+    {
+        try {
+            $product = $this->productService->delete($request->product);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product" => null,
+                "message" => "Product not found.",
+            ], 404);
+        }
+
+        return response([
+            "product" => new ProductResource($product),
+            "message" => "Product deleted.",
+        ], 200);
     }
-
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'category_id' => 'required|integer',
-      'name' => 'required|string|min:10',
-      'desc' => 'required|string|min:10',
-      'img' => 'required|string',
-      'stock' => 'required|integer',
-      'price' => 'required|numeric',
-    ]);
-
-    if ($validator->fails()) {
-      return response([
-        'product' => $product,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
-    }
-
-    $product->category_id = $request->category_id;
-    $product->name = $request->name;
-    $product->desc = $request->desc;
-    $product->img = $request->img;
-    $product->stock = $request->stock;
-    $product->price = $request->price;
-    $product->save();
-
-    $product = $product->fresh(['ratings', 'comments', 'category', 'comments.user']);
-
-    return response([
-      "product" => $product,
-      "message" => "Product updated.",
-    ], 200);
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id) {
-    $product = Product::find($id);
-
-    if (auth()->user()->cannot('forceDelete', $product)) {
-      return response([
-        "product" => $product,
-        "message" => "Unauthorized.",
-      ], 401);
-    }
-
-    $product->delete();
-
-    return response([
-      "product" => $product,
-      "message" => "Product deleted.",
-    ], 200);
-  }
 }

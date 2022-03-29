@@ -24,7 +24,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
       setQuantity(quantity + 1);
       product.count = quantity + 1;
       setTotalPrice(parseFloat(totalPrice) + parseFloat(product.price));
-      axios.put(`${api}/product_carts/${product.pcID}`, { count: quantity + 1 }, {
+      axios.put(`${api}/product_carts/${product.pcID}`, { count: quantity + 1, product_id: product.it }, {
         headers: {
           Authorization: `Bearer ${currentUser.token}`
         }
@@ -41,7 +41,7 @@ export default function CartItem({ product, totalPrice, setTotalPrice, setCartFl
       setQuantity(quantity - 1);
       product.count = quantity - 1;
       setTotalPrice(parseFloat(totalPrice) - parseFloat(product.price));
-      axios.put(`${api}/product_carts/${product.pcID}`, { count: quantity - 1 }, {
+      axios.put(`${api}/product_carts/${product.pcID}`, { count: quantity - 1, product_id: product.id }, {
         headers: {
           Authorization: `Bearer ${currentUser.token}`
         }

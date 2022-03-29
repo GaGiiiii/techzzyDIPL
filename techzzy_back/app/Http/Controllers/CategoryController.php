@@ -2,159 +2,166 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\Category\CategoryData;
+use App\Http\Requests\Category\CreateCategoryRequest;
+use App\Http\Requests\Category\DeleteCategoryRequest;
+use App\Http\Requests\Category\GetCategoriesRequest;
+use App\Http\Requests\Category\UpdateCategoryRequest;
+use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
+use App\Services\Category\CategoryService;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Validator;
 
-class CategoryController extends Controller {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index() {
-    $categories = Category::with('products')->orderBy('created_at', 'DESC')->get();
+class CategoryController extends Controller
+{
 
-    return response([
-      "categories" => $categories,
-      "message" => "Categories found",
-    ], 200);
-  }
+    private CategoryService $categoryService;
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request) {
-    if (auth()->user()->cannot('create', Category::class)) {
-      return response([
-        "category" => null,
-        "message" => "Unauthorized.",
-      ], 401);
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
     }
 
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'name' => 'required|string|min:2',
-    ]);
+    /**
+     * Display a listing of the resource.
+     *
+     * @param GetCategoriesRequest $request
+     * @return JsonResponse
+     */
+    public function index(GetCategoriesRequest $request)
+    {
+        try {
+            $categories = $this->categoryService->getAll();
+        } catch (QueryException $e) {
+            return response()->json([
+                "categories" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "categories" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    if ($validator->fails()) {
-      return response([
-        'category' => null,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
+        return response()->json([
+            "categories" => CategoryResource::collection($categories),
+            "message" => "Categories found.",
+        ], 200);
     }
 
-    $category = new Category;
-    $category->name = $request->name;
-    $category->save();
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  CreateCategoryRequest  $request
+     * @return JsonResponse
+     */
+    public function store(CreateCategoryRequest $request)
+    {
+        try {
+            $category = $this->categoryService->create(CategoryData::fromRequest($request));
+        } catch (QueryException $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    $category = $category->fresh(['products']);
-
-    return response([
-      "category" => $category,
-      "message" => "Category created.",
-    ], 201);
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show($id) {
-    $category = Category::find($id);
-
-    if (!$category) {
-      return response([
-        'category' => null,
-        'message' => 'Category not found.',
-      ], 404);
+        return response()->json([
+            "category" => new CategoryResource($category),
+            "message" => "Category created.",
+        ], 201);
     }
 
-    return response([
-      "category" => $category,
-      "message" => "Category found",
-    ], 200);
-  }
+    /**
+     * Display the specified resource.
+     *
+     * @param  GetCategoriesRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function show(GetCategoriesRequest $request, int $id)
+    {
+        try {
+            $category = $this->categoryService->getById($id);
+        } catch (QueryException $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Category not found",
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id) {
-    $category = Category::find($id);
-
-    if (auth()->user()->cannot('update', $category)) {
-      return response([
-        "category" => $category,
-        "message" => "Unauthorized.",
-      ], 401);
+        return response([
+            "category" =>  new CategoryResource($category),
+            "message" => "Category found",
+        ], 200);
     }
 
-    if (!$category) {
-      return response([
-        'category' => null,
-        'message' => 'Category not found.',
-      ], 404);
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  UpdateCategoryRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function update(UpdateCategoryRequest $request, $id)
+    {
+        try {
+            $category = $this->categoryService->update(CategoryData::fromRequest($request), $request->category);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Category not found.",
+            ], 404);
+        }
+
+        return response([
+            "category" => new CategoryResource($category),
+            "message" => "Category updated.",
+        ], 200);
     }
 
-    // if (auth()->user()->cannot('update', $comment)) {
-    //   return response(['message' => 'Unauthorized access!'], 401);
-    // }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  DeleteCategoryRequest  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy(DeleteCategoryRequest $request, int $id)
+    {
+        try {
+            $category = $this->categoryService->delete($request->category);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "category" => null,
+                "message" => "Category not found.",
+            ], 404);
+        }
 
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'name' => 'required|string|min:10',
-    ]);
-
-    if ($validator->fails()) {
-      return response([
-        'category' => $category,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
+        return response([
+            "category" => new CategoryResource($category),
+            "message" => "Category deleted.",
+        ], 200);
     }
-
-    $category->name = $request->name;
-    $category->save();
-
-    $category = $category->fresh(['products']);
-
-    return response([
-      "category" => $category,
-      "message" => "Category updated.",
-    ], 200);
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id) {
-    $category = Category::find($id);
-
-    if (auth()->user()->cannot('forceDelete', $category)) {
-      return response([
-        "category" => $category,
-        "message" => "Unauthorized.",
-      ], 401);
-    }
-
-    $category->delete();
-
-    return response([
-      "category" => $category,
-      "message" => "Category deleted.",
-    ], 200);
-  }
 }

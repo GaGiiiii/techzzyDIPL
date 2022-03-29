@@ -2,142 +2,128 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\ProductCart\ProductCartData;
+use App\Http\Requests\Product\DeleteProductRequest;
+use App\Http\Requests\ProductCart\CreateProductCartRequest;
+use App\Http\Requests\ProductCart\DeleteProductCartRequest;
+use App\Http\Requests\ProductCart\UpdateProductCartRequest;
+use App\Http\Resources\ProductCart\ProductCartResource;
 use App\Models\Product;
 use App\Models\ProductCart;
+use App\Services\ProductCart\ProductCartService;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Validator;
 
-class ProductCartController extends Controller {
+class ProductCartController extends Controller
+{
+
+    private ProductCartService $productCartService;
+
+    public function __construct(ProductCartService $productCartService)
+    {
+        $this->productCartService = $productCartService;
+    }
+
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return JsonResponse
    */
-  public function index() {
-    //
-  }
+    public function index()
+    {
+      //
+    }
 
   /**
    * Store a newly created resource in storage.
    *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
+   * @param  CreateProductCartRequest $request
+   * @return JsonResponse
    */
-  public function store(Request $request) {
-    $product = Product::find($request->product_id);
+    public function store(CreateProductCartRequest $request)
+    {
+        try {
+            $productCart = $this->productCartService->create(ProductCartData::fromRequest($request));
+        } catch (QueryException $e) {
+            return response()->json([
+                "product_cart" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "product_cart" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
-    if (!$product) {
-      return response([
-        'product_cart' => null,
-        'message' => 'Product not found.',
-      ], 400);
+        return response()->json([
+            "product_cart" => new ProductCartResource($productCart),
+            "message" => "ProductCart created.",
+        ], 201);
     }
-
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'count' => 'required|int',
-    ]);
-
-    if ($validator->fails()) {
-      return response([
-        'product_cart' => null,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
-    }
-
-    $product_cart = new ProductCart;
-
-    $product_cart->count = $request->count;
-    $product_cart->cart_id = auth()->user()->cart['id'];
-    $product_cart->product_id = $request->product_id;
-
-    $product_cart->save();
-    $product_cart = $product_cart->fresh(['product', 'cart', 'cart.user']);
-
-    return response([
-      "product_cart" => $product_cart,
-      "message" => "product_cart created.",
-    ], 201);
-  }
 
   /**
    * Display the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return JsonResponse
    */
-  public function show($id) {
-    //
-  }
+    public function show($id)
+    {
+      //
+    }
 
   /**
    * Update the specified resource in storage.
    *
-   * @param  \Illuminate\Http\Request  $request
+   * @param  UpdateProductCartRequest  $request
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return JsonResponse
    */
-  public function update(Request $request, $id) {
-    $product_cart = ProductCart::find($id);
+    public function update(UpdateProductCartRequest $request, int $id)
+    {
+        try {
+            $productCart = $this->productCartService->update(
+                ProductCartData::fromRequest($request),
+                $request->product_cart
+            );
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product_cart" => null,
+                "message" => "ProductCart not found.",
+            ], 404);
+        }
 
-    if (!$product_cart) {
-      return response([
-        'product_cart' => null,
-        'message' => 'ProductCart not found.',
-      ], 404);
+        return response([
+            "productCart" => new ProductCartResource($productCart),
+            "message" => "ProductCart updated.",
+        ], 200);
     }
-
-    if (auth()->user()->cannot('update', $product_cart)) {
-      return response([
-        "product_cart" => $product_cart,
-        "message" => "Unauthorized.",
-      ], 401);
-    }
-
-    // VALIDATE DATA
-    $validator = Validator::make($request->all(), [
-      'count' => 'required',
-    ]);
-
-    if ($validator->fails()) {
-      return response([
-        'product_cart' => $product_cart,
-        'message' => 'Validation failed.',
-        'errors' => $validator->messages(),
-      ], 400);
-    }
-
-    $product_cart->count = $request->count;
-    $product_cart->save();
-
-    return response([
-      "product_cart" => $product_cart,
-      "message" => "Product count update updated.",
-    ], 200);
-  }
 
   /**
    * Remove the specified resource from storage.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return JsonResponse
    */
-  public function destroy($id) {
-    $product_cart = ProductCart::find($id);
+    public function destroy(DeleteProductCartRequest $request, int $id)
+    {
+        try {
+            $productCart = $this->productCartService->delete($request->product_cart);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "product_cart" => null,
+                "message" => "ProductCart not found.",
+            ], 404);
+        }
 
-    if (auth()->user()->cannot('forceDelete', $product_cart)) {
-      return response([
-        "product_cart" => $product_cart,
-        "message" => "Unauthorized.",
-      ], 401);
+        return response([
+            "product_cart" => new ProductCartResource($productCart),
+            "message" => "ProductCart deleted.",
+        ], 200);
     }
-
-    $product_cart->delete();
-
-    return response([
-      "product_cart" => $product_cart,
-      "message" => "Product removed from cart.",
-    ], 200);
-  }
 }
