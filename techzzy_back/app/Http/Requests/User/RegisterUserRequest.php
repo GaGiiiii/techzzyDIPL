@@ -1,23 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\User;
 
-use App\Services\Product\CategoryService;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class UpdateCategoryRequest extends FormRequest
+class RegisterUserRequest extends FormRequest
 {
-
-    private CategoryService $categoryService;
-
-    public function __construct(CategoryService $categoryService)
-    {
-        $this->categoryService = $categoryService;
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,15 +15,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        try {
-            $this->category = $this->categoryService->getById($this->category);
-        } catch (ModelNotFoundException $e) {
-            $this->category = null;
-
-            return true;
-        }
-
-        return auth()->check() && auth()->user()->can('update', $this->category);
+        return !auth()->check();
     }
 
     /**
@@ -44,14 +26,19 @@ class UpdateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:2|max:100',
+            'first_name' => 'required|alpha|min:2',
+            'last_name' => 'required|alpha|min:2',
+            'username' => 'required|alpha_dash|min:2|unique:users,username',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'img' => 'file|image|max:5000',
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
-            'category' => null,
+            'user' => null,
             'message' => 'Validation failed.',
             'errors' => $validator->messages(),
         ], 400);

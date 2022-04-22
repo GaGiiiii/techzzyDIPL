@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\User;
 
-use App\Services\Product\CategoryService;
+use App\Services\User\UserService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class UpdateCategoryRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
 
-    private CategoryService $categoryService;
+    private UserService $userService;
 
-    public function __construct(CategoryService $categoryService)
+    public function __construct(UserService $userService)
     {
-        $this->categoryService = $categoryService;
+        $this->userService = $userService;
     }
 
     /**
@@ -26,14 +26,14 @@ class UpdateCategoryRequest extends FormRequest
     public function authorize()
     {
         try {
-            $this->category = $this->categoryService->getById($this->category);
+            $this->user = $this->userService->getById($this->user);
         } catch (ModelNotFoundException $e) {
-            $this->category = null;
+            $this->user = null;
 
             return true;
         }
 
-        return auth()->check() && auth()->user()->can('update', $this->category);
+        return auth()->check() && auth()->user()->can('update', $this->user);
     }
 
     /**
@@ -44,14 +44,19 @@ class UpdateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:2|max:100',
+            'first_name' => 'required|alpha|max:255',
+            'last_name' => 'required|alpha|max:255',
+            'username' => 'required|alpha_dash|max:255|unique:users,username,' . auth()->user()->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . auth()->user()->id,
+            'img' => 'image|file|max:5000',
+            'password' => 'nullable|min:6|confirmed',
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
         $response = response()->json([
-            'category' => null,
+            'user' => null,
             'message' => 'Validation failed.',
             'errors' => $validator->messages(),
         ], 400);

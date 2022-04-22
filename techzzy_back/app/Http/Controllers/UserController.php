@@ -2,9 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\User\UserData;
+use App\Http\Requests\User\GetAllUserPaymentsRequest;
+use App\Http\Requests\User\GetAllUsersRequest;
+use App\Http\Requests\User\GetUsersProductsInCartRequest;
+use App\Http\Requests\User\LoginUserRequest;
+use App\Http\Requests\User\RegisterUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\UserResource;
 use App\Models\Cart;
 use App\Models\ProductCart;
 use App\Models\User;
+use App\Services\User\UserService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,233 +23,181 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-    public function index()
-    {
-        $users = User::all();
 
-        if (auth()->user()->cannot('viewAny', User::class)) {
-            return response([
-            "users" => null,
-            "message" => "Unauthorized.",
-            ], 401);
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param GetAllUsersRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(GetAllUsersRequest $request)
+    {
+        try {
+            $users = $this->userService->getAll();
+        } catch (QueryException $e) {
+            return response()->json([
+                "users" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "users" => null,
+                "message" => "Server Error",
+            ], 500);
         }
 
-        return response([
-        "users" => $users,
-        "message" => "Users found",
+        return response()->json([
+            "users" => UserResource::collection($users),
+            "message" => "Users found.",
         ], 200);
     }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-      //
+        //
     }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-      //
+        //
     }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  UpdateUserRequest  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateUserRequest $request, $id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response([
-            'user' => null,
-            'message' => 'User not found.',
+        try {
+            $user = $this->userService->update(UserData::fromRequest($request), $request->user);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "user" => null,
+                "message" => "User not found.",
             ], 404);
         }
 
-        if (auth()->user()->cannot('update', $user)) {
-            return response([
-            "user" => $user,
-            "message" => "Unauthorized.",
-            ], 401);
-        }
-
-      // VALIDATE DATA
-        $validator = Validator::make($request->all(), [
-        'first_name' => 'required|alpha|max:255',
-        'last_name' => 'required|alpha|max:255',
-        'username' => 'required|alpha_dash|max:255|unique:users,username,' . auth()->user()->id,
-        'email' => 'required|string|email|max:255|unique:users,email,' . auth()->user()->id,
-        'img' => 'image|file|max:5000',
-        'password' => 'nullable|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-            'user' => $user,
-            'message' => 'Validation failed.',
-            'errors' => $validator->messages(),
-            ], 400);
-        }
-
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->username = $request->username;
-        $user->email = $request->email;
-
-      // CHECK IF IMAGE IS UPLOADED
-        if (isset($request->img)) {
-          // DELETE OLD USER PHOTO
-            Storage::deleteDirectory('avatars/' .  auth()->user()->username);
-
-          // CREATE UNIQUE FILENAME AND STORE IT UNIQUE FOLDER
-            $fileName = auth()->user()->username . "_" . date('dmY_Hs') . "." . $request->img->extension() ?? null;
-            $path = $request->file('img')->storeAs('avatars/' . auth()->user()->username, $fileName);
-            $user->img = $fileName;
-        }
-
-        if (!empty($request->password) && $request->password === $request->password_confirmation) {
-            $user->password = Hash::make($request->password);
-        }
-
-        $user->save();
-
-        $user = $user->fresh(['comments', 'comments.product', 'ratings', 'ratings.product', 'cart', 'cart.productCarts']);
-
         return response([
-        "user" => $user,
-        "message" => "User updated.",
+            "user" => new UserResource($user),
+            "message" => "User updated.",
         ], 200);
     }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
-      //
+        //
     }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @return \Illuminate\Http\Response
-   */
-    public function login(Request $request)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param LoginUserRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(LoginUserRequest $request)
     {
-      // VALIDATE DATA
-        $validator = Validator::make($request->all(), [
-        'email' => 'required|email',
-        'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-            'user' => null,
-            'message' => 'Validation failed.',
-            'errors' => $validator->messages(),
-            ], 400);
+        try {
+            $loginArr = $this->userService->login($request->email, $request->password);
+        } catch (QueryException $e) {
+            return response()->json([
+                "user" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "user" => null,
+                "message" => "Server Error",
+            ], 500);
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (empty($loginArr)) {
             return response([
-            "user" => null,
-            "message" => "Login failed.",
+                "user" => null,
+                "message" => "Login failed.",
             ], 401);
         }
 
-        $token = $user->createToken('usertoken');
-
-        $user = $user->fresh(['comments', 'comments.product', 'ratings', 'ratings.product', 'cart', 'cart.productCarts']);
-
         return response([
-        "user" => $user,
-        "message" => "Login successful",
-        'token' => $token->plainTextToken,
+            "user" => $loginArr['user'],
+            "message" => "Login successful",
+            'token' => $loginArr['token']->plainTextToken,
         ], 200);
     }
 
     public function logout(Request $request)
     {
-        $user = auth()->user();
-        $user->tokens()->delete();
+        try {
+            $user = $this->userService->logout();
+        } catch (QueryException $e) {
+            return response()->json([
+                "user" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                "user" => null,
+                "message" => "Server Error",
+            ], 500);
+        }
 
         return response([
-        "user" => $user,
-        "message" => "Logout successful.",
+            "user" => $user,
+            "message" => "Logout successful.",
         ], 200);
     }
 
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-      // VALIDATE DATA
-        $validator = Validator::make($request->all(), [
-        'first_name' => 'required|alpha|min:2',
-        'last_name' => 'required|alpha|min:2',
-        'username' => 'required|alpha_dash|min:2|unique:users,username',
-        'email' => 'required|string|email|unique:users,email',
-        'password' => 'required|string|min:6|confirmed',
-        'img' => 'file|image|max:5000',
-        ]);
+        try {
+            $registerArr = $this->userService->create(UserData::fromRequest($request));
+        } catch (QueryException $e) {
+            Log::error('Create User Query Error', [$e->getMessage()]);
 
-        if ($validator->fails()) {
-            return response([
-            'user' => null,
-            'message' => 'Validation failed.',
-            'errors' => $validator->messages(),
-            ], 400);
+            return response()->json([
+                "user" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            Log::error('Create User Exception Error', [$e->getMessage()]);
+
+            return response()->json([
+                "user" => null,
+                "message" => "Server Error",
+            ], 500);
         }
-
-        $user = new User();
-
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-
-      // CHECK IF IMAGE IS UPLOADED
-        if (isset($request->img)) {
-          // CREATE UNIQUE FILENAME AND STORE IT UNIQUE FOLDER
-            $fileName = $user->username . "_" . date('dmY_Hs') . "." . $request->img->extension() ?? null;
-            $path = $request->file('img')->storeAs('avatars/' . $user->username, $fileName);
-            $user->img = $fileName;
-        }
-
-
-        $user->save();
-        $cart = new Cart();
-        $cart->user_id = $user->id;
-        $cart->save();
-        $token = $user->createToken('usertoken');
 
         return response([
-        "user" => $user,
-        "message" => "User created.",
-        'token' => $token->plainTextToken,
+            "user" => $registerArr['user'],
+            "message" => "User created.",
+            'token' => $registerArr['token']->plainTextToken,
         ], 201);
     }
 
@@ -247,58 +205,66 @@ class UserController extends Controller
     {
         if (auth()->user()) {
             return response([
-            "user" => auth()->user(),
-            "message" => "User logged in.",
+                "user" => auth()->user(),
+                "message" => "User logged in.",
             ], 200);
         }
 
         return response([
-        "user" => null,
-        "message" => "Not logged in.",
+            "user" => null,
+            "message" => "Not logged in.",
         ], 401);
     }
 
-    public function getAllProductsInCart($user_id)
+    public function getAllProductsInCart(GetUsersProductsInCartRequest $request, int $user_id)
     {
-        $user = User::find($user_id);
-        $pcs = ProductCart::with('product', 'product.ratings', 'product.category')->where('cart_id', $user->cart->id)->get();
-        $products = [];
+        try {
+            $products = $this->userService->getAllProductsInCart($user_id);
+        } catch (QueryException $e) {
+            Log::error('Get Products In Cart Query Error', [$e->getMessage()]);
 
-        if (auth()->user()->cannot('getAllProductsInCart', $user)) {
-            return response([
-            "products" => null,
-            "message" => "Unauthorized.",
-            ], 401);
-        }
+            return response()->json([
+                "products" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            Log::error('Get Products In Cart Exception Error', [$e->getMessage()]);
 
-        foreach ($pcs as $pc) {
-            $product = $pc['product'];
-            $product->count = $pc->count;
-            $product->pcID = $pc->id;
-            array_push($products, $product);
+            return response()->json([
+                "products" => null,
+                "message" => "Server Error",
+            ], 500);
         }
 
         return response([
-        "products" => $products,
-        "message" => "Products found",
+            "products" => $products,
+            "message" => "Products found",
         ], 200);
     }
 
-    public function getAllPayments($user_id)
+    public function getAllPayments(GetAllUserPaymentsRequest $request, $user_id)
     {
-        $users = User::with(['payments', 'payments.paymentProducts', 'payments.paymentProducts.product'])->where('id', $user_id)->get();
-        $payments = $users[0]['payments'];
+        try {
+            $payments = $this->userService->getAllPayments($user_id);
+        } catch (QueryException $e) {
+            Log::error('Create User Query Error', [$e->getMessage()]);
 
-        if (auth()->user()->cannot('getAllPayments', $users[0])) {
-            return response([
-            "payments" => null,
-            "message" => "Unauthorizedd.",
-            ], 401);
+            return response()->json([
+                "payments" => null,
+                "message" => "Server Error",
+            ], 500);
+        } catch (Exception $e) {
+            Log::error('Create User Exception Error', [$e->getMessage()]);
+
+            return response()->json([
+                "payments" => null,
+                "message" => "Server Error",
+            ], 500);
         }
 
         return response([
-        "payments" => $payments,
-        "message" => "Payments found",
+            "payments" => $payments,
+            "message" => "Payments found",
         ], 200);
     }
 

@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Comment;
 
 use App\Services\Comment\CommentService;
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class UpdateCommentRequest extends FormRequest
