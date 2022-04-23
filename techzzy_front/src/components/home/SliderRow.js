@@ -128,10 +128,12 @@ export default function SliderRow({ type }) {
                     &nbsp;{calculateProductRating(product)} / 10
                   </p>
                   <p className="fw-bold m-0">
-                    <i className="fas fa-tag"></i> {(Math.round(product.price * 100) / 100).toLocaleString()} &euro;
+                    <i className="fas fa-tag"></i> 
+                    &nbsp;{(Math.round(product.price * 100) / 100).toLocaleString()} RSD <br /> (
+                    {(Math.round(product.price  /117 * 100) / 100).toLocaleString()}&euro;)
                   </p>
                 </Card.Body>
-              </Card>
+            </Card>
             </div>
           </Link>
         ))}

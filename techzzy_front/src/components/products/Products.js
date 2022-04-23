@@ -160,8 +160,8 @@ export default function Products() {
               </div>
               <div id="price" className="mt-3">
                 <h4>Price range</h4>
-                <span className="price-range-span">0 - {(priceRange).toLocaleString()} &euro;</span>
-                <input type="range" min="0" max="250000" value={priceRange} onChange={(e) => filterURL(sortBy, e.target.value, 1, categoriesFilterArr)} className="form-range" id="customRange1" name="price-range" />
+                <span className="price-range-span">0 - {(priceRange).toLocaleString()} RSD</span>
+                <input type="range" min="1" max="250000" value={priceRange} onChange={(e) => filterURL(sortBy, e.target.value, 1, categoriesFilterArr)} className="form-range" id="customRange1" name="price-range" />
               </div>
               <div id="categories" className="mt-2">
                 <h4 className="mb-2">Cetegory</h4>
@@ -192,7 +192,8 @@ export default function Products() {
                             <i className="fas fa-star"></i> {calculateProductRating(product)}/10
                           </p>
                           <p className="fw-bold mb-0">
-                            <i className="fas fa-tag"></i> {(Math.round(product.price * 100) / 100).toLocaleString()} &euro;
+                            <i className="fas fa-tag"></i> {(Math.round(product.price * 100) / 100).toLocaleString()} RSD;
+                            <br />({(Math.round(product.price / 117 * 100) / 100).toLocaleString()}&euro;)
                           </p>
                         </Card.Body>
                       </Card>

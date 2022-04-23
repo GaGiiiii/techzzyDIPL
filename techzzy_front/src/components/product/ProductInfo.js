@@ -168,7 +168,8 @@ export default function ProductInfo({ product, setProduct }) {
                     {currentUser && <ul className="stars-ul">{stars && stars}</ul>}
                     <p className="fw-bold m-0">
                         <i className="fas fa-tag"></i>
-                        <span className="original-price-span">&nbsp;{(Math.round(product.price * 100) / 100).toLocaleString()} {quantity > 1 ? `X${quantity} = ${(Math.round(quantity * product.price * 100) / 100).toLocaleString()}` : ''} </span> &euro;
+                        <span className="original-price-span">&nbsp;{(Math.round(product.price * 100) / 100).toLocaleString()} {quantity > 1 ? `X${quantity} = ${(Math.round(quantity * product.price * 100) / 100).toLocaleString()}` : ''} </span> RSD
+                        <br /><span className="original-price-span">&nbsp;{(Math.round(product.price / 117 * 100) / 100).toLocaleString()}{quantity > 1 ? ` X${quantity} = ${(Math.round(quantity * product.price / 117 * 100) / 100).toLocaleString()}` : ''}</span>&euro;
                         <span className="changing-quantity-span"></span>
                     </p>
                     <p className="fw-bold">

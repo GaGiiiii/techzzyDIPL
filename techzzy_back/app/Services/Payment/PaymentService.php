@@ -58,8 +58,14 @@ class PaymentService
         $pcsArr = $pcs->toArray(); // Convert To Array
         $pcs->each->delete(); // Delete from cart
 
+        Log::debug($paymentData->products);
+
         // Save Products In Aggregation So We Know Which Product is in Which Payment And How Much
         foreach ($paymentData->products as $product) {
+            Log::debug($product);
+            Log::debug($product['id']);
+            Log::debug($pcsArr);
+
             $pp = new PaymentProduct();
             $pp->product_id = $product['id'];
             $pp->payment_id = $payment->id;
@@ -68,7 +74,11 @@ class PaymentService
             $filteredArr = array_filter($pcsArr, function ($pc) use ($product) {
                 return $pc['product_id'] === $product['id'];
             });
+            Log::debug(['filtered' => $filteredArr]);
+
             $filteredArrFix = array_values($filteredArr); // Fix Array
+            Log::debug(['filteredfix' => $filteredArrFix]);
+
             $pp->count = $filteredArrFix[0]['count'];
             $pp->save();
 

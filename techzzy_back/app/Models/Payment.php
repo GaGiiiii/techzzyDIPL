@@ -10,16 +10,20 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-      'user_id',
-      'order_id',
-      'price',
+        'user_id',
+        'order_id',
+        'price',
+        'type',
+        'nestpay_response'
     ];
-  
-    public function user() {
-      return $this->belongsTo(User::class);
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
-    public function paymentProducts(){
-      return $this->hasMany(PaymentProduct::class);
+    public function paymentProducts()
+    {
+        return $this->hasMany(PaymentProduct::class);
     }
 }

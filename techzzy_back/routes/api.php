@@ -47,42 +47,47 @@ Route::get('/loggedIn', [UserController::class, 'loggedIn']);
 // Ratings
 Route::get('/ratings', [RatingController::class, 'index']);
 
+// NestPay
+Route::post('/nestpay/success', [PaymentController::class, 'nestpaySuccess']);
+Route::post('/nestpay/fail', [PaymentController::class, 'nestpayFail']);
+Route::get('/nestpay/fail', [PaymentController::class, 'nestpayFail']);
+
 // PROTECTED ==================================================
 Route::group(['middleware' => 'auth:sanctum'], function () {
-  // Auth
+    // Auth
     Route::post('/logout', [UserController::class, 'logout']);
 
-  // Comments
+    // Comments
     Route::post('/comments', [CommentController::class, 'store']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
-  // Products
+    // Products
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
-  // Categories
+    // Categories
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
-  // Users
+    // Users
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}/cart', [UserController::class, 'getAllProductsInCart']);
     Route::get('/users/{user}/payments', [UserController::class, 'getAllPayments']);
     Route::put('/users/{user}', [UserController::class, 'update']);
 
-  // ProductCart
+    // ProductCart
     Route::post('/product_carts', [ProductCartController::class, 'store']);
     Route::put('/product_carts/{product_cart}', [ProductCartController::class, 'update']);
     Route::delete('/product_carts/{product_cart}', [ProductCartController::class, 'destroy']);
 
-  // Ratings
+    // Ratings
     Route::post('/ratings', [RatingController::class, 'store']);
     Route::put('/ratings/{rating}', [RatingController::class, 'update']);
 
-  // Payments
+    // Payments
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::post('/payments', [PaymentController::class, 'store']);
 });

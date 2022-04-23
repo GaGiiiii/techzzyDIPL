@@ -212,6 +212,7 @@ export default function Dashboard({ products }) {
                         <th>Date</th>
                         <th>Products</th>
                         <th>Price</th>
+                        <th>Type</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -231,8 +232,12 @@ export default function Dashboard({ products }) {
                               </Accordion.Item>
                             </Accordion>
                           </td>
-                          <td>{(Math.round(payment.price * 100) / 100).toLocaleString()} &euro;</td>
-                        </tr>
+                              <td>
+                                  {(Math.round(payment.price * 100) / 100).toLocaleString()} RSD <br />
+                                  {(Math.round(payment.price / 117 * 100) / 100).toLocaleString()}&euro; <br />
+                              </td>
+                              <td>{payment.type}</td>
+                          </tr>
                       ))}
                     </tbody>
                   </Table> : 'No payments'}

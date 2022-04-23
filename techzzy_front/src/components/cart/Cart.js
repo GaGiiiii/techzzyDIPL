@@ -19,6 +19,7 @@ export default function Cart() {
   const [orderID, setOrderID] = useState(null);
   const { api } = useContext(ApiContext);
   const { setFlashMessage } = useContext(FlashMessageContext);
+  const [ooid, setOoid] = useState("");
 
   useEffect(() => {
     axios.get(`${api}/users/${currentUser.id}/cart`, {
@@ -38,13 +39,27 @@ export default function Cart() {
     setTotalPrice(totalP);
   }, [productsInCart]);
 
+  /* 
+    OOID has 3 parts 
+    D*_PRODUCT_IDS_D*_USER_ID_D*_RANDOM_NUMBER
+    D*_1_2_33_4_D*_15_D*_45656
+  */
+  useEffect(() => {
+      let ooidG = "_D*_";
+      productsInCart.forEach(product => {
+          ooidG += product.id + "_";
+      });
+      ooidG += "D*_" + currentUser.id + "_D*_" + Math.floor(Math.random() * 1000000 + 1);
+      setOoid(ooidG);
+  }, [currentUser, productsInCart]);
+
 
   function createOrder(data, actions) {
     return actions.order.create({
       purchase_units: [
         {
           amount: {
-            value: Math.round((totalPrice + totalPrice * 0.1) * 100) / 100,
+            value: Math.round((totalPrice + totalPrice * 0.1) / 117 * 100) / 100,
           },
         },
       ],
@@ -76,7 +91,13 @@ export default function Cart() {
       headers: {
         Authorization: `Bearer ${currentUser.token}`
       },
-      data: { order_id: orderID, user_id: currentUser.id, price: Math.round((totalPrice + totalPrice * 0.1) * 100) / 100, products: productsInCart },
+        data: {
+            order_id: orderID,
+            user_id: currentUser.id,
+            price: Math.round((totalPrice + totalPrice * 0.1) * 100) / 100,
+            products: productsInCart,
+            type: 'PAYPAL'
+        },
     }).then(res => {
       return {
         dbSucc: true, // Did Payment Save In Database
@@ -108,7 +129,7 @@ export default function Cart() {
   // }
 
   function calculateHash() {
-    let plainText = `13IN001798|123|5990.00|https://techzzy-front.herokuapp.com|https://techzzy-back.herokuapp.com|PreAuth||asdf||||941|13IN001798`;
+    let plainText = `13IN001798|${ooid}|${totalPrice}|${process.env.REACT_APP_BE_URL}/nestpay/success|${process.env.REACT_APP_BE_URL}/nestpay/fail|PreAuth||asdf||||941|13IN001798`;
     let hash = crypto.createHash('sha512');
     hash.update(plainText);
 
@@ -142,12 +163,14 @@ export default function Cart() {
             <div className="total-div shadow payment-col">
               <Row>
                 <Col xs={"auto"} md={12}>
-                  <h5><strong className="fw-bold">SUBTOTAL: </strong> <span className="subtotal-price-span">{totalPrice.toLocaleString()}</span> &euro; </h5>
-                  <h5><strong>SHIPPING: </strong> <span>0 &euro; </span></h5>
-                  <h5><strong>TAX: </strong> <span className="tax-span">{(Math.round(totalPrice * 0.1 * 100) / 100).toLocaleString()}</span> &euro;
+                  <h5><strong className="fw-bold">SUBTOTAL: </strong> <span className="subtotal-price-span">{totalPrice.toLocaleString()}</span> RSD </h5>
+                  <h5><strong>SHIPPING: </strong> <span>0 RSD </span></h5>
+                  <h5><strong>TAX: </strong> <span className="tax-span">{(Math.round(totalPrice * 0.1 * 100) / 100).toLocaleString()}</span> RSD
                     (10%)</h5>
                   <h5 className="totalG2"><strong>TOTAL: </strong> <span
-                    className="total-price-span">{(Math.round((totalPrice + totalPrice * 0.1) * 100) / 100).toLocaleString()}</span> &euro;
+                    className="total-price-span">{(Math.round((totalPrice + totalPrice * 0.1) * 100) / 100).toLocaleString()} RSD</span>
+                    <br /> <span
+                    className="total-price-span">({(Math.round((totalPrice + totalPrice * 0.1) / 117 * 100) / 100).toLocaleString()}&euro;)</span>
                   </h5>
                   {/* <button className="btn btn-primary btn-lg checkout-btn">Checkout</button> */}
                 </Col>
@@ -157,12 +180,12 @@ export default function Cart() {
                 <Col md={12}>
                   {productsInCart.length > 0 &&
                     <Form action='https://testsecurepay.eway2pay.com/fim/est3Dgate' method='POST'>
-                      <input type='hidden' name='failUrl' value='https://techzzy-back.herokuapp.com' />
+                      <input type='hidden' name='failUrl' value={process.env.REACT_APP_BE_URL + '/nestpay/fail'} />
                       <input type='hidden' name='currency' value='941' />
                       <input type='hidden' name='trantype' value='PreAuth' />
-                      <input type='hidden' name='okUrl' value='https://techzzy-front.herokuapp.com' />
-                      <input type='hidden' name='amount' value='5990.00' />
-                      <input type='hidden' name='oid' value='123' />
+                      <input type='hidden' name='okUrl' value={process.env.REACT_APP_BE_URL + '/nestpay/success'} />
+                      <input type='hidden' name='amount' value={totalPrice} />
+                      <input type='hidden' name='oid' value={ooid} />
                       <input type='hidden' name='clientid' value='13IN001798' />
                       <input type='hidden' name='storetype' value='3d_pay_hosting' />
                       <input type='hidden' name='lang' value='sr' />
