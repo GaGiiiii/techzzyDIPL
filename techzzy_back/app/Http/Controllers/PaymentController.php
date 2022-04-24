@@ -69,11 +69,17 @@ class PaymentController extends Controller
         try {
             $payment = $this->paymentService->create(PaymentData::fromRequest($request));
         } catch (QueryException $e) {
+            Log::debug($e->getMessage());
+            Log::debug($e->getTrace());
+
             return response()->json([
                 "payment" => null,
                 "message" => "Server Error",
             ], 500);
         } catch (Exception $e) {
+            Log::debug($e->getMessage());
+            Log::debug($e->getTrace());
+
             return response()->json([
                 "payment" => null,
                 "message" => "Server Error",
