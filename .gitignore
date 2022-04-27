@@ -1,3 +1,4 @@
 node_modules/
 .vscode
-./techzzy_back/mysql
+./techzzy_back/mysql/
+techzzy_back/mysql/
