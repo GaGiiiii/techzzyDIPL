@@ -1,0 +1,32 @@
+HELO:<gagi.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<dragoslav.gagi8@gmail.com>
+
+Message-ID: <f737b0bca036b4c7f2535be39d4c595c@gagi.test>
+Date: Mon, 02 May 2022 21:57:54 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: dragoslav.gagi8@gmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> 81A14373HW7482231</p>
+    <p>
+        <span style=3D"fon=
+t-weight: bold">Products:</span>
+                                    SAMS=
+UNG SSD 1TB 980 PRO NVMe M.2 MZ-V8P1T0BW/ (x1)
+                        </=
+p>
+    <p><span style=3D"font-weight: bold">Price:</span> 14027.38 RSD
+=
+        (119.89&euro;)</p>
+    <p><span style=3D"font-weight: bold">Payme=
+nt Type:</span> PAYPAL</p>
+</div>

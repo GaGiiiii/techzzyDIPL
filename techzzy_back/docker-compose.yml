@@ -40,6 +40,19 @@ services:
     networks:
       - webapp
 
+  mailhog:
+    user: root
+    image: mailhog/mailhog
+    container_name: techzzy_mailhog
+    command: ["-storage=maildir", "-maildir-path=/maildir"]
+    volumes: 
+      - ./emails:/maildir
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - webapp
+
 networks:
   webapp:
     driver: bridge
