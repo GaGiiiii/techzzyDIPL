@@ -49,8 +49,15 @@ cd techzzy_back
 Then we are going to install dependencies for the frontend and start the application with next commands:
 
 ```bash
-npm i
-npm run start
+ - docker-compose up -d
+ - docker-compose exec php bash
+ - cp env
+ - composer i
+ - npm i
+ - key generate
+ - storage link
+ - baza import
+ - sudo chmod -R 777 storage
 ```
 
 Frontend works on [localhost:3000](http://localhost:3000/)   
