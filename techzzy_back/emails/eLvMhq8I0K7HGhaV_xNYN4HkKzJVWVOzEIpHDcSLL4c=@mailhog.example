@@ -1,0 +1,32 @@
+HELO:<gagi.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<dragoslav.gagi8@gmail.com>
+
+Message-ID: <a2dc0d736e9bfc2d5875af42fb6aa887@gagi.test>
+Date: Tue, 02 Aug 2022 20:58:30 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: dragoslav.gagi8@gmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> _D*_49_D*_1_D*_744832</p>
+    <p>
+        <span style=3D=
+"font-weight: bold">Products:</span>
+                                    =
+A-DATA SSD XPG GAMMIX S11 PRO 2TB M.2 2280 PCIe Gen3x4 - AGAMMIXS11P-2TT-C =
+(x2)
+                        </p>
+    <p><span style=3D"font-weight: bo=
+ld">Price:</span> 56671.70 RSD
+        (484.37&euro;)</p>
+    <p><span =
+style=3D"font-weight: bold">Payment Type:</span> NESTPAY</p>
+</div>
