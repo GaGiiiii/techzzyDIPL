@@ -1,0 +1,32 @@
+HELO:<gagi.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<dragoslav.gagi8@gmail.com>
+
+Message-ID: <c2345c2c4bdbba8e3afdad95ebaf5ba2@gagi.test>
+Date: Thu, 18 Aug 2022 20:18:17 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: dragoslav.gagi8@gmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> _D*_55_D*_1_D*_191583</p>
+    <p>
+        <span style=3D=
+"font-weight: bold">Products:</span>
+                                    =
+ASUS ROG Gladius III Wireless 90MP0200-BMUA00 (x3)
+                      =
+  </p>
+    <p><span style=3D"font-weight: bold">Price:</span> 234503.64 R=
+SD
+        (2004.3&euro;)</p>
+    <p><span style=3D"font-weight: bold">=
+Payment Type:</span> NESTPAY</p>
+</div>

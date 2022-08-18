@@ -22,6 +22,10 @@ class UserResource extends JsonResource
             'img' => $this->img,
             'email' => $this->email,
             'is_admin' => $this->is_admin,
+            'ratings' => $this->ratings,
+            'comments' => $this->comments,
+            'cart' => $this->cart,
+            'payments' => $this->payments
         ];
     }
 }

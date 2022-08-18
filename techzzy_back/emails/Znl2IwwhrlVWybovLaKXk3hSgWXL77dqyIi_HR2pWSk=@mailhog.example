@@ -1,0 +1,32 @@
+HELO:<gagi.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<dragoslav.gagi8@gmail.com>
+
+Message-ID: <92351c21fe577e79dc20cbf9c4a00ec0@gagi.test>
+Date: Thu, 18 Aug 2022 20:11:35 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: dragoslav.gagi8@gmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> 90262951W0401430D</p>
+    <p>
+        <span style=3D"fon=
+t-weight: bold">Products:</span>
+                                    LOGI=
+TECH G102 LIGHTSYNC (x1)
+                        </p>
+    <p><span styl=
+e=3D"font-weight: bold">Price:</span> 3850.00 RSD
+        (32.91&euro;)</=
+p>
+    <p><span style=3D"font-weight: bold">Payment Type:</span> PAYPAL</=
+p>
+</div>

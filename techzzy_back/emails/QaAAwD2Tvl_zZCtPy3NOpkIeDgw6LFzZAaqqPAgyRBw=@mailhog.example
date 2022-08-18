@@ -1,0 +1,35 @@
+HELO:<gagi.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<dragoslav.gagi8@gmail.com>
+
+Message-ID: <3d8fd3422cb6eefbb44a5170cd3939af@gagi.test>
+Date: Thu, 18 Aug 2022 20:04:07 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: dragoslav.gagi8@gmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> 7F892083651623342</p>
+    <p>
+        <span style=3D"fon=
+t-weight: bold">Products:</span>
+                                    MSI =
+Vodeno procesorsko hla=C4=91enje MAG CORELIQUID 280R (x2),&nbsp;
+        =
+                                        ASUS ROG Gladius III Wireless 90MP0=
+200-BMUA00 (x1)
+                        </p>
+    <p><span style=3D"font=
+-weight: bold">Price:</span> 109432.40 RSD
+        (935.32&euro;)</p>
+ =
+   <p><span style=3D"font-weight: bold">Payment Type:</span> PAYPAL</p>
+<=
+/div>

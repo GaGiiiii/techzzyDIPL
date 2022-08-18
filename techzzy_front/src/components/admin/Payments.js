@@ -60,7 +60,7 @@ export default function Payments({ payments }) {
                                             <Accordion.Header>&nbsp;{payment.payment_products && payment.payment_products.length} - Products</Accordion.Header>
                                             <Accordion.Body className='text-start'>
                                                 {payment.payment_products && payment.payment_products.map(pp => (
-                                                    <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li>{pp.product.name}</li></Link>
+                                                    <Link className="cmnt" key={pp.id} to={`/products/${pp.product.id}`}><li>{pp.product.name} x{pp.count}</li></Link>
                                                 ))}
                                             </Accordion.Body>
                                         </Accordion.Item>

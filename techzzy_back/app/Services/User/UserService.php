@@ -48,7 +48,6 @@ class UserService
     {
         $user = new User();
         $userData->password = Hash::make($userData->password);
-        $user = $user->create($userData->toArray());
 
         // CHECK IF IMAGE IS UPLOADED
         if (isset($userData->img)) {
@@ -56,7 +55,11 @@ class UserService
             $fileName = $userData->username . "_" . date('dmY_Hs') . "." . $userData->img->extension() ?? null;
             $path = $userData->imgFile->storeAs('avatars/' . $userData->username, $fileName);
             $userData->img = $fileName;
+
+            Log::debug([$fileName, $path]);
         }
+
+        $user = $user->create($userData->toArray());
 
         $cart = new Cart();
         $cart->user_id = $user->id;
