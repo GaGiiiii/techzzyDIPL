@@ -67,6 +67,7 @@ export default function ProductInfo({ product, setProduct }) {
                     setFlashMessage({ type: 'success', message: `Product rated ${rating}/10.` }) // Add Flash Message
                     setUsersRating(rating);
                     updateProducts(response, 1);
+                    currentUser.ratings.push(response.data.rating);
                 }).catch((error) => {
                     console.log(error);
                 });

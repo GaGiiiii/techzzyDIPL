@@ -155,7 +155,7 @@ export default function Dashboard({ products }) {
                                                 <h6 className="mb-0">Username</h6>
                                             </Col>
                                             <Col sm={9} className="text-secondary">
-                                                <input onChange={(e) => setUsername(e.target.value)} value={username} type="text" name="username" className="form-control" />
+                                                <input disabled onChange={(e) => setUsername(e.target.value)} value={username} type="text" name="username" className="form-control" />
                                             </Col>
                                         </Row>
                                         <Row className="mb-3">

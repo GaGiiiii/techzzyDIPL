@@ -1,0 +1,32 @@
+HELO:<techzzy.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<diplomski@fon.com>
+
+Message-ID: <d4ae1ed6c540935b309f9e125be91c85@techzzy.test>
+Date: Sun, 04 Sep 2022 18:49:20 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: diplomski@fon.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> _D*_61_D*_15_D*_139309</p>
+    <p>
+        <span style=
+=3D"font-weight: bold">Products:</span>
+                                 =
+   ASUS PRIME Z590-A (x1)
+                        </p>
+    <p><span sty=
+le=3D"font-weight: bold">Price:</span> 27523.39 RSD
+        (235.24&euro;=
+)</p>
+    <p><span style=3D"font-weight: bold">Payment Type:</span> NESTP=
+AY</p>
+</div>

@@ -1,0 +1,32 @@
+HELO:<techzzy.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<gagidiplomski@fon.com>
+
+Message-ID: <fcb13e77c899c63590fe150efcca001b@techzzy.test>
+Date: Sun, 04 Sep 2022 19:02:46 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: gagidiplomski@fon.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> _D*_56_D*_16_D*_417992</p>
+    <p>
+        <span style=
+=3D"font-weight: bold">Products:</span>
+                                 =
+   RAZER OROCHI V2 (x1)
+                        </p>
+    <p><span style=
+=3D"font-weight: bold">Price:</span> 45446.31 RSD
+        (388.43&euro;)<=
+/p>
+    <p><span style=3D"font-weight: bold">Payment Type:</span> NESTPAY=
+</p>
+</div>

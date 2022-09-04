@@ -1,0 +1,35 @@
+HELO:<techzzy.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<diplomski@fon.com>
+
+Message-ID: <50305a1530d6e4f33374a4c56312aa11@techzzy.test>
+Date: Sun, 04 Sep 2022 18:42:15 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: diplomski@fon.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> 0VP43377BF258111L</p>
+    <p>
+        <span style=3D"fon=
+t-weight: bold">Products:</span>
+                                    GIGA=
+BYTE Z590 AORUS ELITE AX (rev. 1.0) (x1),&nbsp;
+                         =
+                       THERMALTAKE Vodeno procesorsko hla=C4=91anje 3.0 Rii=
+ng RGB 360 CL-W108-PL12SW-A (x2)
+                        </p>
+    <p><s=
+pan style=3D"font-weight: bold">Price:</span> 231108.14 RSD
+        (1975=
+.28&euro;)</p>
+    <p><span style=3D"font-weight: bold">Payment Type:</sp=
+an> PAYPAL</p>
+</div>

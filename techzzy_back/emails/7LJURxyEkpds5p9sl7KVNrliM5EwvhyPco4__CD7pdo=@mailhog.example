@@ -1,0 +1,35 @@
+HELO:<techzzy.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<gagidiplomski@fon.com>
+
+Message-ID: <02378c43f7706d3067b283d25e8dab4a@techzzy.test>
+Date: Sun, 04 Sep 2022 19:01:49 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: gagidiplomski@fon.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> 8Y892856ES5722440</p>
+    <p>
+        <span style=3D"fon=
+t-weight: bold">Products:</span>
+                                    COOL=
+ER MASTER napajanje V1000 PLATINUM - MPZ-A001-AFBAPV-EU (x1),&nbsp;
+     =
+                                           BENQ Gaming monitor 35 VA - EX35=
+01R (x1)
+                        </p>
+    <p><span style=3D"font-weight=
+: bold">Price:</span> 126089.35 RSD
+        (1077.69&euro;)</p>
+    <p>=
+<span style=3D"font-weight: bold">Payment Type:</span> PAYPAL</p>
+</div>=
+

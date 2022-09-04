@@ -38,6 +38,7 @@ export default function Comments({ product, setProduct }) {
           }
         }).then(response => {
           product.comments.unshift(response.data.comment);
+          currentUser.comments.push(response.data.comment);
           setBody("");
           setCommentsFlashMessage({ type: 'success', message: `Comment added.` }) // Add Flash Message
         }).catch((error) => {
