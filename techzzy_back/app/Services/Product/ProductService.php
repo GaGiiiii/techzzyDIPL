@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class ProductService
 {
-
     /**
      * Retrieves all the products.
      *
@@ -44,7 +43,7 @@ class ProductService
         $product = new Product();
         $product = $product->create($productData->toArray());
 
-        return $product;
+        return $product->fresh(['category']);
     }
 
     /**

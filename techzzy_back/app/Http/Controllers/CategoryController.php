@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Validator;
 
 class CategoryController extends Controller
 {
-
     private CategoryService $categoryService;
 
     public function __construct(CategoryService $categoryService)
@@ -133,6 +133,8 @@ class CategoryController extends Controller
                 "category" => null,
                 "message" => "Category not found.",
             ], 404);
+        } catch (Exception $e) {
+            Log::debug([$e->getMessage()]);
         }
 
         return response([

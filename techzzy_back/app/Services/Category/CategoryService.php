@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryService
 {
-
     /**
      * Retrieves all the categories.
      *

@@ -1,0 +1,32 @@
+HELO:<techzzy.test>
+FROM:<dragoslav.gagi8@gmail.com>
+TO:<diplomski@fon.com>
+
+Message-ID: <a313c962572971333146fee07dcadb84@techzzy.test>
+Date: Sun, 04 Sep 2022 22:49:08 +0000
+Subject: Payment Details
+From: Techzzy <dragoslav.gagi8@gmail.com>
+To: diplomski@fon.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<h3>Congratulations, your payment was successful.</h3>
+<h4>Here are your =
+payment details:</h4>
+<div>
+    <p><span style=3D"font-weight: bold">Or=
+der ID:</span> _D*_10_D*_18_D*_114228</p>
+    <p>
+        <span style=
+=3D"font-weight: bold">Products:</span>
+                                 =
+   BENQ Gaming monitor 35 VA - EX3501R (x2)
+                        </p>=
+
+    <p><span style=3D"font-weight: bold">Price:</span> 43640.22 RSD
+  =
+      (372.99&euro;)</p>
+    <p><span style=3D"font-weight: bold">Payment=
+ Type:</span> NESTPAY</p>
+</div>

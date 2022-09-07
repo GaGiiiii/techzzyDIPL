@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Category;
 
-use App\Services\Product\CategoryService;
+use App\Services\Category\CategoryService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
@@ -10,7 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class UpdateCategoryRequest extends FormRequest
 {
-
     private CategoryService $categoryService;
 
     public function __construct(CategoryService $categoryService)

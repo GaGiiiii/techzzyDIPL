@@ -14,7 +14,7 @@ export default function ProductRow({ products, setProducts, product, index, cate
   const [img, setImg] = useState(product.img);
   const [stock, setStock] = useState(product.stock);
   const [price, setPrice] = useState(product.price);
-  const [categoryID, setCategoryID] = useState(product.category_id);
+  const [categoryID, setCategoryID] = useState(product.category.id);
 
   // MODAL
   const [show, setShow] = useState(false);
@@ -30,7 +30,7 @@ export default function ProductRow({ products, setProducts, product, index, cate
     setImg(product.img);
     setStock(product.stock);
     setPrice(product.price);
-    setCategoryID(product.category_id);
+    setCategoryID(product.category.id);
   }, [product]);
 
   function handleDelete(e) {
@@ -51,6 +51,7 @@ export default function ProductRow({ products, setProducts, product, index, cate
 
   function handleSubmit(e) {
     e.preventDefault();
+    console.log(categoryID)
     axios.put(`${api}/products/${product.id}`, { name, category_id: categoryID, desc, img, stock, price }, {
       headers: {
         Authorization: `Bearer ${currentUser.token}`

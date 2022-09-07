@@ -51,6 +51,9 @@ export default function Comment({ comment, index, product, commentsFlashMessage,
     }).then(response => {
       let index = product.comments.findIndex((comment) => comment.id === commentID);
       product.comments.splice(index, 1);
+
+      let index2 = currentUser.comments.findIndex((comment) => comment.id === commentID);
+      currentUser.comments.splice(index2, 1);
       setCommentsFlashMessage({ type: 'success', message: `Comment deleted.` }) // Add Flash Message
     }).catch((error) => {
       console.log("Add Comment Error");
